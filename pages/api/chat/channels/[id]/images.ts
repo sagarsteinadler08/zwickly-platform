@@ -29,40 +29,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { id: channelId } = req.query;
 
   if (req.method === 'POST') {
-    // Ensure upload directory exists
-    const uploadDir = path.join(process.cwd(), '/public/uploaded');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    const form = new formidable.IncomingForm();
-    form.uploadDir = uploadDir;
-    form.keepExtensions = true;
-    
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        return res.status(500).json({ error: 'File upload failed', details: err });
+    try {
+      // Ensure upload directory exists
+      const uploadDir = path.join(process.cwd(), '/public/uploaded');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
       }
+
+      const form = new formidable.IncomingForm();
+      form.uploadDir = uploadDir;
+      form.keepExtensions = true;
+      
+      const [fields, files] = await form.parse(req);
+      
       //@ts-ignore
-      const file = files.image;
+      const file = files.image?.[0] || files.image;
       if (!file) {
         return res.status(400).json({ error: 'No image file provided' });
       }
+      
       //@ts-ignore
       const filename = path.basename(file.filepath);
       //@ts-ignore
       const fileUrl = `/uploaded/${filename}`;
+      
       // Save metadata in DB
       const image = await prisma.image.create({
         data: {
           channelId: channelId as string,
           url: fileUrl,
+          //@ts-ignore
           originalName: file.originalFilename || filename
         }
       });
+      
       return res.status(201).json(image);
-    });
-    return;
+    } catch (error) {
+      console.error('Image upload error:', error);
+      return res.status(500).json({ error: 'File upload failed', details: error.message });
+    }
   }
 
   if (req.method === 'GET') {

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { X, CheckCircle, XCircle, Info, AlertTriangle, Calendar, Sparkles } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Notification {
   id: string;
@@ -25,68 +24,95 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    // Fetch notifications from database or use mock data
+    // Fetch notifications from API
     loadNotifications();
     
-    // Set up realtime subscription for new events
-    const channel = supabase
-      .channel('notifications')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'events'
-      }, (payload) => {
-        console.log('New event notification:', payload);
-        if (payload.eventType === 'INSERT') {
-          addNotification({
-            type: 'info',
-            title: 'New Event Available!',
-            message: `A new event "${payload.new.title}" has been added.`,
-          });
-        }
-      })
-      .subscribe();
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(() => {
+      loadNotifications();
+    }, 30000);
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   const loadNotifications = async () => {
-    // Mock notifications for now - replace with actual DB queries
-    const mockNotifications: Notification[] = [
-      {
-        id: '1',
-        type: 'success',
-        title: 'Event Approved! 🎉',
-        message: 'Your event "Tech Workshop" has been approved and is now live.',
-        timestamp: '2 minutes ago',
-        read: false,
-        action: {
-          label: 'View Event',
-          onClick: () => console.log('View event'),
-        },
-      },
-      {
-        id: '2',
-        type: 'info',
-        title: 'New Event Posted',
-        message: 'Spring Music Festival has been added to campus events.',
-        timestamp: '1 hour ago',
-        read: false,
-      },
-      {
-        id: '3',
-        type: 'warning',
-        title: 'Event Registration Closing',
-        message: 'Only 5 spots left for Career Fair 2025. Register now!',
-        timestamp: '3 hours ago',
-        read: true,
-      },
-    ];
+    try {
+      const response = await fetch('/api/notifications?unread=true');
+      const data = await response.json();
+      
+      // Transform API notifications to component format
+      const transformedNotifications: Notification[] = data.map((n: any) => {
+        const payload = typeof n.payload === 'string' ? JSON.parse(n.payload) : n.payload;
+        return {
+          id: n.id,
+          type: getNotificationType(n.type),
+          title: getNotificationTitle(n.type, payload),
+          message: getNotificationMessage(n.type, payload),
+          timestamp: formatTimestamp(n.createdAt),
+          read: n.read,
+        };
+      });
+      
+      // Fallback to mock if no notifications
+      if (transformedNotifications.length === 0) {
+        const mockNotifications: Notification[] = [
+          {
+            id: '1',
+            type: 'success',
+            title: 'Welcome! 🎉',
+            message: 'You are now connected to the notification system.',
+            timestamp: 'Just now',
+            read: false,
+          },
+        ];
+        setNotifications(mockNotifications);
+        setUnreadCount(1);
+      } else {
+        setNotifications(transformedNotifications);
+        setUnreadCount(transformedNotifications.filter(n => !n.read).length);
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+      setNotifications([]);
+      setUnreadCount(0);
+    }
+  };
+  
+  const getNotificationType = (type: string): 'success' | 'error' | 'info' | 'warning' => {
+    if (type.includes('success') || type.includes('approved')) return 'success';
+    if (type.includes('error') || type.includes('failed')) return 'error';
+    if (type.includes('warning')) return 'warning';
+    return 'info';
+  };
+  
+  const getNotificationTitle = (type: string, payload: any): string => {
+    if (type.includes('mention')) return 'You were mentioned!';
+    if (type.includes('ticket')) return 'Support Ticket Created';
+    if (type.includes('event')) return 'New Event';
+    return 'Notification';
+  };
+  
+  const getNotificationMessage = (type: string, payload: any): string => {
+    if (type.includes('mention')) return payload.text || 'Someone mentioned you';
+    if (type.includes('ticket')) return 'Your support ticket has been received';
+    if (type.includes('event')) return 'A new event is available';
+    return 'You have a new notification';
+  };
+  
+  const formatTimestamp = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
     
-    setNotifications(mockNotifications);
-    setUnreadCount(mockNotifications.filter(n => !n.read).length);
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
   };
 
   const addNotification = (data: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
@@ -101,11 +127,20 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
     setUnreadCount(prev => prev + 1);
   };
 
-  const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(n => (n.id === id ? { ...n, read: true } : n))
-    );
-    setUnreadCount(prev => Math.max(0, prev - 1));
+  const markAsRead = async (id: string) => {
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      setNotifications(prev =>
+        prev.map(n => (n.id === id ? { ...n, read: true } : n))
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
   };
 
   const markAllAsRead = () => {
