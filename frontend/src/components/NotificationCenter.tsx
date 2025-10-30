@@ -37,7 +37,9 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
 
   const loadNotifications = async () => {
     try {
-      const response = await fetch('/api/notifications?unread=true');
+      // Get userId from localStorage
+      const userId = localStorage.getItem('userId') || 'user-demo';
+      const response = await fetch(`/api/notifications?userId=${userId}`);
       const data = await response.json();
       
       // Transform API notifications to component format
