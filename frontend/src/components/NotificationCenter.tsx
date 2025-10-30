@@ -163,13 +163,29 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
   const getIcon = (type: string) => {
     switch (type) {
       case 'success':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return (
+          <div className="p-2 rounded-full bg-green-500/20">
+            <CheckCircle className="w-5 h-5 text-green-400" />
+          </div>
+        );
       case 'error':
-        return <XCircle className="w-5 h-5 text-red-500" />;
+        return (
+          <div className="p-2 rounded-full bg-red-500/20">
+            <XCircle className="w-5 h-5 text-red-400" />
+          </div>
+        );
       case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-orange-500" />;
+        return (
+          <div className="p-2 rounded-full bg-orange-500/20">
+            <AlertTriangle className="w-5 h-5 text-orange-400" />
+          </div>
+        );
       default:
-        return <Info className="w-5 h-5 text-blue-500" />;
+        return (
+          <div className="p-2 rounded-full bg-blue-500/20">
+            <Info className="w-5 h-5 text-blue-400" />
+          </div>
+        );
     }
   };
 
@@ -178,22 +194,24 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-end pt-16 pointer-events-none">
       <div className="w-full max-w-md mx-4 mt-4">
-        <div className="glass-card rounded-3xl shadow-2xl p-0 overflow-hidden pointer-events-auto animate-slide-down">
+        <div className="bg-[#1E293B] backdrop-blur-2xl rounded-2xl shadow-2xl shadow-purple-500/20 border border-purple-500/20 p-0 overflow-hidden pointer-events-auto animate-slide-down">
           {/* Header */}
-          <div className="bg-gradient-to-r from-primary to-accent p-6">
+          <div className="bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Sparkles className="w-6 h-6 text-white" />
-                <h2 className="text-xl font-bold text-white">Notifications</h2>
+                <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm">
+                  <Sparkles className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Notifications</h2>
                 {unreadCount > 0 && (
-                  <span className="notification-badge relative">
+                  <span className="px-3 py-1 rounded-full bg-white text-purple-600 text-sm font-bold shadow-lg">
                     {unreadCount}
                   </span>
                 )}
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full hover:bg-white/20 transition-colors"
+                className="p-2 rounded-full hover:bg-white/20 transition-all hover:scale-110"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
@@ -202,7 +220,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="mt-4 text-sm text-white/90 hover:text-white underline"
+                className="mt-4 px-4 py-2 rounded-full bg-white/10 text-sm text-white hover:bg-white/20 transition-all hover:scale-105 font-medium"
               >
                 Mark all as read
               </button>
@@ -210,37 +228,36 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
           </div>
 
           {/* Notifications List */}
-          <div className="max-h-96 overflow-y-auto custom-scrollbar">
+          <div className="max-h-96 overflow-y-auto custom-scrollbar bg-[#0F172A]/40">
             {notifications.length === 0 ? (
               <div className="p-12 text-center">
-                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No notifications yet</p>
+                <Calendar className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-400">No notifications yet</p>
               </div>
             ) : (
-              notifications.map((notification) => (
+              notifications.map((notification, idx) => (
                 <div
                   key={notification.id}
-                  className={`p-4 border-b border-gray-100/50 cursor-pointer hover:bg-white/50 transition-colors ${
-                    !notification.read ? 'bg-blue-50/30' : ''
+                  className={`p-5 border-b border-white/10 cursor-pointer hover:bg-white/5 transition-all duration-300 ${
+                    !notification.read ? 'bg-purple-500/10 border-l-4 border-l-purple-500' : ''
                   }`}
+                  style={{ animationDelay: `${idx * 50}ms` }}
                   onClick={() => !notification.read && markAsRead(notification.id)}
                 >
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 mt-1">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0">
                       {getIcon(notification.type)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <p className="font-semibold text-sm mb-1">{notification.title}</p>
-                          <p className="text-xs text-gray-600 mb-2">{notification.message}</p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-400">{notification.timestamp}</span>
-                            {!notification.read && (
-                              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            )}
-                          </div>
-                        </div>
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <p className="font-bold text-base text-white">{notification.title}</p>
+                        {!notification.read && (
+                          <span className="w-2.5 h-2.5 bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] rounded-full shadow-lg shadow-purple-500/50 animate-pulse"></span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-300 mb-3 leading-relaxed">{notification.message}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500 font-medium">{notification.timestamp}</span>
                       </div>
                       {notification.action && (
                         <button
@@ -248,7 +265,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
                             e.stopPropagation();
                             notification.action?.onClick();
                           }}
-                          className="mt-2 text-xs font-medium text-primary hover:underline"
+                          className="mt-3 px-4 py-2 rounded-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white text-xs font-semibold hover:shadow-lg hover:shadow-purple-500/40 transition-all hover:scale-105"
                         >
                           {notification.action.label} →
                         </button>
