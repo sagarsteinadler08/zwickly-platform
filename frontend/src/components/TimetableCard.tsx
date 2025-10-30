@@ -56,18 +56,18 @@ const TimetableCard = () => {
             <div className="p-3 rounded-xl bg-gradient-to-br from-[#7B5CFA] to-[#48E0E4] shadow-lg shadow-purple-500/30">
               <Calendar className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Timetable</h3>
+            <h3 className="text-xl font-bold text-slate-700 dark:text-white">Timetable</h3>
           </div>
-          <div className="flex items-center gap-2 bg-gray-100/50 dark:bg-white/5 rounded-full px-3 py-1 border border-gray-300/50 dark:border-white/10">
+          <div className="flex items-center gap-2 bg-slate-100/70 dark:bg-white/5 rounded-full px-3 py-1 border border-slate-200 dark:border-white/10">
             <Button
               variant="ghost"
               size="icon"
               onClick={handlePreviousDay}
               className="h-7 w-7 hover:bg-purple-500/20 rounded-full"
             >
-              <ChevronLeft className="h-4 w-4 text-gray-600 dark:text-gray-300" />
+              <ChevronLeft className="h-4 w-4 text-slate-600 dark:text-gray-300" />
             </Button>
-            <span className="text-sm font-bold text-gray-900 dark:text-white min-w-[2.5rem] text-center px-2">
+            <span className="text-sm font-bold text-slate-700 dark:text-white min-w-[2.5rem] text-center px-2">
               {getDayAbbreviation(selectedDay)}
             </span>
             <Button
@@ -76,7 +76,7 @@ const TimetableCard = () => {
               onClick={handleNextDay}
               className="h-7 w-7 hover:bg-purple-500/20 rounded-full"
             >
-              <ChevronRight className="h-4 w-4 text-gray-600 dark:text-gray-300" />
+              <ChevronRight className="h-4 w-4 text-slate-600 dark:text-gray-300" />
             </Button>
           </div>
         </div>
@@ -90,27 +90,27 @@ const TimetableCard = () => {
           {schedule.map((item, index) => (
             <div
               key={index}
-              className="relative p-4 rounded-xl bg-gray-50 dark:bg-white/5 border-l-4 border-[#7B5CFA] hover:bg-gray-100 dark:hover:bg-white/10 hover:border-[#48E0E4] shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
+              className="relative p-4 rounded-xl bg-white dark:bg-white/5 border-l-4 border-[#7B5CFA] hover:bg-slate-50 dark:hover:bg-white/10 hover:border-[#48E0E4] shadow-sm hover:shadow-md hover:shadow-purple-500/10 transition-all duration-300"
             >
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="p-1.5 rounded-lg bg-purple-500/20">
+                  <div className="p-1.5 rounded-lg bg-purple-500/15">
                     <Clock className="w-4 h-4 text-[#48E0E4]" />
                   </div>
                   <span className="font-bold text-[#48E0E4]">{item.dayTime}</span>
                 </div>
                 {item.room && (
-                  <div className="flex items-center gap-1 px-2 py-1 bg-gray-100 dark:bg-white/5 rounded-full border border-gray-300 dark:border-white/10">
-                    <MapPin className="w-3 h-3 text-gray-600 dark:text-gray-400" />
-                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{item.room}</span>
+                  <div className="flex items-center gap-1 px-2 py-1 bg-slate-100 dark:bg-white/5 rounded-full border border-slate-200 dark:border-white/10">
+                    <MapPin className="w-3 h-3 text-slate-500 dark:text-gray-400" />
+                    <span className="text-xs font-medium text-slate-600 dark:text-gray-300">{item.room}</span>
                   </div>
                 )}
               </div>
               
-              <p className="font-bold text-gray-900 dark:text-white mb-2 text-sm leading-snug">{item.course}</p>
+              <p className="font-bold text-slate-700 dark:text-white mb-2 text-sm leading-snug">{item.course}</p>
               
               {item.instructor && (
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">👨‍🏫 {item.instructor}</p>
+                <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">👨‍🏫 {item.instructor}</p>
               )}
               
               {item.cycle && (

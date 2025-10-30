@@ -100,24 +100,24 @@ const Social = () => {
 
   return (
     <SocialErrorBoundary>
-      <div className="min-h-screen flex flex-col bg-white dark:bg-[#0F172A] transition-colors duration-300">
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0F172A] transition-colors duration-300">
         <Navbar />
         
         <div className="flex flex-1 pt-20">
           {/* Responsive wrapper */}
-          <main className="flex flex-1 overflow-hidden relative bg-white dark:bg-[#0F172A] w-full transition-colors duration-300" role="main">
+          <main className="flex flex-1 overflow-hidden relative bg-slate-50 dark:bg-[#0F172A] w-full transition-colors duration-300" role="main">
           {/* Notification Toast */}
           <NotificationToast toast={toast} onClose={() => setToast(null)} position="top" />
 
           {/* Collapsible sidebar on mobile */}
           <aside 
-            className={`bg-gray-100 dark:bg-[#1E293B]/80 backdrop-blur-xl border-r border-gray-200 dark:border-white/10 shadow-lg shadow-purple-500/10
+            className={`bg-white dark:bg-[#1E293B]/80 backdrop-blur-xl border-r border-slate-200 dark:border-white/10 shadow-sm shadow-slate-200/50 dark:shadow-purple-500/10
             ${sidebarOpen ? "" : "hidden"} md:block`}
             aria-label="Channel list sidebar"
             style={{ width: "280px", minWidth: "280px" }}
           >
             <div className="p-4">
-              <Suspense fallback={<div className="py-4 text-gray-600 dark:text-gray-500">Loading channels...</div>}>
+              <Suspense fallback={<div className="py-4 text-slate-500 dark:text-gray-500">Loading channels...</div>}>
                 <ChannelList
                   userId={userId}
                   userHandle={userHandle}
@@ -129,10 +129,10 @@ const Social = () => {
             </div>
           </aside>
 
-          <section className="flex flex-col flex-1 bg-white dark:bg-[#0F172A] transition-colors duration-300" aria-label="Main chat area">
+          <section className="flex flex-col flex-1 bg-slate-50 dark:bg-[#0F172A] transition-colors duration-300" aria-label="Main chat area">
             {/* Mobile toggle for sidebar */}
             <button
-              className="absolute top-2 left-2 z-20 md:hidden bg-gray-200 dark:bg-white/10 backdrop-blur-sm p-2 rounded-lg shadow-md border border-gray-300 dark:border-white/20 text-gray-900 dark:text-white"
+              className="absolute top-2 left-2 z-20 md:hidden bg-white dark:bg-white/10 backdrop-blur-sm p-2 rounded-lg shadow-sm border border-slate-200 dark:border-white/20 text-slate-700 dark:text-white"
               onClick={() => setSidebarOpen((o) => !o)}
               aria-label="Toggle sidebar"
             >
@@ -142,8 +142,8 @@ const Social = () => {
             {selectedChannel ? (
               <>
                 {/* Message List */}
-                <div className="flex-1 overflow-y-auto p-6 bg-white dark:bg-[#0F172A] transition-colors duration-300">
-                  <Suspense fallback={<div className="py-4 text-center text-gray-600 dark:text-gray-500">Loading messages...</div>}>
+                <div className="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-[#0F172A] transition-colors duration-300">
+                  <Suspense fallback={<div className="py-4 text-center text-slate-500 dark:text-gray-500">Loading messages...</div>}>
                     <MessageList
                       userId={userId}
                       userHandle={userHandle}
@@ -154,8 +154,8 @@ const Social = () => {
                 </div>
 
                 {/* Message Composer */}
-                <div className="border-t border-gray-200 dark:border-white/10 p-4 bg-gray-100 dark:bg-[#1E293B]/50 backdrop-blur-xl transition-colors duration-300">
-                  <Suspense fallback={<div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-600 dark:text-gray-400">Loading composer...</div>}>
+                <div className="border-t border-slate-200 dark:border-white/10 p-4 bg-white dark:bg-[#1E293B]/50 backdrop-blur-xl transition-colors duration-300">
+                  <Suspense fallback={<div className="p-4 bg-slate-50 dark:bg-gray-800 rounded-lg text-slate-500 dark:text-gray-400">Loading composer...</div>}>
                     <MessageComposer
                       userId={userId}
                       userHandle={userHandle}
@@ -167,7 +167,7 @@ const Social = () => {
               </>
             ) : (
               <div className="flex flex-1 flex-col justify-center items-center">
-                <p className="text-gray-600 dark:text-gray-400 text-lg">Select or join a channel to get started</p>
+                <p className="text-slate-500 dark:text-gray-400 text-lg">Select or join a channel to get started</p>
               </div>
             )}
           </section>

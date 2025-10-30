@@ -41,15 +41,15 @@ const Users = () => {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-white dark:bg-[#0F172A] relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50 dark:bg-[#0F172A] relative overflow-hidden transition-colors duration-300">
       {/* Animated gradient orbs */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/10 dark:bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/8 dark:bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/8 dark:bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       
       <div className="w-full max-w-6xl relative z-10">
         <div className="text-center mb-16 animate-fadeInUp px-4">
           <h1 className="text-6xl font-bold gradient-text mb-6 pb-2 drop-shadow-lg">Zwickly Products</h1>
-          <p className="text-gray-700 dark:text-gray-300 text-xl">Select a product to access its features</p>
+          <p className="text-slate-600 dark:text-gray-300 text-xl">Select a product to access its features</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -79,8 +79,8 @@ const Users = () => {
                   </div>
                   
                   <div className="space-y-3">
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white group-hover:gradient-text transition-all duration-300">{type.title}</h2>
-                    <p className="text-gray-600 dark:text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300 transition-colors text-base">{type.description}</p>
+                    <h2 className="text-3xl font-bold text-slate-700 dark:text-white group-hover:gradient-text transition-all duration-300">{type.title}</h2>
+                    <p className="text-slate-500 dark:text-gray-400 group-hover:text-slate-600 dark:group-hover:text-gray-300 transition-colors text-base">{type.description}</p>
                   </div>
                   
                   <div className="mt-6 px-8 py-3 rounded-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white text-sm font-bold shadow-xl shadow-purple-500/30 group-hover:shadow-2xl group-hover:shadow-purple-500/50 group-hover:scale-110 transition-all duration-300">

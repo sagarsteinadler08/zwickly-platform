@@ -48,7 +48,7 @@ const WalletCard = () => {
           <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg shadow-teal-500/30">
             <Wallet className="w-6 h-6 text-white" />
           </div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">Student ID Wallet</h3>
+          <h3 className="text-lg font-bold text-slate-700 dark:text-white">Student ID Wallet</h3>
         </div>
         
         {/* Balance Display */}

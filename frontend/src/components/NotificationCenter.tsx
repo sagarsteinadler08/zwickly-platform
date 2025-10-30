@@ -228,18 +228,18 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
           </div>
 
           {/* Notifications List */}
-          <div className="max-h-96 overflow-y-auto custom-scrollbar bg-gray-50 dark:bg-[#0F172A]/40">
+          <div className="max-h-96 overflow-y-auto custom-scrollbar bg-white dark:bg-[#0F172A]/40">
             {notifications.length === 0 ? (
               <div className="p-12 text-center">
-                <Calendar className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-600 dark:text-gray-400">No notifications yet</p>
+                <Calendar className="w-16 h-16 text-slate-300 dark:text-gray-600 mx-auto mb-4" />
+                <p className="text-slate-500 dark:text-gray-400">No notifications yet</p>
               </div>
             ) : (
               notifications.map((notification, idx) => (
                 <div
                   key={notification.id}
-                  className={`p-5 border-b border-gray-200 dark:border-white/10 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-300 ${
-                    !notification.read ? 'bg-purple-50 dark:bg-purple-500/10 border-l-4 border-l-purple-500' : ''
+                  className={`p-5 border-b border-slate-100 dark:border-white/10 cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5 transition-all duration-300 ${
+                    !notification.read ? 'bg-purple-50/70 dark:bg-purple-500/10 border-l-4 border-l-purple-400' : ''
                   }`}
                   style={{ animationDelay: `${idx * 50}ms` }}
                   onClick={() => !notification.read && markAsRead(notification.id)}
@@ -250,12 +250,12 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <p className="font-bold text-base text-gray-900 dark:text-white">{notification.title}</p>
+                        <p className="font-bold text-base text-slate-700 dark:text-white">{notification.title}</p>
                         {!notification.read && (
-                          <span className="w-2.5 h-2.5 bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] rounded-full shadow-lg shadow-purple-500/50 animate-pulse"></span>
+                          <span className="w-2.5 h-2.5 bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] rounded-full shadow-md shadow-purple-500/40 animate-pulse"></span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">{notification.message}</p>
+                      <p className="text-sm text-slate-600 dark:text-gray-300 mb-3 leading-relaxed">{notification.message}</p>
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-gray-500 font-medium">{notification.timestamp}</span>
                       </div>
