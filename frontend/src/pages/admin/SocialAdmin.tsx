@@ -34,11 +34,45 @@ const SocialAdmin = () => {
   const [pollResults, setPollResults] = useState<{[pollId: string]: any}>({});
   const [pollResultsLoading, setPollResultsLoading] = useState<{[pollId: string]: boolean}>({});
   const [selectedPollOptions, setSelectedPollOptions] = useState<{[pollId: string]: string}>({});
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [showTickets, setShowTickets] = useState(false);
 
   useEffect(() => {
     fetchChannels();
     fetchRequests();
+    fetchTickets();
   }, []);
+
+  // Fetch tickets
+  const fetchTickets = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/tickets?status=open');
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setTickets(data);
+      }
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      setTickets([]);
+    }
+  };
+
+  // Handle ticket reply
+  const handleTicketReply = async (ticketId: string, reply: string) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/tickets/${ticketId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'resolved', adminReply: reply }),
+      });
+      if (res.ok) {
+        toast.success('Ticket replied!');
+        fetchTickets();
+      }
+    } catch (error) {
+      toast.error('Failed to reply');
+    }
+  };
 
   useEffect(() => {
     // If single channel selected, fetch its messages, images, polls
@@ -317,6 +351,70 @@ const SocialAdmin = () => {
               </div>
             </DialogContent>
           </Dialog>
+        </Card>
+
+        {/* Tickets Section */}
+        <Card className="glass-card p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold">Support Tickets (@admin mentions)</h3>
+            <Button variant="outline" size="sm" onClick={() => setShowTickets(!showTickets)}>
+              {showTickets ? 'Hide' : `Show (${tickets.length})`}
+            </Button>
+          </div>
+          {showTickets && (
+            <div className="space-y-4">
+              {tickets.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No open tickets</p>
+              ) : (
+                tickets.map(ticket => (
+                  <div key={ticket.id} className="border rounded-xl p-4 bg-white/50">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-semibold">{ticket.title}</h4>
+                        <p className="text-sm text-muted-foreground">From: {ticket.userId}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(ticket.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                      <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs">
+                        {ticket.status}
+                      </span>
+                    </div>
+                    <p className="text-sm mb-3">{ticket.description}</p>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Type your reply..."
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                            handleTicketReply(ticket.id, e.currentTarget.value.trim());
+                            e.currentTarget.value = '';
+                          }
+                        }}
+                      />
+                      <Button 
+                        size="sm" 
+                        onClick={(e) => {
+                          const input = e.currentTarget.parentElement?.querySelector('input');
+                          if (input?.value.trim()) {
+                            handleTicketReply(ticket.id, input.value.trim());
+                            input.value = '';
+                          }
+                        }}
+                      >
+                        Reply
+                      </Button>
+                    </div>
+                    {ticket.adminReply && (
+                      <div className="mt-2 p-2 bg-green-50 rounded">
+                        <p className="text-xs text-green-700 font-semibold">Admin Reply:</p>
+                        <p className="text-sm text-green-800">{ticket.adminReply}</p>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </Card>
 
         {/* Always-visible message draft/send area - only enabled if exactly one channel selected */}
