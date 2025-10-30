@@ -16,6 +16,7 @@ import ExamPlanCard from "@/components/ExamPlanCard";
 import ActivityFeed from "@/components/ActivityFeed";
 import NoteTaker from "@/components/NoteTaker";
 import StudyPlanner from "@/components/StudyPlanner";
+import ReminderWidget from "@/components/ReminderWidget";
 
 const Index = () => {
   return (
@@ -43,6 +44,7 @@ const Index = () => {
           <div className="lg:col-span-3 space-y-6">
             <GreetingSection />
             <WalletCard />
+            <ReminderWidget />
             <NoteTaker />
             <StudyPlanner />
             <CalendarWidget />

@@ -114,7 +114,7 @@ const StudyPlanner = () => {
     setShowTaskInput(false);
   };
 
-  const addAssignment = () => {
+  const addAssignment = async () => {
     if (!newAssignment.trim() || !newDueDate) {
       toast.error('Fill in all fields');
       return;
@@ -128,9 +128,40 @@ const StudyPlanner = () => {
     };
 
     saveAssignments([...assignments, assignment]);
+    
+    // Create reminder for assignment (1 day before due date)
+    try {
+      const userId = localStorage.getItem('userId') || 'user-demo';
+      const reminderTime = new Date(newDueDate);
+      reminderTime.setDate(reminderTime.getDate() - 1);
+      reminderTime.setHours(9, 0, 0, 0); // 9 AM day before
+
+      if (reminderTime > new Date()) {
+        await fetch('/api/reminders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            title: `Assignment due tomorrow: ${newAssignment}`,
+            description: `Don't forget to complete: ${newAssignment}`,
+            reminderTime: reminderTime.toISOString(),
+            recurrence: 'once',
+            source: 'study_plan',
+            sourceId: assignment.id,
+          }),
+        });
+        
+        toast.success('Assignment and reminder added!');
+      } else {
+        toast.success('Assignment added!');
+      }
+    } catch (error) {
+      console.error('Error creating reminder:', error);
+      toast.success('Assignment added!');
+    }
+    
     setNewAssignment('');
     setNewDueDate('');
-    toast.success('Assignment added!');
   };
 
   const toggleAssignment = (id: string) => {

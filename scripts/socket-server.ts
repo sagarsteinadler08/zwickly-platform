@@ -6,6 +6,7 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import webpush from 'web-push'
 import { prisma } from '../src/lib/db'
+import startReminderScheduler from './reminder-scheduler'
 
 const PORT = Number(process.env.SOCIAL_SOCKET_PORT || 4001)
 const VAPID_PUBLIC = process.env.VAPID_PUBLIC || process.env.NEXT_PUBLIC_VAPID_PUBLIC
@@ -367,5 +368,9 @@ io.on("connection", (socket) => {
 
 httpServer.listen(PORT, () => {
   console.log(`Socket server running on port ${PORT}`)
+  
+  // Start reminder scheduler
+  startReminderScheduler(io);
+  console.log('[Reminder] Scheduler started')
 })
 
