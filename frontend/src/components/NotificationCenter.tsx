@@ -79,8 +79,8 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
   };
   
   const getNotificationType = (type: string): 'success' | 'error' | 'info' | 'warning' => {
-    if (type.includes('success') || type.includes('approved')) return 'success';
-    if (type.includes('error') || type.includes('failed')) return 'error';
+    if (type.includes('approved') || type.includes('success')) return 'success';
+    if (type.includes('declined') || type.includes('error') || type.includes('failed')) return 'error';
     if (type.includes('warning')) return 'warning';
     return 'info';
   };
@@ -89,13 +89,18 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
     if (type.includes('mention')) return 'You were mentioned!';
     if (type.includes('ticket')) return 'Support Ticket Created';
     if (type.includes('event')) return 'New Event';
+    if (type.includes('channel_request_approved')) return 'Channel Request Approved! 🎉';
+    if (type.includes('channel_request_declined')) return 'Channel Request Declined';
+    if (type.includes('channel_request_submitted')) return 'Channel Request Submitted';
     return 'Notification';
   };
   
   const getNotificationMessage = (type: string, payload: any): string => {
+    if (payload.message) return payload.message;
     if (type.includes('mention')) return payload.text || 'Someone mentioned you';
     if (type.includes('ticket')) return 'Your support ticket has been received';
     if (type.includes('event')) return 'A new event is available';
+    if (type.includes('channel_request')) return payload.channelName || 'Channel update';
     return 'You have a new notification';
   };
   

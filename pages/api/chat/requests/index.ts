@@ -47,6 +47,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         data: { name, description, requesterId },
       });
 
+      // Create notification for the requester
+      await prisma.notification.create({
+        data: {
+          userId: requesterId,
+          type: 'channel_request_submitted',
+          payload: {
+            requestId: request.id,
+            channelName: name,
+            message: `Your request for channel "${name}" has been submitted.`,
+          },
+        },
+      });
+
       return res.status(201).json(request);
     } catch (error) {
       console.error('Error creating request:', error);
