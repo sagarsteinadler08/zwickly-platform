@@ -239,84 +239,90 @@ const EventCard = ({
   return (
     <>
       <Card 
-        className="glass-card hover-glow overflow-hidden group cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-in"
+        className="neo-card hover-glow overflow-hidden group cursor-pointer transition-all duration-300 hover:scale-[1.02] animate-fadeInUp border-l-2 border-l-purple-500/50"
         onClick={() => setShowDetails(true)}
       >
-        <div className="relative h-48 overflow-hidden">
+        <div className="relative h-56 overflow-hidden">
           <img
             src={image || '/placeholder.svg'}
             alt={title || 'Event'}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/placeholder.svg'
             }}
           />
+          {/* Dark gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/60 to-transparent" />
+          
           <div className="absolute top-3 right-3">
             {category && (
-              <span className="zw-badge bg-gray-800/80 text-white border-0">
+              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white text-xs font-bold shadow-lg">
                 {category}
               </span>
             )}
           </div>
+          
+          {/* Title overlay on image */}
+          <div className="absolute bottom-0 left-0 right-0 p-5">
+            <h4 className="text-xl font-bold text-white mb-2 drop-shadow-lg">{title || 'Untitled Event'}</h4>
+          </div>
         </div>
         
-        <div className="p-5">
-          <h4 className="text-lg font-bold text-foreground mb-4">{title || 'Untitled Event'}</h4>
-          
+        <div className="p-5 space-y-4">
           {(location || time || eventDate) && (
-            <div className="space-y-2 mb-4">
+            <div className="space-y-2">
               {eventDate && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="w-4 h-4" style={{color: 'var(--zw-primary)'}} />
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <Calendar className="w-4 h-4 text-[#48E0E4]" />
                   <span>{eventDate}</span>
                 </div>
               )}
               {time && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="w-4 h-4" style={{color: 'var(--zw-primary)'}} />
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <Clock className="w-4 h-4 text-[#48E0E4]" />
                   <span>{time}</span>
                 </div>
               )}
               {location && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" style={{color: 'var(--zw-primary)'}} />
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <MapPin className="w-4 h-4 text-[#48E0E4]" />
                   <span>{location}</span>
                 </div>
               )}
             </div>
           )}
           
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLike();
-              }}
-              className={`flex-1 ${
-                isLiked
-                  ? "bg-primary/20 border-primary/40 text-primary"
-                  : ""
-              }`}
-            >
-              <Heart className={`w-4 h-4 mr-1 ${isLiked ? "fill-primary" : ""}`} />
-              {likes}
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleProst();
-              }}
-              className="flex-1"
-            >
-              <Wine className="w-4 h-4 mr-1" />
-              {prosts}
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLike();
+                }}
+                className={`flex-1 ${
+                  isLiked
+                    ? "bg-pink-500/20 border-pink-500/40 text-pink-400"
+                    : "text-gray-400"
+                }`}
+              >
+                <Heart className={`w-4 h-4 mr-1 ${isLiked ? "fill-pink-400" : ""}`} />
+                {likes}
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleProst();
+                }}
+                className="flex-1 text-gray-400"
+              >
+                <Wine className="w-4 h-4 mr-1" />
+                {prosts}
+              </Button>
             </div>
             
             <Button
@@ -329,7 +335,7 @@ const EventCard = ({
               disabled={isCheckingRegistration}
               className={`w-full ${
                 isRegistered
-                  ? "bg-green-600 hover:bg-green-700"
+                  ? "bg-gradient-to-r from-[#22C55E] to-[#10B981]"
                   : ""
               }`}
             >

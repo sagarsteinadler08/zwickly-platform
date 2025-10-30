@@ -79,81 +79,84 @@ const CalendarWidget = () => {
     currentDate.getFullYear() === new Date().getFullYear();
 
   return (
-    <Card className="glass-card hover-glow p-6 animate-fade-in">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <CalendarIcon className="w-6 h-6 text-primary" />
-          <h3 className="text-xl font-semibold gradient-text">Calendar</h3>
-        </div>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={previousMonth}
-            className="h-10 w-10 hover:bg-primary/10"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={nextMonth}
-            className="h-10 w-10 hover:bg-primary/10"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="text-center mb-6">
-        <p className="text-base font-bold text-foreground">
-          {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-        </p>
-      </div>
-
-      <div className="grid grid-cols-7 gap-2 mb-3">
-        {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
-          <div key={i} className="text-center text-sm font-semibold text-muted-foreground py-2">
-            {day}
+    <Card className="glass-widget border-r-2 border-r-blue-500/50 shadow-lg shadow-blue-500/10 animate-fadeInUp">
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-[#48E0E4] to-[#22C55E] shadow-lg shadow-teal-500/30">
+              <CalendarIcon className="w-6 h-6 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-white">Calendar</h3>
           </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-7 gap-2 relative">
-        {Array.from({ length: firstDay }).map((_, i) => (
-          <div key={`empty-${i}`} className="aspect-square" />
-        ))}
-        {Array.from({ length: daysInMonth }).map((_, i) => {
-          const day = i + 1;
-          const hasEvent = eventDates.includes(day);
-          const isToday = isCurrentMonth && day === today;
-
-          return (
-            <div
-              key={day}
-              className="relative"
-              onMouseEnter={() => hasEvent && setHoveredDate(day)}
-              onMouseLeave={() => setHoveredDate(null)}
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={previousMonth}
+              className="h-9 w-9 hover:bg-white/10"
             >
+              <ChevronLeft className="w-5 h-5 text-gray-400" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={nextMonth}
+              className="h-9 w-9 hover:bg-white/10"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="text-center mb-6">
+          <p className="text-base font-bold text-white">
+            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-7 gap-2 mb-3">
+          {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
+            <div key={i} className="text-center text-xs font-semibold text-gray-400 py-2">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-2 relative">
+          {Array.from({ length: firstDay }).map((_, i) => (
+            <div key={`empty-${i}`} className="aspect-square" />
+          ))}
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const day = i + 1;
+            const hasEvent = eventDates.includes(day);
+            const isToday = isCurrentMonth && day === today;
+
+            return (
               <div
-                className={`aspect-square flex flex-col items-center justify-center text-base rounded-lg cursor-pointer transition-all duration-200 ${
-                  isToday
-                    ? "bg-primary text-primary-foreground font-bold shadow-lg scale-105"
-                    : "hover:bg-muted/20 text-foreground hover:scale-105"
-                }`}
+                key={day}
+                className="relative"
+                onMouseEnter={() => hasEvent && setHoveredDate(day)}
+                onMouseLeave={() => setHoveredDate(null)}
               >
-                <span className="mb-0.5">{day}</span>
-                {hasEvent && (
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                )}
-              </div>
+                <div
+                  className={`aspect-square flex flex-col items-center justify-center text-sm rounded-lg cursor-pointer transition-all duration-200 ${
+                    isToday
+                      ? "bg-gradient-to-br from-[#7B5CFA] to-[#48E0E4] text-white font-bold shadow-lg shadow-purple-500/40 scale-105"
+                      : "hover:bg-white/10 text-gray-300 hover:text-white hover:scale-105"
+                  }`}
+                >
+                  <span className="mb-0.5">{day}</span>
+                  {hasEvent && (
+                    <div className="w-1.5 h-1.5 bg-[#48E0E4] rounded-full shadow-sm shadow-teal-500/50" />
+                  )}
+                </div>
               
               {hoveredDate === day && hasEvent && (
                 <a
                   href={`https://calendar.google.com/calendar/u/0/r/eventedit?dates=${currentDate.getFullYear()}${String(currentDate.getMonth() + 1).padStart(2, '0')}${String(day).padStart(2, '0')}/${currentDate.getFullYear()}${String(currentDate.getMonth() + 1).padStart(2, '0')}${String(day).padStart(2, '0')}&text=${encodeURIComponent(eventDetails[day])}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="absolute z-50 top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-card border border-primary/30 rounded-lg shadow-lg whitespace-nowrap text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
+                  className="absolute z-50 top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-[#1E293B] border border-purple-500/30 rounded-lg shadow-xl shadow-purple-500/20 whitespace-nowrap text-sm font-medium text-white hover:border-purple-500/50 hover:bg-purple-500/10 transition-all cursor-pointer"
                 >
                   {eventDetails[day]}
                 </a>
@@ -161,6 +164,7 @@ const CalendarWidget = () => {
             </div>
           );
         })}
+      </div>
       </div>
     </Card>
   );
