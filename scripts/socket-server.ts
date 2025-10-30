@@ -79,6 +79,19 @@ io.on("connection", (socket) => {
 
   console.log('[socket] authenticated user:', userId);
   socket.join(`user:${userId}`);
+  
+  // Auto-join all channels for logged-in users
+  socket.on("auto_join_channels", async () => {
+    try {
+      const channels = await prisma.channel.findMany();
+      for (const ch of channels) {
+        socket.join(`channel:${ch.id}`);
+      }
+      console.log('[socket] auto-joined all channels for:', userId);
+    } catch (err) {
+      console.error('[auto_join] error:', err);
+    }
+  });
 
   // Join channel
   socket.on("join_channel", async (channelId: string) => {
@@ -118,6 +131,46 @@ io.on("connection", (socket) => {
       // Process mentions (create mention records, notifications, push)
       for (const username of mentions) {
         try {
+          // Check if it's @admin mention - create ticket
+          if (username.toLowerCase() === 'admin') {
+            // Create ticket for @admin mentions
+            const ticket = await prisma.ticket.create({
+              data: {
+                userId,
+                channelId: payload.channelId,
+                messageId: message.id,
+                title: `Support Request from ${userId}`,
+                description: payload.body,
+                status: 'open',
+                priority: 'normal',
+              },
+            });
+
+            // Notify admins about new ticket
+            io.to('admin:all').emit("ticket:new", {
+              id: ticket.id,
+              userId,
+              title: ticket.title,
+              description: ticket.description,
+              createdAt: ticket.createdAt,
+            });
+
+            // Create notification
+            await prisma.notification.create({
+              data: {
+                userId,
+                type: "ticket_created",
+                payload: {
+                  ticketId: ticket.id,
+                  messageId: message.id,
+                  channelId: payload.channelId,
+                },
+              },
+            });
+
+            continue; // Skip regular mention processing for @admin
+          }
+
           // Try to find user by email (adjust based on your Profile model)
           const user = await prisma.profile.findUnique({ where: { email: username } });
           

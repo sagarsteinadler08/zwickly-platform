@@ -202,6 +202,24 @@ model Image {
   @@map("images")
 }
 
+model Ticket {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String
+  channelId   String?  @db.Uuid
+  messageId   String?  @db.Uuid
+  title       String
+  description String   @db.Text
+  status      String   @default("open") // open, in_progress, resolved, closed
+  priority    String   @default("normal") // low, normal, high, urgent
+  assignedTo  String?  // admin user id
+  adminReply  String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tickets")
+  @@index([userId, status])
+}
+
 model PollVote {
   id        String   @id @default(uuid()) @db.Uuid
   poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
