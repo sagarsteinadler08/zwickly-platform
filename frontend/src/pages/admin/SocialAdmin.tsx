@@ -283,7 +283,7 @@ const SocialAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen admin-theme">
+    <div className="min-h-screen bg-[#0F172A]">
       <AdminNavbar />
       
       <main className="container mx-auto px-6 pt-24 pb-12">
@@ -291,13 +291,13 @@ const SocialAdmin = () => {
 
         {/* Pending Channel Requests */}
         {requests.length > 0 && (
-          <Card className="glass-card p-6 mb-6">
-            <h2 className="text-2xl font-bold mb-4">Pending Channel Requests</h2>
+          <Card className="neo-card p-6 mb-6 border-l-2 border-l-orange-500/50">
+            <h2 className="text-2xl font-bold mb-4 text-white">Pending Channel Requests</h2>
             <div className="space-y-4">
               {requests.map((req) => (
                 <div key={req.id} className="flex items-center justify-between p-4 border rounded-xl">
                   <div>
-                    <h3 className="font-semibold">{req.name}</h3>
+                    <h3 className="font-semibold text-white">{req.name}</h3>
                     <p className="text-sm text-muted-foreground">{req.description}</p>
                     <p className="text-xs text-muted-foreground">Requested by: {req.requesterId}</p>
                   </div>
@@ -318,10 +318,10 @@ const SocialAdmin = () => {
         )}
 
         {/* Create Channel */}
-        <Card className="glass-card p-6 mb-6">
+        <Card className="neo-card p-6 mb-6">
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
-              <Button className="rounded-full">
+              <Button className="rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-xl hover:shadow-orange-500/40">
                 <Plus className="w-4 h-4 mr-2" />
                 Create New Channel
               </Button>
@@ -354,9 +354,9 @@ const SocialAdmin = () => {
         </Card>
 
         {/* Tickets Section */}
-        <Card className="glass-card p-6 mb-6">
+        <Card className="neo-card p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold">Support Tickets (@admin mentions)</h3>
+            <h3 className="text-xl font-bold text-white">Support Tickets (@admin mentions)</h3>
             <Button variant="outline" size="sm" onClick={() => setShowTickets(!showTickets)}>
               {showTickets ? 'Hide' : `Show (${tickets.length})`}
             </Button>
@@ -418,8 +418,8 @@ const SocialAdmin = () => {
         </Card>
 
         {/* Always-visible message draft/send area - only enabled if exactly one channel selected */}
-        <Card className="glass-card p-6 mb-6">
-          <h3 className="font-bold mb-2">Draft & Send Message</h3>
+        <Card className="neo-card p-6 mb-6">
+          <h3 className="font-bold mb-2 text-white">Draft & Send Message</h3>
           {selectedChannels.length !== 1 ? (
             <p className="text-muted-foreground">Select exactly one channel to enable drafting and sending a message.</p>
           ) : (
@@ -458,7 +458,7 @@ const SocialAdmin = () => {
 
         {/* Message History for selected channel */}
         {selectedChannels.length === 1 && (
-          <Card className="glass-card p-6 mb-6">
+          <Card className="neo-card p-6 mb-6">
             <h3 className="text-xl font-bold mb-2">Messages for {selectedChannels[0].name}</h3>
             {fetchingMessages ? (
               <p className="text-muted-foreground">Loading messages...</p>
@@ -477,14 +477,14 @@ const SocialAdmin = () => {
           </Card>
         )}
         {selectedChannels.length > 1 && (
-          <Card className="glass-card p-6 mb-6">
+          <Card className="neo-card p-6 mb-6">
             <p className="text-center text-muted-foreground">Multiple channels selected: bulk actions only (send/view messages not available).</p>
           </Card>
         )}
 
         {/* Admin Controls: if any selected, support bulk delete, single send */}
         {selectedChannels.length > 0 && (
-          <Card className="glass-card p-6 mb-6">
+          <Card className="neo-card p-6 mb-6">
             <h3 className="text-xl font-bold mb-4">
               Admin Controls: {selectedChannels.length === 1 ? selectedChannels[0].name : `${selectedChannels.length} channels selected`}
             </h3>
@@ -525,7 +525,7 @@ const SocialAdmin = () => {
 
         {/* Send Message Dialog */}
         <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
-          <DialogContent className="glass-card">
+          <DialogContent className="neo-card">
             <DialogHeader>
               <DialogTitle>Send Message to {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
             </DialogHeader>
@@ -571,7 +571,7 @@ const SocialAdmin = () => {
 
         {/* Create Poll Dialog, now uses backend API to create poll and refresh list */}
         <Dialog open={showPollDialog} onOpenChange={setShowPollDialog}>
-          <DialogContent className="glass-card">
+          <DialogContent className="neo-card">
             <DialogHeader>
               <DialogTitle>Create Poll in {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
             </DialogHeader>
@@ -652,7 +652,7 @@ const SocialAdmin = () => {
 
         {/* Upload Image Dialog, now actually uploads to backend and refreshes images */}
         <Dialog open={showImageDialog} onOpenChange={setShowImageDialog}>
-          <DialogContent className="glass-card">
+          <DialogContent className="neo-card">
             <DialogHeader>
               <DialogTitle>Upload Image to {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
             </DialogHeader>
@@ -706,8 +706,8 @@ const SocialAdmin = () => {
         </Dialog>
 
         {/* All Channels */}
-        <Card className="glass-card p-6">
-          <h2 className="text-2xl font-bold mb-4">All Channels</h2>
+        <Card className="neo-card p-6">
+          <h2 className="text-2xl font-bold mb-4 text-white">All Channels</h2>
           {channels.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">No channels yet. Create one!</p>
           ) : (
@@ -739,7 +739,7 @@ const SocialAdmin = () => {
 
         {/* Channel image gallery: render if exactly one selected, below message history */}
         {selectedChannels.length === 1 && (
-          <Card className="glass-card p-6 mb-6">
+          <Card className="neo-card p-6 mb-6">
             <h3 className="text-xl font-bold mb-2">Images for {selectedChannels[0].name}</h3>
             {fetchingImages ? (
               <p className="text-muted-foreground">Loading images...</p>
@@ -760,7 +760,7 @@ const SocialAdmin = () => {
 
         {/* Channel polls: render if exactly one selected, below message/images, now fully interactive */}
         {selectedChannels.length === 1 && (
-          <Card className="glass-card p-6 mb-6">
+          <Card className="neo-card p-6 mb-6">
             <h3 className="text-xl font-bold mb-2">Polls for {selectedChannels[0].name}</h3>
             {fetchingPolls ? (
               <p className="text-muted-foreground">Loading polls...</p>
