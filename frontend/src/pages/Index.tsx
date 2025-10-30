@@ -13,6 +13,9 @@ import WordOfTheDay from "@/components/WordOfTheDay";
 import TimeTracker from "@/components/TimeTracker";
 import WalletCard from "@/components/WalletCard";
 import ExamPlanCard from "@/components/ExamPlanCard";
+import ActivityFeed from "@/components/ActivityFeed";
+import NoteTaker from "@/components/NoteTaker";
+import StudyPlanner from "@/components/StudyPlanner";
 
 const Index = () => {
   return (
@@ -33,12 +36,15 @@ const Index = () => {
           <div className="lg:col-span-6 space-y-6">
             <CarouselSection />
             <TrendingEvents />
+            <ActivityFeed />
           </div>
 
           {/* RIGHT PANE */}
           <div className="lg:col-span-3 space-y-6">
             <GreetingSection />
             <WalletCard />
+            <NoteTaker />
+            <StudyPlanner />
             <CalendarWidget />
             <MySpaceForm />
             <WordOfTheDay />

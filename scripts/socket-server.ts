@@ -248,10 +248,20 @@ io.on("connection", (socket) => {
         }
       }
 
+      // Get channel info for activity feed
+      const channel = await prisma.channel.findUnique({
+        where: { id: payload.channelId },
+      });
+
       // Broadcast message to channel
       io.to(`channel:${payload.channelId}`).emit("message:new", {
-        ...message,
-        userId,
+        type: 'message:new',
+        channelId: payload.channelId,
+        channelName: channel?.name || 'channel',
+        message: {
+          ...message,
+          userId,
+        },
       });
 
       // Check for @pixi bot command
@@ -330,10 +340,20 @@ io.on("connection", (socket) => {
         },
       });
 
+      // Get channel info
+      const channel = await prisma.channel.findUnique({
+        where: { id: channelId },
+      });
+
       // Broadcast bot message
       io.to(`channel:${channelId}`).emit("message:new", {
-        ...botMessage,
-        userId: "pixi-bot",
+        type: 'message:new',
+        channelId,
+        channelName: channel?.name || 'channel',
+        message: {
+          ...botMessage,
+          userId: "pixi-bot",
+        },
       });
     } catch (err) {
       console.error('[pixi] error:', err);
