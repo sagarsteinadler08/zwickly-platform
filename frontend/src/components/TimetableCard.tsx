@@ -127,6 +127,7 @@ const TimetableCard = () => {
           ))}
         </div>
       )}
+      </div>
     </Card>
   );
 };
