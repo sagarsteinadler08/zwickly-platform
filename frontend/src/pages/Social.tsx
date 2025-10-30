@@ -1,6 +1,6 @@
 import React, { useState, lazy, Suspense, useEffect } from "react";
+import Navbar from "@/components/Navbar";
 import NotificationToast from "@/components/social/NotificationToast";
-import { Bell, User } from "lucide-react";
 import "@/styles/social.css";
 
 // Lazy load components for better performance
@@ -100,34 +100,12 @@ const Social = () => {
 
   return (
     <SocialErrorBoundary>
-      <div className="flex flex-col h-screen bg-white">
-        {/* Top Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">KommPakt Social Wall</h1>
-            {selectedChannel && (
-              <p className="text-sm text-gray-600 mt-1"># {selectedChannel.name}</p>
-            )}
-          </div>
-          <div className="flex items-center gap-4">
-            {/* Notifications */}
-            <button className="relative" aria-label="Notifications">
-              <Bell className="w-6 h-6 text-gray-700" />
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-            {/* User Profile */}
-            <button aria-label="Profile">
-              <User className="w-6 h-6 text-gray-700" />
-            </button>
-          </div>
-        </header>
-
-        {/* Responsive wrapper */}
-        <main className="flex flex-1 overflow-hidden relative bg-gray-50" role="main">
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        
+        <div className="flex flex-1 pt-20">
+          {/* Responsive wrapper */}
+          <main className="flex flex-1 overflow-hidden relative bg-white w-full" role="main">
           {/* Notification Toast */}
           <NotificationToast toast={toast} onClose={() => setToast(null)} position="top" />
 
@@ -193,8 +171,8 @@ const Social = () => {
               </div>
             )}
           </section>
-          <NotificationToast toast={toast} onClose={() => setToast(null)} />
         </main>
+        </div>
       </div>
     </SocialErrorBoundary>
   );

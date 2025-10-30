@@ -31,8 +31,8 @@ const ChannelList: React.FC<Props> = ({
         // Add member counts and private status
         const enrichedChannels = (Array.isArray(data) ? data : []).map((ch: any, idx: number) => ({
           ...ch,
-          memberCount: [234, 156, 45, 450, 28][idx] || Math.floor(Math.random() * 200) + 50,
-          isPrivate: ch.slug === 'campus-events' // Example: mark one channel as private
+          memberCount: [156, 234, 450, 28, 89][idx] || Math.floor(Math.random() * 200) + 50,
+          isPrivate: !ch.is_public || ch.slug === 'campus-events' // Mark private channels
         }));
         setChannels(enrichedChannels);
       })
