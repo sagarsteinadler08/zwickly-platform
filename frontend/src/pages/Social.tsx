@@ -1,5 +1,6 @@
 import React, { useState, lazy, Suspense, useEffect } from "react";
 import NotificationToast from "@/components/social/NotificationToast";
+import { Bell, User } from "lucide-react";
 import "@/styles/social.css";
 
 // Lazy load components for better performance
@@ -55,6 +56,7 @@ const Social = () => {
   const [userId, setUserId] = useState<string>("user-demo");
   const [userHandle, setUserHandle] = useState<string>("demoUser");
   const [isClient, setIsClient] = useState(false);
+  const [unreadCount] = useState(2); // TODO: Fetch from notifications API
 
   useEffect(() => {
     setIsClient(true);
@@ -68,9 +70,9 @@ const Social = () => {
 
   if (!FEATURE_ON) {
     return (
-      <div className="flex h-screen items-center justify-center bg-zinc-50" role="main">
+      <div className="flex h-screen items-center justify-center bg-white" role="main">
         <div className="text-center p-8">
-          <p className="text-2xl text-gradient mb-4">Zwickly Social Wall is disabled.</p>
+          <p className="text-2xl font-bold text-gray-800 mb-4">Social Wall is disabled.</p>
           <p className="text-gray-600 mb-4">
             This feature is currently unavailable. Please contact the administrator.
           </p>
@@ -88,9 +90,9 @@ const Social = () => {
 
   if (!isClient) {
     return (
-      <div className="flex h-screen items-center justify-center bg-zinc-50" role="main">
+      <div className="flex h-screen items-center justify-center bg-white" role="main">
         <div className="text-center">
-          <div className="animate-pulse text-2xl text-gradient">Loading Social Wall...</div>
+          <div className="animate-pulse text-2xl font-bold text-gray-800">Loading Social Wall...</div>
         </div>
       </div>
     );
@@ -98,53 +100,72 @@ const Social = () => {
 
   return (
     <SocialErrorBoundary>
-      <div className="zw-social-wall flex flex-col min-h-screen bg-gradient-to-br from-[#7B5CFA] to-[#48E0E4]">
-        {/* Top notification banner on admin broadcast or major events */}
-        <NotificationToast toast={toast} onClose={() => setToast(null)} position="top" />
+      <div className="flex flex-col h-screen bg-white">
+        {/* Top Header */}
+        <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">KommPakt Social Wall</h1>
+            {selectedChannel && (
+              <p className="text-sm text-gray-600 mt-1"># {selectedChannel.name}</p>
+            )}
+          </div>
+          <div className="flex items-center gap-4">
+            {/* Notifications */}
+            <button className="relative" aria-label="Notifications">
+              <Bell className="w-6 h-6 text-gray-700" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+            {/* User Profile */}
+            <button aria-label="Profile">
+              <User className="w-6 h-6 text-gray-700" />
+            </button>
+          </div>
+        </header>
+
         {/* Responsive wrapper */}
-        <main className="flex flex-1 overflow-hidden relative" role="main">
+        <main className="flex flex-1 overflow-hidden relative bg-gray-50" role="main">
+          {/* Notification Toast */}
+          <NotificationToast toast={toast} onClose={() => setToast(null)} position="top" />
+
           {/* Collapsible sidebar on mobile */}
           <aside 
-            className={`zw-sidebar shadow-lg bg-white/90 rounded-r-3xl p-3 sm:p-4
+            className={`bg-white border-r border-gray-200 shadow-sm
             ${sidebarOpen ? "" : "hidden"} md:block`}
-            style={{ position: "relative", zIndex: 10 }}
             aria-label="Channel list sidebar"
+            style={{ width: "280px", minWidth: "280px" }}
           >
-            <Suspense fallback={<div className="py-4 text-muted">Loading channels...</div>}>
-              <ChannelList
-                userId={userId}
-                userHandle={userHandle}
-                selectedChannelId={selectedChannel?.id}
-                onSelect={setSelectedChannel}
-                onToast={setToast}
-              />
-            </Suspense>
-            <button
-              className="sidebar-toggle md:hidden mt-3"
-              onClick={() => setSidebarOpen((o) => !o)}
-              aria-label="Toggle sidebar"
-            >
-              {sidebarOpen ? "← Close" : "☰ Channels"}
-            </button>
+            <div className="p-4">
+              <Suspense fallback={<div className="py-4 text-gray-500">Loading channels...</div>}>
+                <ChannelList
+                  userId={userId}
+                  userHandle={userHandle}
+                  selectedChannelId={selectedChannel?.id}
+                  onSelect={setSelectedChannel}
+                  onToast={setToast}
+                />
+              </Suspense>
+            </div>
           </aside>
 
-          <section className="zw-main-content flex flex-col flex-1" aria-label="Main chat area">
+          <section className="flex flex-col flex-1 bg-white" aria-label="Main chat area">
             {/* Mobile toggle for sidebar */}
             <button
-              className="sidebar-toggle absolute top-2 left-2 z-20 md:hidden"
+              className="absolute top-2 left-2 z-20 md:hidden bg-white p-2 rounded-lg shadow-md"
               onClick={() => setSidebarOpen((o) => !o)}
               aria-label="Toggle sidebar"
             >
               {sidebarOpen ? "←" : "☰"}
             </button>
+
             {selectedChannel ? (
               <>
-                <div className="zw-channel-header bg-white/60 rounded-lg mt-4 px-6 py-2 shadow-sm flex items-center">
-                  <span className="text-xl font-bold text-gradient">{selectedChannel.name}</span>
-                  <span className="ml-2 text-xs opacity-75">{selectedChannel.description}</span>
-                </div>
-                <div className="flex-1 flex flex-col justify-end min-h-0">
-                  <Suspense fallback={<div className="py-4 text-center text-muted">Loading messages...</div>}>
+                {/* Message List */}
+                <div className="flex-1 overflow-y-auto p-6 bg-white">
+                  <Suspense fallback={<div className="py-4 text-center text-gray-500">Loading messages...</div>}>
                     <MessageList
                       userId={userId}
                       userHandle={userHandle}
@@ -153,18 +174,22 @@ const Social = () => {
                     />
                   </Suspense>
                 </div>
-                <Suspense fallback={<div className="p-2 bg-white/90 rounded-2xl">Loading composer...</div>}>
-                  <MessageComposer
-                    userId={userId}
-                    userHandle={userHandle}
-                    channel={selectedChannel}
-                    onToast={setToast}
-                  />
-                </Suspense>
+
+                {/* Message Composer */}
+                <div className="border-t border-gray-200 p-4 bg-white">
+                  <Suspense fallback={<div className="p-4 bg-gray-50 rounded-lg">Loading composer...</div>}>
+                    <MessageComposer
+                      userId={userId}
+                      userHandle={userHandle}
+                      channel={selectedChannel}
+                      onToast={setToast}
+                    />
+                  </Suspense>
+                </div>
               </>
             ) : (
               <div className="flex flex-1 flex-col justify-center items-center">
-                <p className="text-gray-500">Select or join a channel to get started.</p>
+                <p className="text-gray-500 text-lg">Select or join a channel to get started</p>
               </div>
             )}
           </section>
@@ -176,4 +201,3 @@ const Social = () => {
 };
 
 export default Social;
-
