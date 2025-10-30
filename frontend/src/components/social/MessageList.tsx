@@ -68,7 +68,7 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
           {/* Avatar */}
           <div className="flex-shrink-0">
             {msg.isBot ? (
-              <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#7B5CFA] to-[#48E0E4] flex items-center justify-center shadow-lg shadow-purple-500/40">
                 <Bot className="w-6 h-6 text-white" />
               </div>
             ) : (
@@ -83,11 +83,11 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
           {/* Message Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-semibold text-gray-900">
+              <span className="font-semibold text-white">
                 {msg.isBot ? "Pixi Bot" : msg.userId}
               </span>
               {msg.isBot && (
-                <span className="bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded">
+                <span className="bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white text-xs font-medium px-2 py-0.5 rounded-full shadow-sm">
                   Bot
                 </span>
               )}
@@ -100,11 +100,11 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
                 })}
               </span>
             </div>
-            <div className={`${msg.isBot ? 'bg-purple-50 border border-purple-200 rounded-lg p-3' : ''}`}>
+            <div className={`${msg.isBot ? 'bg-purple-500/10 border border-purple-500/30 rounded-lg p-3' : ''}`}>
               {msg.imageUrl ? (
                 <ImageMessage imageUrl={msg.imageUrl} />
               ) : (
-                <div className="text-gray-800 break-words">{msg.body}</div>
+                <div className="text-gray-200 break-words">{msg.body}</div>
               )}
             </div>
           </div>

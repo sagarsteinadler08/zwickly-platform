@@ -100,18 +100,18 @@ const Social = () => {
 
   return (
     <SocialErrorBoundary>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-[#0F172A]">
         <Navbar />
         
         <div className="flex flex-1 pt-20">
           {/* Responsive wrapper */}
-          <main className="flex flex-1 overflow-hidden relative bg-white w-full" role="main">
+          <main className="flex flex-1 overflow-hidden relative bg-[#0F172A] w-full" role="main">
           {/* Notification Toast */}
           <NotificationToast toast={toast} onClose={() => setToast(null)} position="top" />
 
           {/* Collapsible sidebar on mobile */}
           <aside 
-            className={`bg-white border-r border-gray-200 shadow-sm
+            className={`bg-[#1E293B]/80 backdrop-blur-xl border-r border-white/10 shadow-lg shadow-purple-500/10
             ${sidebarOpen ? "" : "hidden"} md:block`}
             aria-label="Channel list sidebar"
             style={{ width: "280px", minWidth: "280px" }}
@@ -129,10 +129,10 @@ const Social = () => {
             </div>
           </aside>
 
-          <section className="flex flex-col flex-1 bg-white" aria-label="Main chat area">
+          <section className="flex flex-col flex-1 bg-[#0F172A]" aria-label="Main chat area">
             {/* Mobile toggle for sidebar */}
             <button
-              className="absolute top-2 left-2 z-20 md:hidden bg-white p-2 rounded-lg shadow-md"
+              className="absolute top-2 left-2 z-20 md:hidden bg-white/10 backdrop-blur-sm p-2 rounded-lg shadow-md border border-white/20 text-white"
               onClick={() => setSidebarOpen((o) => !o)}
               aria-label="Toggle sidebar"
             >
@@ -142,7 +142,7 @@ const Social = () => {
             {selectedChannel ? (
               <>
                 {/* Message List */}
-                <div className="flex-1 overflow-y-auto p-6 bg-white">
+                <div className="flex-1 overflow-y-auto p-6 bg-[#0F172A]">
                   <Suspense fallback={<div className="py-4 text-center text-gray-500">Loading messages...</div>}>
                     <MessageList
                       userId={userId}
@@ -154,7 +154,7 @@ const Social = () => {
                 </div>
 
                 {/* Message Composer */}
-                <div className="border-t border-gray-200 p-4 bg-white">
+                <div className="border-t border-white/10 p-4 bg-[#1E293B]/50 backdrop-blur-xl">
                   <Suspense fallback={<div className="p-4 bg-gray-50 rounded-lg">Loading composer...</div>}>
                     <MessageComposer
                       userId={userId}
@@ -167,7 +167,7 @@ const Social = () => {
               </>
             ) : (
               <div className="flex flex-1 flex-col justify-center items-center">
-                <p className="text-gray-500 text-lg">Select or join a channel to get started</p>
+                <p className="text-gray-400 text-lg">Select or join a channel to get started</p>
               </div>
             )}
           </section>

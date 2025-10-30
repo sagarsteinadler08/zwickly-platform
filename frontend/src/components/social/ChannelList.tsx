@@ -71,7 +71,7 @@ const ChannelList: React.FC<Props> = ({
       {/* Request Channel Button */}
       <Button 
         onClick={() => setReqOpen(o => !o)}
-        className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2"
+        className="w-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white font-semibold py-3 rounded-full flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40"
       >
         <Plus className="w-5 h-5" />
         Request Channel
@@ -79,16 +79,16 @@ const ChannelList: React.FC<Props> = ({
 
       {/* Channel Request Form */}
       {reqOpen && (
-        <div className="bg-gray-50 rounded-lg p-4 space-y-3 animate-fadeIn border border-gray-200">
+        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 space-y-3 animate-fadeIn border border-white/10">
           <input
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder:text-gray-500"
             placeholder="Channel name" 
             maxLength={50}
             value={reqName} 
             onChange={e => setReqName(e.target.value)}
           />
           <input
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder:text-gray-500"
             placeholder="Description (optional)" 
             maxLength={120}
             value={reqDesc} 
@@ -97,14 +97,14 @@ const ChannelList: React.FC<Props> = ({
           <div className="flex gap-2">
             <Button 
               disabled={reqLoading} 
-              className="flex-1 bg-purple-600 hover:bg-purple-700 rounded-lg"
+              className="flex-1"
               onClick={requestCh}
             >
               {reqLoading ? "Sending..." : "Submit"}
             </Button>
             <Button 
               variant="outline" 
-              className="flex-1 rounded-lg"
+              className="flex-1"
               onClick={() => setReqOpen(false)}
             >
               Cancel
@@ -115,11 +115,11 @@ const ChannelList: React.FC<Props> = ({
 
       {/* Channels Header */}
       <div>
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">CHANNELS</h2>
+        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">CHANNELS</h2>
         {loading ? (
           <div className="space-y-2">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-12 bg-gray-100 rounded-lg animate-pulse" />
+              <div key={i} className="h-12 bg-white/5 rounded-lg animate-pulse" />
             ))}
           </div>
         ) : (
@@ -128,22 +128,24 @@ const ChannelList: React.FC<Props> = ({
               <li key={ch.id} className="relative">
                 <button
                   className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 flex items-center justify-between group
-                  ${selectedChannelId === ch.id ? 'bg-purple-100 text-purple-900' : 'hover:bg-gray-100 text-gray-700'}`}
+                  ${selectedChannelId === ch.id 
+                    ? 'bg-gradient-to-r from-[#7B5CFA]/20 to-[#48E0E4]/20 text-white border border-purple-500/30 shadow-lg shadow-purple-500/20' 
+                    : 'hover:bg-white/5 text-gray-300 hover:text-white border border-transparent'}`}
                   onClick={() => onSelect(ch)}
                   tabIndex={0}
                   aria-current={selectedChannelId === ch.id}
                 >
                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                    {ch.isPrivate && <Lock className="w-4 h-4 text-gray-500 flex-shrink-0" />}
+                    {ch.isPrivate && <Lock className="w-4 h-4 text-gray-400 flex-shrink-0" />}
                     <span className="font-medium truncate"># {ch.name}</span>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {unread[ch.id] && (
-                      <span className="bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      <span className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg shadow-red-500/40">
                         {unread[ch.id]}
                       </span>
                     )}
-                    <div className="flex items-center gap-1 text-gray-500 group-hover:text-gray-700">
+                    <div className="flex items-center gap-1 text-gray-400 group-hover:text-gray-300">
                       <Users className="w-4 h-4" />
                       <span className="text-xs">{ch.memberCount}</span>
                     </div>
