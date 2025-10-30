@@ -79,16 +79,16 @@ const ChannelList: React.FC<Props> = ({
 
       {/* Channel Request Form */}
       {reqOpen && (
-        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 space-y-3 animate-fadeIn border border-white/10">
+        <div className="bg-slate-100 dark:bg-white/5 backdrop-blur-sm rounded-lg p-4 space-y-3 animate-fadeIn border border-slate-200 dark:border-white/10">
           <input
-            className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder:text-gray-500"
+            className="w-full px-3 py-2 bg-white dark:bg-white/5 border border-slate-300 dark:border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500"
             placeholder="Channel name" 
             maxLength={50}
             value={reqName} 
             onChange={e => setReqName(e.target.value)}
           />
           <input
-            className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder:text-gray-500"
+            className="w-full px-3 py-2 bg-white dark:bg-white/5 border border-slate-300 dark:border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500"
             placeholder="Description (optional)" 
             maxLength={120}
             value={reqDesc} 
@@ -115,11 +115,11 @@ const ChannelList: React.FC<Props> = ({
 
       {/* Channels Header */}
       <div>
-        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">CHANNELS</h2>
+        <h2 className="text-xs font-semibold text-slate-600 dark:text-gray-400 uppercase tracking-wide mb-3">CHANNELS</h2>
         {loading ? (
           <div className="space-y-2">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-12 bg-white/5 rounded-lg animate-pulse" />
+              <div key={i} className="h-12 bg-slate-100 dark:bg-white/5 rounded-lg animate-pulse" />
             ))}
           </div>
         ) : (
@@ -129,23 +129,23 @@ const ChannelList: React.FC<Props> = ({
                 <button
                   className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 flex items-center justify-between group
                   ${selectedChannelId === ch.id 
-                    ? 'bg-gradient-to-r from-[#7B5CFA]/20 to-[#48E0E4]/20 text-white border border-purple-500/30 shadow-lg shadow-purple-500/20' 
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white border border-transparent'}`}
+                    ? 'bg-gradient-to-r from-[#7B5CFA]/20 to-[#48E0E4]/20 text-slate-800 dark:text-white border border-purple-400 dark:border-purple-500/30 shadow-md shadow-purple-500/10 dark:shadow-lg dark:shadow-purple-500/20' 
+                    : 'hover:bg-slate-100 dark:hover:bg-white/5 text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
                   onClick={() => onSelect(ch)}
                   tabIndex={0}
                   aria-current={selectedChannelId === ch.id}
                 >
                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                    {ch.isPrivate && <Lock className="w-4 h-4 text-gray-400 flex-shrink-0" />}
+                    {ch.isPrivate && <Lock className="w-4 h-4 text-slate-500 dark:text-gray-400 flex-shrink-0" />}
                     <span className="font-medium truncate"># {ch.name}</span>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {unread[ch.id] && (
-                      <span className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg shadow-red-500/40">
+                      <span className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md shadow-red-500/30 dark:shadow-lg dark:shadow-red-500/40">
                         {unread[ch.id]}
                       </span>
                     )}
-                    <div className="flex items-center gap-1 text-gray-400 group-hover:text-gray-300">
+                    <div className="flex items-center gap-1 text-slate-500 dark:text-gray-400 group-hover:text-slate-600 dark:group-hover:text-gray-300">
                       <Users className="w-4 h-4" />
                       <span className="text-xs">{ch.memberCount}</span>
                     </div>
