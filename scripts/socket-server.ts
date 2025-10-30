@@ -5,8 +5,10 @@
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import webpush from 'web-push'
-import { prisma } from '../src/lib/db'
+import { PrismaClient } from '@prisma/client'
 import startReminderScheduler from './reminder-scheduler'
+
+const prisma = new PrismaClient()
 
 const PORT = Number(process.env.SOCIAL_SOCKET_PORT || 4001)
 const VAPID_PUBLIC = process.env.VAPID_PUBLIC || process.env.NEXT_PUBLIC_VAPID_PUBLIC
@@ -230,18 +232,18 @@ io.on("connection", (socket) => {
             });
 
             for (const sub of subs) {
-              try {
-                await webpush.sendNotification(
-                  { endpoint: sub.endpoint, keys: sub.keys as any },
-                  JSON.stringify({
-                    title: "You were mentioned",
-                    body: `${userId} mentioned you`,
-                    data: { messageId: message.id, channelId: payload.channelId },
-                  })
-                );
-              } catch (err) {
-                console.error('[push] failed:', err);
-              }
+            try {
+              await webpush.sendNotification(
+                { endpoint: sub.endpoint, keys: sub.keys as any },
+                JSON.stringify({
+                  title: "You were mentioned",
+                  body: `${userId} mentioned you`,
+                  data: { messageId: message.id, channelId: payload.channelId },
+                })
+              );
+            } catch (err: any) {
+              console.error('[push] failed:', err);
+            }
             }
           }
         } catch (err) {
