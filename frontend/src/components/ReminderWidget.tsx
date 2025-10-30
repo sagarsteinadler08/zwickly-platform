@@ -101,14 +101,48 @@ const ReminderWidget = () => {
           return; // Still snoozed
         }
         
-        // Trigger reminder
-        toast.info(`⏰ ${reminder.title}`, {
-          description: reminder.description,
+        // Play notification sound
+        try {
+          const audio = new Audio('/notification-sound.mp3');
+          audio.volume = 0.5;
+          audio.play().catch(e => console.log('Audio play failed:', e));
+        } catch (e) {
+          console.log('Audio not available');
+        }
+        
+        // Trigger reminder with sound and actions
+        toast.error(`⏰ ${reminder.title}`, {
+          description: reminder.description || 'Reminder time!',
+          duration: 10000, // 10 seconds
           action: {
-            label: 'Snooze',
+            label: 'Snooze 10m',
             onClick: () => snoozeReminder(reminder.id, 10),
           },
+          cancel: {
+            label: 'Complete',
+            onClick: () => completeReminder(reminder.id),
+          },
         });
+        
+        // Request desktop notification permission and show
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification(`⏰ ${reminder.title}`, {
+            body: reminder.description || 'Reminder time!',
+            icon: '/zwickly-icon.png',
+            badge: '/badge-icon.png',
+            tag: reminder.id,
+            requireInteraction: true,
+          });
+        } else if ('Notification' in window && Notification.permission !== 'denied') {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              new Notification(`⏰ ${reminder.title}`, {
+                body: reminder.description || 'Reminder time!',
+                icon: '/zwickly-icon.png',
+              });
+            }
+          });
+        }
       }
     });
   };

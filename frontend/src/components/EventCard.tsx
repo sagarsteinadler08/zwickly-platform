@@ -89,6 +89,7 @@ const EventCard = ({
   const [isDetecting, setIsDetecting] = useState(false);
   const [showProstAnimation, setShowProstAnimation] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [hasReminder, setHasReminder] = useState(false);
 
   const checkRegistration = async () => {
     if (!id) return;
@@ -227,12 +228,44 @@ const EventCard = ({
         if (error) throw error;
         setIsRegistered(true);
         toast.success("Registered successfully! 🎉");
+        
+        // Auto-create reminder for registered event (1 day before)
+        createEventReminder(24);
       }
     } catch (error) {
       console.error('Error registering for event:', error);
       toast.error("Failed to register. Please try again.");
     } finally {
       setIsCheckingRegistration(false);
+    }
+  };
+
+  const createEventReminder = async (hoursBefore: number = 24) => {
+    if (!id) return;
+
+    try {
+      const userId = localStorage.getItem('userId') || 'user-demo';
+      const res = await fetch(`/api/events/${id}/reminder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, hoursBefore }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        if (error.message === 'Reminder already exists') {
+          setHasReminder(true);
+          return;
+        }
+        throw new Error(error.error || 'Failed to create reminder');
+      }
+
+      const data = await res.json();
+      setHasReminder(true);
+      toast.success(`Reminder set for ${hoursBefore}h before event!`);
+    } catch (error: any) {
+      console.error('Error creating event reminder:', error);
+      toast.error(error.message || 'Failed to create reminder');
     }
   };
 
@@ -479,6 +512,17 @@ const EventCard = ({
               >
                 <FileText className="w-4 h-4 mr-2" />
                 {isRegistered ? "Registered ✓" : "Register Now"}
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  createEventReminder(24);
+                }}
+                disabled={hasReminder}
+                variant="outline"
+                className="border-purple-500/50 hover:bg-purple-100 dark:hover:bg-purple-500/20"
+              >
+                {hasReminder ? '🔔 Set' : '🔔 Remind'}
               </Button>
             </div>
           </div>
