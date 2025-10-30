@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 const ChatbotNavbar = () => {
   const navItems = [
     { name: "Chatbot", path: "/chatbot", icon: MessageSquare },
-    { name: "Users", path: "/users", icon: Users },
+    { name: "Products", path: "/users", icon: Users },
   ];
 
   return (

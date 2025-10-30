@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 const AdminNavbar = () => {
   const navItems = [
     { name: "Home", path: "/admin/home", icon: Home },
-    { name: "Users", path: "/users", icon: Users },
+    { name: "Products", path: "/users", icon: Users },
     { name: "Events", path: "/admin/events", icon: Calendar },
     { name: "Social", path: "/admin/social", icon: MessageCircle },
     { name: "Chatbot", path: "/chatbot", icon: MessageSquare },
