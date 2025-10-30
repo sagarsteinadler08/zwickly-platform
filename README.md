@@ -1,393 +1,176 @@
-# 🎓 Zwickly Local Merged - Complete Student Life Platform
+# 🎓 Zwickly Platform - AI-Powered Student Life Super App
 
-A complete local implementation of the Zwickly student life platform, combining the Lovable UI frontend with a local Next.js backend, PostgreSQL database, and all necessary services.
+**Version 1.0** - Complete Social Wall Implementation
 
-## 🎯 What This Project Provides
+An AI-powered student super app for campus life — built with Next.js, Prisma, and Socket.IO. Includes real-time chat, polls, event management, notifications, and Pixi AI assistant.
 
-- ✅ **Complete Lovable UI** - Unchanged React frontend with all features
-- ✅ **Local Backend** - Next.js API with Prisma ORM
-- ✅ **PostgreSQL Database** - Docker containerized database
-- ✅ **Data Import** - Python script to import Supabase exports
-- ✅ **Push Notifications** - VAPID keys for web push
-- ✅ **WebSocket Server** - Real-time features
-- ✅ **Zero External Dependencies** - Everything runs locally
+## ✨ Features
 
-## 🚀 Quick Start (Automated Setup)
+### Student Portal
+- 📊 **Dashboard** - Events, timetable, mensa menu, and more
+- 💬 **Social Wall** - Real-time chat channels
+- 📝 **Polls** - Create and vote on polls
+- 📸 **Media Sharing** - Upload and share images
+- 🤖 **Pixi AI Assistant** - Campus information chat bot
+- 🔔 **Notifications** - Real-time updates
+
+### Admin Portal (KommPakt)
+- 📈 **Analytics Dashboard** - User and event statistics
+- 🎉 **Event Management** - Create, edit, delete events
+- 💬 **Social Admin** - Channel management
+- ✅ **Approval System** - Channel request approvals
+- 📢 **Broadcasting** - Message broadcasting to channels
+- 📊 **Event Publishing** - Publish to social wall or banner
+
+### Technical Features
+- ⚡ **Real-time Communication** - Socket.IO WebSocket
+- 🔔 **Push Notifications** - Web Push API with VAPID
+- 📱 **Responsive Design** - Mobile-first approach
+- 🎨 **Modern UI** - Glassmorphism design theme
+- 🔒 **Secure** - Local database, no external dependencies
+
+## 🚀 Quick Start
 
 ### Prerequisites
-- **Docker Desktop** - [Download here](https://docs.docker.com/desktop/mac/install/)
-- **Node.js 18+** - [Download here](https://nodejs.org/)
-- **Python 3** - Usually pre-installed on macOS
+- Docker Desktop
+- Node.js 18+
+- Python 3
 
-### One-Command Setup
+### Setup
+
 ```bash
-# Make setup script executable and run it
-chmod +x setup.sh
-./setup.sh
-```
+# Clone repository
+git clone https://github.com/sagarsteinadler08/zwickly-platform.git
+cd zwickly-platform
 
-This script will:
-1. ✅ Check Docker and start PostgreSQL container
-2. ✅ Fix environment variables
-3. ✅ Generate VAPID keys for push notifications
-4. ✅ Install all dependencies
-5. ✅ Run Prisma migrations
-6. ✅ Import Supabase data
-7. ✅ Start development servers
+# Start database
+docker-compose up -d
 
-**After setup completes, open: http://localhost:8080**
-
----
-
-## 🔧 Manual Setup (Step by Step)
-
-If you prefer to run each step manually:
-
-### Step 1: Start Docker & Database
-```bash
-# Start Docker Desktop (GUI)
-open -a Docker
-
-# Wait for Docker to be ready, then start PostgreSQL
-docker compose up -d
-
-# Verify container is running
-docker ps
-```
-
-### Step 2: Environment Setup
-```bash
-# Create .env file for Prisma
-cp .env.local .env
-
-# Verify DATABASE_URL is set
-node -e "require('dotenv').config(); console.log(process.env.DATABASE_URL)"
-```
-
-### Step 3: Generate VAPID Keys
-```bash
-# Install web-push
-npm install web-push --no-save
-
-# Generate keys
-npx web-push generate-vapid-keys --json > vapid.json
-
-# Extract and update .env.local
-PUBLIC=$(node -e "console.log(JSON.parse(require('fs').readFileSync('vapid.json','utf8')).publicKey)")
-PRIVATE=$(node -e "console.log(JSON.parse(require('fs').readFileSync('vapid.json','utf8')).privateKey)")
-
-cat > .env.local << EOF
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app?schema=public"
-NEXT_PUBLIC_VAPID_PUBLIC_KEY="$PUBLIC"
-VAPID_PRIVATE_KEY="$PRIVATE"
-WS_PORT=4001
-EOF
-```
-
-### Step 4: Install Dependencies
-```bash
-# Node.js dependencies
+# Install dependencies
 npm install
+cd frontend && npm install && cd ..
 
-# Python dependencies
-python3 -m pip install --user psycopg2-binary
-```
-
-### Step 5: Database Setup
-```bash
-# Generate Prisma client
+# Setup database
 npx prisma generate
+npx prisma migrate deploy
 
-# Run migrations
-npx prisma migrate dev --name init
-```
-
-### Step 6: Import Data
-```bash
-# Import Supabase export data
-python3 scripts/import_supabase.py --dir supabase_export_20251028_150354
-```
-
-### Step 7: Start Servers
-```bash
-# Start Next.js + WebSocket servers
+# Start development servers
 npm run dev
 ```
 
----
+**Access:**
+- Frontend: http://localhost:8080
+- Admin: http://localhost:8080/admin/social
+- API: http://localhost:3000
 
-## 📊 Project Structure
+## 📊 Tech Stack
+
+- **Frontend:** Vite + React 18 + TypeScript + Tailwind CSS
+- **Backend:** Next.js 14 (Pages Router)
+- **Database:** PostgreSQL 16 + Prisma ORM
+- **Real-time:** Socket.IO
+- **Notifications:** Web Push (VAPID)
+
+## 📁 Project Structure
 
 ```
-zwickly-local-merged/
-├── frontend/                    # Lovable UI (unchanged)
+zwickly-platform/
+├── frontend/           # React frontend
 │   ├── src/
-│   │   ├── pages/              # React pages
-│   │   ├── components/         # UI components
-│   │   └── integrations/       # Supabase client (uses shim)
-│   └── package.json
-├── src/                        # Next.js Backend
-│   ├── pages/api/              # API routes
-│   │   ├── events/             # Events API
-│   │   ├── timetable/          # Timetable API
-│   │   ├── news/               # News API
-│   │   ├── exams/              # Exams API
-│   │   ├── german/             # German culture API
-│   │   ├── mensa/              # Mensa menu API
-│   │   ├── items/              # Items API
-│   │   ├── push/               # Push notification API
-│   │   ├── functions/          # Function endpoints
-│   │   └── auth/               # Auth endpoints
-│   └── lib/
-│       ├── db.ts               # Prisma client
-│       └── supabase-shim.ts    # Supabase replacement
-├── prisma/
-│   └── schema.prisma           # Database schema
-├── scripts/
-│   └── import_supabase.py      # Data import script
-├── supabase_export_20251028_150354/  # Your Supabase data
-├── docker-compose.yml          # Postgres container
-├── setup.sh                    # Automated setup script
-├── package.json                # Node.js dependencies
-└── README.md                   # This file
+│   │   ├── pages/     # Page components
+│   │   ├── components/# UI components
+│   │   └── lib/       # Utilities
+├── pages/             # Next.js API routes
+│   └── api/           # REST APIs
+├── prisma/            # Database schema
+├── scripts/           # Utility scripts
+└── docker-compose.yml # Database setup
 ```
-
----
 
 ## 🔌 API Endpoints
 
-The backend provides these API routes:
+### Social Wall
+- `GET /api/chat/channels` - List channels
+- `POST /api/chat/channels` - Create channel
+- `DELETE /api/chat/channels/:id` - Delete channel
+- `GET /api/chat/channels/:id/messages` - Get messages
+- `POST /api/chat/channels/:id/messages` - Send message
+- `POST /api/chat/channels/:id/images` - Upload image
+- `POST /api/chat/channels/:id/polls` - Create poll
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/events` | GET, POST | Events with filtering and ordering |
-| `/api/timetable` | GET | Class schedules |
-| `/api/news` | GET | University news |
-| `/api/exams` | GET | Exam schedules |
-| `/api/german` | GET | German culture content |
-| `/api/mensa` | GET | Cafeteria menu |
-| `/api/items` | GET, POST | Generic items (realtime testing) |
-| `/api/push/subscribe` | POST | Subscribe to push notifications |
-| `/api/functions/chat-assistant` | POST | Local chat assistant |
-| `/api/auth/signup` | POST | User registration (dev only) |
-| `/api/auth/signin` | POST | User login (dev only) |
+### Events
+- `GET /api/events` - List events
+- `POST /api/events` - Create event
+- `PUT /api/events/:id` - Update event
+- `DELETE /api/events/:id` - Delete event
 
----
+## 🗄️ Database
 
-## 🗄️ Database Schema
+PostgreSQL database with Prisma ORM:
 
-The Prisma schema includes these tables:
+- **Channel** - Chat channels
+- **Message** - Channel messages
+- **Poll** - Poll questions
+- **Image** - Uploaded images
+- **Event** - Campus events
+- **Profile** - User profiles
 
-- **Event** - Event listings with details, categories, likes
-- **Timetable** - Class schedules and room assignments  
-- **WhzNews** - University news and announcements
-- **MensaMenu** - Cafeteria menu items and pricing
-- **Exam** - Exam schedules and locations
-- **GermanCultureInteraction** - Cultural learning content
-- **Item** - Generic items for testing realtime features
-- **PushSubscription** - Web push notification subscriptions
-- **Profile** - User profiles for auth (dev only)
+## 📝 Documentation
 
----
+- `VERSION_1.0_README.md` - Version 1.0 details
+- `FINAL_STATUS_UP.md` - Current status
+- `COMPLETE_FIX_SUMMARY.md` - Fixes applied
+- `GIT_PUSH_INSTRUCTIONS.md` - Git workflow
 
-## 🛠️ Development Commands
+## 🔧 Development
 
-### Using the Setup Script (Recommended)
 ```bash
-./setup.sh                    # Complete automated setup
+# Install dependencies
+npm install
+cd frontend && npm install && cd ..
+
+# Start database
+docker-compose up -d
+
+# Run migrations
+npx prisma migrate deploy
+
+# Start dev servers
+npm run dev
+
+# View database
+npx prisma studio
 ```
 
-### Manual Commands
-```bash
-# Docker
-docker compose up -d          # Start PostgreSQL
-docker compose down           # Stop PostgreSQL
-docker ps                     # Check running containers
+## 📦 Releases
 
-# Database
-npx prisma generate           # Generate Prisma client
-npx prisma migrate dev        # Run migrations
-npx prisma studio             # Open Prisma Studio
-npx prisma migrate reset      # Reset database
+### v1.0.0 (October 30, 2025)
+- ✨ Complete social wall implementation
+- ✨ Admin control panel
+- ✨ Real-time messaging
+- ✨ Poll and image features
+- ✨ Event publishing integration
+- ✨ Production-ready setup
 
-# Development
-npm run dev                   # Start Next.js + WebSocket
-npm run build                 # Build production
-npm run start                 # Start production
+## 🤝 Contributing
 
-# Data Import
-python3 scripts/import_supabase.py --dir supabase_export_20251028_150354
-```
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/new-feature`
+3. Commit changes: `git commit -m 'Add new feature'`
+4. Push to branch: `git push origin feature/new-feature`
+5. Submit pull request
 
----
+## 📄 License
 
-## 🔍 Troubleshooting
+All rights reserved.
 
-### Docker Issues
-```bash
-# Check Docker status
-docker info
+## 👨‍💻 Author
 
-# If Docker not running
-open -a Docker
+**Sagar Bhadravathi Ravi**
 
-# Check container logs
-docker compose logs db
+- GitHub: [@sagarsteinadler08](https://github.com/sagarsteinadler08)
+- Repository: https://github.com/sagarsteinadler08/zwickly-platform
 
-# Reset container if corrupted
-docker compose down
-docker volume rm zwickly-local-merged_pgdata
-docker compose up -d
-```
+## 🙏 Acknowledgments
 
-### Environment Issues
-```bash
-# Check if .env exists
-ls -la .env
-
-# Verify DATABASE_URL
-node -e "require('dotenv').config(); console.log(process.env.DATABASE_URL)"
-
-# If missing, create it
-echo 'DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app?schema=public"' > .env
-```
-
-### Prisma Issues
-```bash
-# Check if schema exists
-ls prisma/schema.prisma
-
-# Regenerate client
-npx prisma generate
-
-# Check database connection
-docker exec -i zwickly-local-merged-db-1 psql -U postgres -d app -c "\dt"
-```
-
-### Port Conflicts
-```bash
-# Check what's using port 3000
-lsof -i :3000
-
-# Kill process if needed
-kill -9 $(lsof -t -i :3000)
-
-# Or start on different port
-PORT=3001 npm run dev
-```
-
-### Data Import Issues
-```bash
-# Check if export directory exists
-ls -la supabase_export_20251028_150354/
-
-# Run import manually
-python3 scripts/import_supabase.py --dir supabase_export_20251028_150354
-
-# Check data in database
-docker exec -i zwickly-local-merged-db-1 psql -U postgres -d app -c "SELECT count(*) FROM events;"
-```
-
----
-
-## 🧪 Testing Your Setup
-
-### 1. Check Database
-```bash
-# List tables
-docker exec -i zwickly-local-merged-db-1 psql -U postgres -d app -c "\dt"
-
-# Check event count
-docker exec -i zwickly-local-merged-db-1 psql -U postgres -d app -c "SELECT count(*) FROM events;"
-```
-
-### 2. Test API Endpoints
-```bash
-# Test events API
-curl http://localhost:3000/api/events
-
-# Test timetable API
-curl http://localhost:3000/api/timetable
-
-# Test news API
-curl http://localhost:3000/api/news
-```
-
-### 3. Test Frontend
-- Open http://localhost:3000
-- Check if events are displayed
-- Test navigation between pages
-- Try the chat assistant
-
-### 4. Test Push Notifications
-- Allow notifications in browser
-- Test push subscription
-- Send test notification
-
----
-
-## 🔒 Security Notes
-
-- **VAPID keys** are generated locally and should not be committed to public repos
-- **Database credentials** are in `.env.local` (not committed)
-- **Auth endpoints** are for development only (not secure for production)
-- **CORS** is configured for local development only
-
----
-
-## 🚀 Production Deployment
-
-To deploy to production:
-
-1. **Update environment variables** for production database
-2. **Configure CORS** for your domain
-3. **Set up HTTPS** for push notifications
-4. **Update VAPID keys** for your domain
-5. **Implement proper authentication** (NextAuth, Supabase Auth, or JWT)
-6. **Build and deploy** using `npm run build` and `npm run start`
-
----
-
-## 📞 Need Help?
-
-If you encounter issues:
-
-1. **Run the setup script**: `./setup.sh`
-2. **Check Docker status**: `docker ps`
-3. **Verify environment**: `cat .env`
-4. **Check database**: `docker exec -i zwickly-local-merged-db-1 psql -U postgres -d app -c "\dt"`
-5. **Test API**: `curl http://localhost:3000/api/events`
-
-For detailed troubleshooting, see the troubleshooting section above.
-
----
-
-## 🎉 Success Indicators
-
-Your setup is working correctly when you see:
-
-- ✅ Docker container running: `docker ps` shows postgres container
-- ✅ Database connected: Prisma migrations run successfully
-- ✅ Data imported: `SELECT count(*) FROM events;` returns > 0
-- ✅ API responding: `curl http://localhost:3000/api/events` returns JSON
-- ✅ Frontend loading: http://localhost:3000 shows the app
-- ✅ WebSocket running: Port 4001 is listening
-
-**🎊 Enjoy your fully local Zwickly student life platform!**
-
----
-
-## Zwickly design tokens (local UI theme)
-
-We added a small design token & helper CSS system to match the mobile prototype.
-
-**Files:**
-- `frontend/src/styles/zwickly-tokens.css` — color, radius, gap, shadow tokens
-- `frontend/src/styles/zwickly-components.css` — helper classes (zw-card, zw-btn, zw-input, etc.)
-
-**Usage:**
-- Shared UI primitives were updated to use these classes: Card, Button, Input, Header, Modal, Badge, Avatar.
-- To revert: remove the two CSS files and restore previous component classNames from your Git history.
-
-**Notes:**
-- This change is purely visual — no API, routing, or database logic changed.
+Built for WHZ students with ❤️
