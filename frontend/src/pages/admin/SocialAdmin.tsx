@@ -534,7 +534,7 @@ const SocialAdmin = () => {
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 placeholder="Type your message..."
-                className="w-full min-h-[120px] p-3 border rounded-xl"
+                className="w-full min-h-[120px] p-4 border-2 border-white/20 rounded-xl bg-white/10 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500"
               />
               <div className="flex gap-2">
                 <Button 
