@@ -11,7 +11,7 @@ interface Props {
 
 const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
-const MessageComposer: React.FC<Props> = ({ userId, channel, onToast }) => {
+const MessageComposer: React.FC<Props> = ({ userId, userHandle, channel, onToast }) => {
   const [body, setBody] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [pending, setPending] = useState(false);
