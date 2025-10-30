@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id                String   @id @db.Uuid
+  title             String
+  location          String?
+  event_date        DateTime? @db.Date
+  event_time        String?
+  image_url         String?
+  category          String?
+  created_at        DateTime? @default(now())
+  created_by        String?   @db.Uuid
+  likes             Int?      @default(0)
+  prosts            Int?      @default(0)
+  description       String?   @db.Text
+  language          String?
+  registration_info String?
+
+  @@map("events")
+}
+
+model Timetable {
+  id         String   @id @db.Uuid
+  day_name   String
+  day_time   String
+  course     String
+  room       String?
+  instructor String?
+  cycle      String?
+  sem_group  String?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("timetable")
+}
+
+model WhzNews {
+  id         String   @id @db.Uuid
+  title      String
+  description String?  @db.Text
+  created_at DateTime? @default(now())
+
+  @@map("whz_news")
+}
+
+model Exam {
+  id         String   @id @db.Uuid
+  course     String
+  space      String?
+  lecturer   String?
+  date       String?
+  period     String?
+  sem_group  String?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("exams")
+}
+
+model GermanCultureInteraction {
+  id                 String   @id @db.Uuid
+  situation          String
+  culture_background String?
+  german_behavior    String?  @db.Text
+  interpretation     String?  @db.Text
+  created_at         DateTime? @default(now())
+
+  @@map("german_culture_interactions")
+}
+
+model MensaMenu {
+  id              String   @id @db.Uuid
+  meal_station    String?
+  dish_description String?  @db.Text
+  price_s         String?
+  price_m         String?
+  price_g         String?
+  notes           String?
+  created_at      DateTime? @default(now())
+
+  @@map("mensa_menu")
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  text      String
+  createdAt DateTime @default(now())
+
+  @@map("items")
+}
+
+model PushSubscription {
+  id        Int     @id @default(autoincrement())
+  endpoint  String
+  keys      Json?
+  createdAt DateTime @default(now())
+
+  @@map("push_subscriptions")
+}
+
+model Profile {
+  id        String   @id @db.Uuid
+  email     String   @unique
+  created_at DateTime? @default(now())
+
+  @@map("profiles")
+}
+
+// Chat/Social Models
+model Channel {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String    @unique
+  description String?
+  is_public   Boolean   @default(true)
+  createdBy   String?
+  createdAt   DateTime  @default(now())
+  messages    Message[]
+  requests    ChannelRequest[]
+  polls       Poll[]
+
+  @@map("channels")
+}
+
+model ChannelRequest {
+  id          String   @id @default(uuid()) @db.Uuid
+  channel     Channel? @relation(fields: [channelId], references: [id], onDelete: SetNull)
+  channelId   String?  @db.Uuid
+  name        String
+  description String?
+  requesterId String
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+
+  @@map("channel_requests")
+}
+
+model Message {
+  id         String    @id @default(uuid()) @db.Uuid
+  channel    Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId  String    @db.Uuid
+  userId     String
+  body       String    @db.Text
+  imageUrl   String?
+  isBot      Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  mentions   Mention[]
+  pollVote   PollVote[]
+
+  @@map("messages")
+}
+
+model Mention {
+  id         String   @id @default(uuid()) @db.Uuid
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId  String   @db.Uuid
+  userId     String
+  createdAt  DateTime @default(now())
+
+  @@map("mentions")
+}
+
+model Notification {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String
+  type      String
+  payload   Json
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+model Poll {
+  id          String   @id @default(uuid()) @db.Uuid
+  channel     Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId   String   @db.Uuid
+  question    String
+  options     Json
+  isClosed    Boolean  @default(false)
+  createdBy   String   @default("admin")
+  createdAt   DateTime @default(now())
+  votes       PollVote[]
+
+  @@map("polls")
+}
+
+model Image {
+  id           String   @id @default(uuid()) @db.Uuid
+  channelId    String   @db.Uuid
+  url          String
+  originalName String?
+  createdAt    DateTime @default(now())
+
+  @@map("images")
+}
+
+model PollVote {
+  id        String   @id @default(uuid()) @db.Uuid
+  poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  pollId    String   @db.Uuid
+  message   Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  messageId String?  @db.Uuid
+  optionId  String
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([pollId, userId])
+  @@map("poll_votes")
+}

@@ -1,0 +1,30 @@
+/* src/styles/zwickly-tokens.css */
+/* zwickly tokens */
+:root{
+  --zw-primary: #7B5CFA;
+  --zw-primary-dark: #6A4BE9;
+  --zw-accent: #48E0E4;
+  --zw-bg-soft: #F9F6FF;
+  --zw-card-bg: #FFFFFF;
+  --zw-muted: #6B7280;
+  --zw-text: #0F0F0F;
+  --zw-success: #10B981;
+  --zw-warning: #F59E0B;
+  --zw-error: #EF4444;
+
+  --zw-radius-sm: 8px;
+  --zw-radius-md: 12px;
+  --zw-radius-lg: 20px;
+  --zw-radius-xl: 24px;
+  --zw-radius-full: 9999px;
+  --zw-gap-xs: 6px;
+  --zw-gap-sm: 8px;
+  --zw-gap-md: 16px;
+  --zw-gap-lg: 24px;
+
+  --zw-shadow-sm: 0 4px 12px rgba(123,92,250,0.08);
+  --zw-shadow-md: 0 8px 24px rgba(123,92,250,0.12);
+  --zw-shadow-lg: 0 12px 36px rgba(15,15,15,0.15);
+  --zw-transition: 200ms ease;
+}
+

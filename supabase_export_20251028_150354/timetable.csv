@@ -1,0 +1,25 @@
+id,day_name,day_time,course,room,instructor,cycle,sem_group,created_at,updated_at
+026b6296-aa53-4bf2-87d3-f53d2039d0d2,Freitag,7:30 - 10:50,WIW64000 Business Information Systems Gr 2,S6103,"Prof. Schumann,C.-A.",wöch.,252035,2025-10-25T02:29:37.383824+00:00,2025-10-25T02:29:37.383824+00:00
+11e2ee9d-fb73-4cb9-ad49-5178b496b33e,Montag,11:00 - 12:30,Database Systems,201 (Main Building),"Prof. Weber, A.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+12d565ec-3361-42c3-81fd-5809222029bb,Freitag,9:00 - 15:00,WIW32040 Business Monitoring Systems and Internal Audit Präsentation,S6213,Dr. Westhausen,KW 47,252035,2025-10-25T02:29:37.383824+00:00,2025-10-25T02:29:37.383824+00:00
+303d1bf9-8ecf-416d-861d-fe7e8abbc19f,Donnerstag,7:30 - 9:00,Information Security,201 (Main Building),"Prof. Wolf, D.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+3cb71b31-d891-45e9-8e7c-36b6e4c33b31,Dienstag,13:30 - 16:50,WIW32090 Risk Management and Management Control,S_HS2,Prof. Schaal,Z 1,252035,2025-10-28T09:44:53.75692+00:00,2025-10-28T09:44:53.75692+00:00
+4a63ab0d-5d97-4a4e-aa54-8e2f9869053e,Dienstag,15:20 - 16:50,PTI90020 Interdisciplinary Project/ PTI90190,PKB301,NN LBA,wöch.,252035,2025-10-28T09:44:53.75692+00:00,2025-10-28T09:44:53.75692+00:00
+4d2fda4d-1c86-4a4e-952e-ede92e4e5cae,Donnerstag,11:00 - 12:30,Project Management,201 (Main Building),"Prof. Meyer, B.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+4e40e81f-7778-42d3-a78a-9c6b56577ac1,Donnerstag,9:15 - 10:45,Machine Learning,305 (Main Building),"Prof. Krause, N.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+6169f68e-0ba2-41ac-b73a-bb5627a5a724,Dienstag,13:30 - 15:00,SPR647 Fit für das Studium - Deutsch Extensiv (A2 -GER),PKB278,Braun,ab KW 41,252035,2025-10-28T09:44:53.75692+00:00,2025-10-28T09:44:53.75692+00:00
+6810acfb-6107-4687-95a2-9ed14578ea46,Dienstag,13:30 - 16:50,WIW32090 Risk Management and Management Control,S_HS2,Prof. Zirkler,Z 2,252035,2025-10-28T09:44:53.75692+00:00,2025-10-28T09:44:53.75692+00:00
+693b825f-b0f3-4c51-86d6-26f85fdf5d2b,Donnerstag,13:00 - 14:30,Software Testing,305 (Main Building),"Prof. Richter, C.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+7106204a-9ff5-4feb-9aaa-2fc37df36bea,Samstag,8:00 - 14:00,WIW32040 Business Monitoring Systems and Internal Audit Präsentation,S6213,Dr. Westhausen,KW 47,252035,2025-10-25T03:24:19.323725+00:00,2025-10-25T03:24:19.323725+00:00
+74087928-a106-474c-a90a-4adc21ec2ad6,Freitag,9:20 - 10:50,PTI90220 Advanced Computer Graphics,GAB216,Prof. Hellbach,wöch.,252035,2025-10-25T02:29:37.383824+00:00,2025-10-25T02:29:37.383824+00:00
+7781297c-7cf0-45d6-965e-d7e7f908279e,Dienstag,9:20 - 12:50,WIW64000 Business Information Systems Gr 1,S6213,"Prof. Schumann,C.-A.",wöch.,252035,2025-10-28T09:44:53.75692+00:00,2025-10-28T09:44:53.75692+00:00
+9ae53ceb-35db-44e0-a4e7-b91536cae92e,Mittwoch,9:15 - 10:45,Artificial Intelligence,305 (Main Building),"Prof. Hoffmann, P.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+9affd9bd-4e3b-4246-b8b3-6f20f8183b9c,Montag,9:15 - 10:45,Software Engineering,305 (Main Building),"Prof. Schmidt, M.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+a8ee38c0-62a0-4499-9b50-1dee0dd6661a,Mittwoch,11:00 - 12:30,Cloud Computing,201 (Main Building),"Prof. Bauer, S.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+ab546bd3-c686-430d-b5ad-46dd698b1983,Montag,13:00 - 14:30,Web Development,305 (Main Building),"Prof. Müller, J.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+b22e2e63-4378-49db-beb1-6fe5803be2a8,Freitag,11:20 - 12:50,PTI90220 Advanced Computer Graphics,GAB216,Prof. Hellbach Dr. Baum,wöch.,252035,2025-10-25T02:29:37.383824+00:00,2025-10-25T02:29:37.383824+00:00
+bf8603b6-4c55-474c-a1a4-7962e6c899a3,Samstag,8:00 - 14:00,WIW32040 Business Monitoring Systems and Internal Audit Kick off,S6213,Dr. Westhausen,KW 41,252035,2025-10-25T03:24:19.323725+00:00,2025-10-25T03:24:19.323725+00:00
+d0f8fd77-ff87-418e-8a5a-68463fcf60d6,Dienstag,15:20 - 16:50,SPR647 Fit für das Studium - Deutsch Extensiv (A2 -GER),PKB278,Braun,ab KW 41,252035,2025-10-28T09:44:53.75692+00:00,2025-10-28T09:44:53.75692+00:00
+d1126a5b-3076-4276-b9bd-2d14c67fc36e,Freitag,9:00 - 15:00,WIW32040 Business Monitoring Systems and Internal Audit Kick off,S6213,Dr. Westhausen,KW 41,252035,2025-10-25T02:29:37.383824+00:00,2025-10-25T02:29:37.383824+00:00
+d7e74460-19fb-4250-b4c2-a6c4e996704e,Montag,7:30 - 9:00,PTI90180 Car-to-Car Communication,201 (Main Building),"Prof. Grimm, F.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00
+fa121591-a8e0-46ba-b3a7-6653773dfcb1,Mittwoch,7:30 - 9:00,Algorithms & Data Structures,201 (Main Building),"Prof. Schulz, H.",Weekly,252035,2025-10-24T18:07:57.5009+00:00,2025-10-24T18:07:57.5009+00:00

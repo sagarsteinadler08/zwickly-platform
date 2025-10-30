@@ -1,0 +1,32 @@
+[
+  {
+    "id": "40b8e84e-e1ce-4faf-94aa-5f1129cd1e1e",
+    "meal_station": "Heiße Theke Zwickau",
+    "dish_description": "Broccoli-Nut corner (71,72,81,84) and salsa dip (9) with bean-quinoa-couscous (49,81)",
+    "price_s": "3,90 €",
+    "price_m": "6,30 €",
+    "price_g": "7,60 €",
+    "notes": "71,72,81,84; 9; 49,81",
+    "created_at": "2025-10-24T20:53:57.311821+00:00"
+  },
+  {
+    "id": "94272980-d03f-4410-bf44-5a6e212f609e",
+    "meal_station": "Pasta Zwickau",
+    "dish_description": "Spirelli (81) with Sauce All Arrabiata (6) and grated Gouda (19) or Reiberei (1). Also available as small portion.",
+    "price_s": "2,30 €",
+    "price_m": "5,30 €",
+    "price_g": "6,60 €",
+    "notes": "81, 6, 19, 1",
+    "created_at": "2025-10-24T20:53:57.311821+00:00"
+  },
+  {
+    "id": "ae32191c-56db-408e-9bf4-d428acc73d5e",
+    "meal_station": "Campusteller Zwickau",
+    "dish_description": "Gnocchi-pan with/without chicken strips, fresh arugula and red pepper (15), plus cream cheese sauce (19,81)",
+    "price_s": "4,40 €",
+    "price_m": "6,90 €",
+    "price_g": "8,50 €",
+    "notes": "15, 19, 81",
+    "created_at": "2025-10-24T20:53:57.311821+00:00"
+  }
+]

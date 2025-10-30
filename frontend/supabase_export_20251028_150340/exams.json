@@ -1,0 +1,35 @@
+[
+  {
+    "id": "232f3f2e-c44d-40e6-82a2-6c244f75d9fa",
+    "course": "PTI90180 Car-to-Car Communication - 252035",
+    "space": "370 (PKB Building 2)",
+    "lecturer": "Prof.Grimm,F.",
+    "date": "11.02.2026",
+    "period": "9:00 a.m. to 5:00 p.m.",
+    "sem_group": "252035",
+    "created_at": "2025-10-24T17:41:39.653415+00:00",
+    "updated_at": "2025-10-24T17:41:39.653415+00:00"
+  },
+  {
+    "id": "591b7415-6ed7-48f7-b694-d0f1763543a3",
+    "course": "PTI90220 Advanced Computer Graphics_GAB216 - 252035",
+    "space": "",
+    "lecturer": "Prof.Hellbach",
+    "date": "04.02.2026",
+    "period": "9:00 a.m. to 5:00 p.m.",
+    "sem_group": "252035",
+    "created_at": "2025-10-24T17:41:39.653415+00:00",
+    "updated_at": "2025-10-24T17:41:39.653415+00:00"
+  },
+  {
+    "id": "6575339a-67a6-40fb-b6f3-d1d06acd758a",
+    "course": "WIW64000 Business Information Systems - 252035",
+    "space": "165 (MHG)",
+    "lecturer": "Prof.Schumann,C.",
+    "date": "02.02.2026",
+    "period": "10:00 a.m. to 11:30 a.m.",
+    "sem_group": "252035",
+    "created_at": "2025-10-24T17:41:39.653415+00:00",
+    "updated_at": "2025-10-24T17:41:39.653415+00:00"
+  }
+]

@@ -1,0 +1,291 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Gen-Z Color Scheme - Vibrant, stand-out colors */
+    --background: 240 10% 98%;
+    --foreground: 240 10% 10%;
+
+    --card: 0 0% 100% / 0.7;
+    --card-foreground: 240 10% 10%;
+
+    --popover: 0 0% 100% / 0.7;
+    --popover-foreground: 240 10% 10%;
+
+    /* Electric Blue/Pink Gradient - Tech & SaaS vibe */
+    --primary: 230 90% 65%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 330 75% 65%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 5% 90%;
+    --muted-foreground: 240 5% 40%;
+
+    --accent: 280 85% 70%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 20% 85%;
+    --input: 240 20% 90%;
+    --ring: 230 90% 65%;
+
+    --radius: 1.25rem;
+
+    /* iOS Glassmorphism Enhanced */
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 240 30% 90% / 0.5;
+    --glass-shadow: 0 10px 40px 0 hsl(230 90% 65% / 0.15);
+    
+    /* Vibrant Tech Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(230 90% 65%), hsl(280 85% 70%));
+    --gradient-header: linear-gradient(135deg, hsl(230 90% 65%), hsl(280 85% 70%), hsl(330 75% 65%));
+    --gradient-card: linear-gradient(135deg, hsl(230 90% 65% / 0.1), hsl(280 85% 70% / 0.05));
+    --gradient-button: linear-gradient(135deg, hsl(230 90% 65%), hsl(280 85% 70%));
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Admin Theme - Orange */
+    --admin-primary: 24 95% 53%;
+    --admin-primary-foreground: 0 0% 100%;
+    --admin-secondary: 33 100% 50%;
+    --admin-accent: 16 90% 48%;
+    --admin-gradient: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(33 100% 50%) 100%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(240 30% 98%) 0%, hsl(230 25% 97%) 50%, hsl(220 30% 98%) 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  /* iOS Glassmorphism Card */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  }
+  
+  /* Gradient Text */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(230 90% 65%), hsl(280 85% 70%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Enhanced Hover Effects */
+  .hover-glow {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 12px 40px 0 hsl(230 90% 65% / 0.25), 0 0 0 1px hsl(230 90% 65% / 0.2);
+    transform: translateY(-3px);
+  }
+  
+  /* Glass Search Input */
+  .search-input {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(200, 200, 200, 0.3);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: hsl(230 90% 65%);
+    box-shadow: 0 0 0 4px hsl(230 90% 65% / 0.1), 0 8px 24px 0 hsl(230 90% 65% / 0.2);
+    outline: none;
+  }
+  
+  /* iOS-style Filter Chips */
+  .filter-chip {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(200, 200, 200, 0.3);
+    border-radius: 9999px;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  
+  .filter-chip:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: hsl(230 90% 65% / 0.4);
+    transform: scale(1.05);
+  }
+  
+  .filter-chip.active {
+    background: linear-gradient(135deg, hsl(230 90% 65%), hsl(280 85% 70%));
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 16px 0 hsl(230 90% 65% / 0.3);
+  }
+  
+  /* Vibrant Notification Badge */
+  .notification-badge {
+    background: linear-gradient(135deg, hsl(330 75% 65%), hsl(350 85% 60%));
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    box-shadow: 0 2px 8px 0 hsl(330 75% 65% / 0.4);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(270 30% 90%);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(270 70% 60% / 0.5);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(270 70% 60%);
+  }
+  
+  /* Admin Theme Override */
+  .admin-theme {
+    --primary: var(--admin-primary);
+    --primary-foreground: var(--admin-primary-foreground);
+    --secondary: var(--admin-secondary);
+    --accent: var(--admin-accent);
+  }
+  
+  .admin-theme .glass-card {
+    background: linear-gradient(135deg, hsl(24 95% 98% / 0.4) 0%, hsl(33 100% 96% / 0.3) 100%);
+    border: 1px solid hsl(24 95% 53% / 0.25);
+    box-shadow: 0 8px 32px 0 hsl(24 95% 53% / 0.15);
+  }
+  
+  .admin-theme .gradient-text {
+    background: var(--admin-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .admin-theme .hover-glow:hover {
+    box-shadow: 0 0 25px hsl(24 95% 53% / 0.4), 0 8px 32px 0 hsl(24 95% 53% / 0.3);
+    border-color: hsl(24 95% 53% / 0.5);
+  }
+  
+  /* Quick Actions Grid */
+  .quick-action-button {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 1.5rem;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .quick-action-button:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 32px 0 hsl(230 90% 65% / 0.2);
+  }
+  
+  .quick-action-button svg {
+    stroke: hsl(230 90% 65%);
+  }
+  
+  .quick-action-button span {
+    color: hsl(230 90% 65%);
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  
+  /* Notification Center Animation */
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  .animate-slide-down {
+    animation: slide-down 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Enhanced Event Card Carousel Styles */
+  .event-carousel-card {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(167, 139, 250, 0.1));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 1.5rem;
+  }
+  
+  /* Success/Approval Toast Styles */
+  .toast-success {
+    background: linear-gradient(135deg, hsl(142 76% 45%), hsl(160 84% 39%));
+    color: white;
+    box-shadow: 0 8px 32px 0 hsla(142, 76%, 45%, 0.3);
+  }
+  
+  .toast-info {
+    background: linear-gradient(135deg, hsl(230 90% 65%), hsl(280 85% 70%));
+    color: white;
+    box-shadow: 0 8px 32px 0 hsla(230, 90%, 65%, 0.3);
+  }
+}

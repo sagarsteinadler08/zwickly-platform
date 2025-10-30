@@ -1,0 +1,85 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+*.log
+
+# Production
+build/
+dist/
+.next/
+out/
+
+# Environment
+.env
+.env*.local
+.env.production
+vapid.json
+
+# Database
+*.db
+*.sqlite
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Misc
+.cache/
+tmp/
+temp/
+*.pid
+*.seed
+*.pid.lock
+
+# Docker
+pgdata/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Prisma
+prisma/.prisma/
+prisma/dev.db
+
+# Uploads
+public/uploaded/
+uploads/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Temporary folders
+tmp/
+temp/
+

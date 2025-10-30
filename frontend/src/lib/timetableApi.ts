@@ -1,0 +1,127 @@
+import { supabase } from "@/integrations/supabase/client";
+
+export interface TimetableEntry {
+  dayTime: string;
+  course: string;
+  room: string;
+  instructor: string;
+  cycle: string;
+}
+
+const API_BASE_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/proxy/timetable` : "http://localhost:3000/api/proxy/timetable";
+const SEM_GROUP = "252035";
+const UID = "sagar";
+
+export const DAYS_MAP: { [key: string]: string } = {
+  Sunday: "Sonntag",
+  Monday: "Montag",
+  Tuesday: "Dienstag",
+  Wednesday: "Mittwoch",
+  Thursday: "Donnerstag",
+  Friday: "Freitag",
+  Saturday: "Samstag",
+};
+
+export const WEEKDAYS = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
+
+export const getTodayDayInGerman = (): string => {
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+  return DAYS_MAP[today] || "Montag";
+};
+
+export const fetchTimetable = async (dayId?: string): Promise<TimetableEntry[]> => {
+  try {
+    const day = dayId || getTodayDayInGerman();
+    const url = `${API_BASE_URL}?dayId=${day}&semGrp=${SEM_GROUP}&uid=${UID}`;
+    
+    const text = await fetchWithFallback(url);
+    const entries = parseTimetableText(text);
+    
+    // Save to Supabase in the background
+    saveToSupabase(day, entries).catch(err => console.error("Failed to save to Supabase:", err));
+    
+    return entries;
+  } catch (error) {
+    console.error("Error fetching timetable:", error);
+    return [];
+  }
+};
+
+const saveToSupabase = async (dayName: string, entries: TimetableEntry[]) => {
+  // Delete existing entries for this day
+  await supabase
+    .from('timetable')
+    .delete()
+    .eq('day_name', dayName)
+    .eq('sem_group', SEM_GROUP);
+  
+  // Insert new entries
+  const supabaseEntries = entries.map(entry => ({
+    day_name: dayName,
+    day_time: entry.dayTime,
+    course: entry.course,
+    room: entry.room,
+    instructor: entry.instructor,
+    cycle: entry.cycle,
+    sem_group: SEM_GROUP
+  }));
+  
+  if (supabaseEntries.length > 0) {
+    await supabase.from('timetable').insert(supabaseEntries);
+  }
+};
+
+const fetchWithFallback = async (url: string): Promise<string> => {
+  // Since we're using our own proxy, just fetch directly
+  const res = await fetch(url);
+  if (res.ok) return await res.text();
+  throw new Error(`Status ${res.status}`);
+};
+
+const parseTimetableText = (text: string): TimetableEntry[] => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, "text/html");
+  const entries: TimetableEntry[] = [];
+  
+  const panels = doc.querySelectorAll(".panel");
+  
+  panels.forEach((panel) => {
+    const heading = panel.querySelector(".panel-heading")?.textContent?.trim() || "";
+    const timeMatch = heading.match(/(\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2})/);
+    const dayTime = timeMatch ? timeMatch[1] : "";
+    
+    let course = "";
+    let room = "";
+    let instructor = "";
+    let cycle = "";
+    
+    const rows = panel.querySelectorAll("tr");
+    rows.forEach((row) => {
+      const cells = row.querySelectorAll("td");
+      
+      if (cells.length === 1) {
+        const text = cells[0].textContent?.trim() || "";
+        if (text && !text.startsWith("Raum") && !text.startsWith("Dozent") && !text.startsWith("Zyklus")) {
+          course = text;
+        }
+      } else if (cells.length === 2) {
+        const key = cells[0].textContent?.trim() || "";
+        const value = cells[1].textContent?.trim() || "";
+        
+        if (key === "Raum") {
+          room = value.split("Karte")[0].trim();
+        } else if (key === "Dozent") {
+          instructor = value;
+        } else if (key === "Zyklus") {
+          cycle = value.replace(/\s*Zyklus\s*/g, "").trim();
+        }
+      }
+    });
+    
+    if (dayTime && course) {
+      entries.push({ dayTime, course, room, instructor, cycle });
+    }
+  });
+  
+  return entries;
+};

@@ -1,0 +1,44 @@
+.text-gradient {
+  background: linear-gradient(90deg, #7B5CFA 10%, #48E0E4 80%);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.zw-sidebar {
+  width: 260px;
+  background: #fff;
+  box-shadow: 1px 0 6px #8882;
+  border-radius: 2em 0 3em 1em;
+  min-width: 200px;
+}
+@media (max-width: 768px) {
+  .zw-sidebar { position: absolute; z-index: 20; top: 0; left: 0; height: 100%; min-width: 60vw;}
+  .sidebar-toggle {display:inline-block;}
+}
+.sidebar-toggle { font-size: 1.15em; color: #7B5CFA; background: #fff; border:none; padding: 3px 1em; border-radius: 1em;}
+.zw-main-content { flex: 1; min-width: 0; padding: 1rem; }
+.zw-message-list { background: #fff; border-radius: 1.5em; min-height: 315px; padding: 1rem; box-shadow: 0 1px 10px #ccc3;}
+.zw-composer { border-radius: 1em; }
+.zw-message-row { border-radius: 1em; margin-bottom: 10px; transition: box-shadow 0.3s; }
+.zw-message-row:hover { box-shadow: 0 2px 20px #7B5CFA22; }
+.zw-message-meta { font-size: .91em; color: #7B5CFA; margin-bottom:2px; }
+.zw-socket-status { text-align: center; margin: 4px 0; font-size:.95em;}
+.zw-toast { background: #7B5CFA linear-gradient(90deg, #7B5CFA 40%, #48E0E4 100%); color: #fff; }
+.zw-request-widget { background: #eef; }
+.zw-channel-items { list-style: none; margin:0; padding:0;}
+.zw-list-btn { padding:8px 8px; border-radius: 0.7em; margin-bottom: 4px; background: #f3f4f6; transition:background .2s;}
+.zw-list-btn--active { background: #7B5CFA; color: #fff; }
+.zw-unread-badge { background: #ef4444; color: #fff; border-radius: 9999px; padding: 0.1em 0.5em; font-size:.81em; margin-left:.7em; }
+.zw-channel-header { background: rgba(255,255,255,.80); box-shadow:0 2px 4px #8881; border-radius:1em; }
+.zw-chat-imgbox { max-width: 320px; }
+.zw-chat-img { display: block; max-width: 100%; border-radius: 8px; }
+.animate-toastIn { animation:toastIn .3s cubic-bezier(.84,0,.36,1.18);}
+@keyframes toastIn { from{transform:translateY(40px); opacity:0} to{transform:none;opacity:1} }
+.animate-messageAppear { animation:messageAppear .24s cubic-bezier(.52,.12,.62,1.09);}
+@keyframes messageAppear { from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:none;} }
+.animate-fadeIn { animation:fadeIn .22s ease; }
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+.animate-composerAppear { animation:composerIn .4s cubic-bezier(.4,0,.3,1);}
+@keyframes composerIn { from{opacity:0;transform:translateY(40px);} to{opacity:1;transform: translateY(0);} }
+.animate-pollOptionAppear { animation:fadeIn .32s;}
+/* 8px grid for all spacing */
+* { box-sizing: border-box; }
