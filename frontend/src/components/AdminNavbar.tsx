@@ -2,6 +2,7 @@ import { Home, Users, Calendar, MessageSquare, MessageCircle, Bell, Search } fro
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import NotificationCenter from "./NotificationCenter";
+import ThemeToggle from "./ThemeToggle";
 
 const AdminNavbar = () => {
   const [notifications, setNotifications] = useState(0); // Will be updated from API
@@ -62,6 +63,7 @@ const AdminNavbar = () => {
             >
               <Search className="w-5 h-5 text-primary" />
             </button>
+            <ThemeToggle />
             <button
               onClick={() => setShowNotifications(!showNotifications)}
               className="relative p-2 rounded-lg hover:bg-primary/10 transition-colors"
