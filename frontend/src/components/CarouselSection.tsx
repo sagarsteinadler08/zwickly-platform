@@ -258,50 +258,59 @@ const CarouselSection = () => {
   const CurrentIcon = slides[currentSlide].icon;
 
   return (
-    <Card className="event-carousel-card hover-glow p-6 animate-fade-in">
-      <div className={`relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 border border-white/60 shadow-xl`}>
-        {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-15"
-          style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
-        />
-        
-        <div className="relative z-10 p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-accent">
-                  <CurrentIcon className="w-7 h-7 text-white" />
-                </div>
-                <h3 className="text-3xl font-bold gradient-text">{slides[currentSlide].title}</h3>
+    <Card className="relative overflow-hidden border-0 shadow-2xl bg-white animate-fade-in">
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 via-white to-blue-50/30" />
+      
+      {/* Background pattern with faded image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-5"
+        style={{ 
+          backgroundImage: `url(${slides[currentSlide].image})`,
+          filter: 'blur(2px)'
+        }}
+      />
+      
+      <div className="relative z-10 p-10">
+        <div className="flex items-start justify-between mb-8">
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 shadow-lg">
+                <CurrentIcon className="w-8 h-8 text-white" />
               </div>
-              <p className="text-gray-700 text-base leading-relaxed max-w-2xl">{slides[currentSlide].subtitle}</p>
+              <h3 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {slides[currentSlide].title}
+              </h3>
             </div>
-          
-            <div className="flex items-center gap-3 ml-6">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={prevSlide}
-                className="rounded-full bg-white/80 backdrop-blur-sm border-white/60 hover:bg-white/90 hover:scale-110 transition-all"
-              >
-                <ChevronLeft className="w-5 h-5 text-primary" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={nextSlide}
-                className="rounded-full bg-white/80 backdrop-blur-sm border-white/60 hover:bg-white/90 hover:scale-110 transition-all"
-              >
-                <ChevronRight className="w-5 h-5 text-primary" />
-              </Button>
-            </div>
+            <p className="text-gray-600 text-lg leading-relaxed max-w-3xl ml-20">
+              {slides[currentSlide].subtitle}
+            </p>
           </div>
+        
+          <div className="flex items-center gap-3 ml-6">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={prevSlide}
+              className="rounded-full bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-purple-50 hover:border-purple-300 hover:scale-110 transition-all shadow-md"
+            >
+              <ChevronLeft className="w-5 h-5 text-purple-600" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={nextSlide}
+              className="rounded-full bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-purple-50 hover:border-purple-300 hover:scale-110 transition-all shadow-md"
+            >
+              <ChevronRight className="w-5 h-5 text-purple-600" />
+            </Button>
+          </div>
+        </div>
 
-          <Dialog>
+        <Dialog>
           <DialogTrigger asChild>
-            <Button className="rounded-full bg-gradient-to-r from-primary to-accent text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all font-semibold px-6 py-3">
-              View Details
+            <Button className="rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-semibold px-8 py-6 text-lg">
+              Explore More →
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-background/95 backdrop-blur-xl border-primary/30 max-w-2xl">
@@ -314,15 +323,15 @@ const CarouselSection = () => {
           </DialogContent>
         </Dialog>
 
-          <div className="flex justify-center gap-2 mt-8">
+          <div className="flex justify-center gap-3 mt-10">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`rounded-full transition-all duration-300 ${
+                className={`rounded-full transition-all duration-500 ${
                   index === currentSlide 
-                    ? "bg-gradient-to-r from-primary to-accent w-10 h-2 shadow-md" 
-                    : "bg-gray-300 w-2 h-2 hover:bg-gray-400"
+                    ? "bg-gradient-to-r from-purple-600 to-blue-600 w-12 h-3 shadow-lg" 
+                    : "bg-gray-300 w-3 h-3 hover:bg-purple-400 hover:scale-125"
                 }`}
               />
             ))}

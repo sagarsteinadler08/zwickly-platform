@@ -49,34 +49,41 @@ const TimetableCard = () => {
   };
 
   return (
-    <Card className="glass-card hover-glow p-6 animate-fade-in">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold gradient-text">Timetable</h3>
+    <Card className="relative overflow-hidden border-0 shadow-xl bg-white animate-fade-in">
+      {/* Gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 opacity-40" />
+      
+      {/* Content */}
+      <div className="relative z-10 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
+              <Calendar className="w-6 h-6 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Timetable</h3>
+          </div>
+          <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 shadow-md border border-gray-200">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handlePreviousDay}
+              className="h-7 w-7 hover:bg-purple-100 rounded-full"
+            >
+              <ChevronLeft className="h-4 w-4 text-purple-600" />
+            </Button>
+            <span className="text-sm font-bold text-purple-600 min-w-[2.5rem] text-center px-2">
+              {getDayAbbreviation(selectedDay)}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleNextDay}
+              className="h-7 w-7 hover:bg-purple-100 rounded-full"
+            >
+              <ChevronRight className="h-4 w-4 text-purple-600" />
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handlePreviousDay}
-            className="h-8 w-8"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <span className="text-sm font-semibold text-primary min-w-[2rem] text-center">
-            {getDayAbbreviation(selectedDay)}
-          </span>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleNextDay}
-            className="h-8 w-8"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
       
       {loading ? (
         <div className="text-center text-muted-foreground py-8">Loading schedule...</div>
@@ -87,24 +94,34 @@ const TimetableCard = () => {
           {schedule.map((item, index) => (
             <div
               key={index}
-              className="p-3 rounded-lg bg-muted/20 border border-primary/10 hover:border-primary/30 transition-all duration-300"
+              className="relative p-4 rounded-xl bg-white border-l-4 border-purple-500 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
             >
-              <div className="flex items-center gap-2 text-sm text-primary mb-1">
-                <Clock className="w-4 h-4" />
-                <span className="font-medium">{item.dayTime}</span>
-              </div>
-              <p className="font-semibold text-foreground mb-1">{item.course}</p>
-              {item.instructor && (
-                <p className="text-sm text-primary mb-1">👨‍🏫 {item.instructor}</p>
-              )}
-              {item.room && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <MapPin className="w-3 h-3" />
-                  <span>{item.room}</span>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="p-1.5 rounded-lg bg-purple-100">
+                    <Clock className="w-4 h-4 text-purple-600" />
+                  </div>
+                  <span className="font-bold text-purple-600">{item.dayTime}</span>
                 </div>
+                {item.room && (
+                  <div className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-full">
+                    <MapPin className="w-3 h-3 text-gray-600" />
+                    <span className="text-xs font-medium text-gray-700">{item.room}</span>
+                  </div>
+                )}
+              </div>
+              
+              <p className="font-bold text-gray-900 mb-2 text-sm leading-snug">{item.course}</p>
+              
+              {item.instructor && (
+                <p className="text-xs text-gray-600 mb-1">👨‍🏫 {item.instructor}</p>
               )}
+              
               {item.cycle && (
-                <p className="text-xs text-muted-foreground">🔄 {item.cycle}</p>
+                <div className="flex items-center gap-1 text-xs text-gray-500 mt-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                  <span>{item.cycle}</span>
+                </div>
               )}
             </div>
           ))}

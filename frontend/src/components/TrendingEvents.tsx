@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Calendar } from "lucide-react";
 import EventCard from "./EventCard";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -57,7 +58,14 @@ const TrendingEvents = () => {
 
   return (
     <div className="animate-fade-in">
-      <h3 className="text-2xl font-bold gradient-text mb-6">Upcoming Events</h3>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600">
+          <Calendar className="w-5 h-5 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+          Upcoming Events
+        </h3>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {events.length === 0 ? (
