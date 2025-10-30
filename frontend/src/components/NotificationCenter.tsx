@@ -84,6 +84,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
     if (type.includes('approved') || type.includes('success')) return 'success';
     if (type.includes('declined') || type.includes('error') || type.includes('failed')) return 'error';
     if (type.includes('warning')) return 'warning';
+    if (type.includes('admin_channel_request_new') || type.includes('admin_ticket_new')) return 'warning';
     return 'info';
   };
   
@@ -94,6 +95,8 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
     if (type.includes('channel_request_approved')) return 'Channel Request Approved! 🎉';
     if (type.includes('channel_request_declined')) return 'Channel Request Declined';
     if (type.includes('channel_request_submitted')) return 'Channel Request Submitted';
+    if (type.includes('admin_channel_request_new')) return 'New Channel Request 📝';
+    if (type.includes('admin_ticket_new')) return 'New Support Ticket';
     return 'Notification';
   };
   

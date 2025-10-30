@@ -1,7 +1,13 @@
-import { Home, Users, Calendar, MessageSquare, MessageCircle } from "lucide-react";
+import { Home, Users, Calendar, MessageSquare, MessageCircle, Bell, Search } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import NotificationCenter from "./NotificationCenter";
 
 const AdminNavbar = () => {
+  const [notifications, setNotifications] = useState(0); // Will be updated from API
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
   const navItems = [
     { name: "Home", path: "/admin/home", icon: Home },
     { name: "Products", path: "/users", icon: Users },
@@ -14,7 +20,8 @@ const AdminNavbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-primary/20">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold gradient-text overflow-visible">Zwickly Admin</h1>
+          <div className="flex items-center gap-6">
+            <h1 className="text-2xl font-bold gradient-text overflow-visible">Zwickly Admin</h1>
           
           <ul className="flex items-center gap-8">
             {navItems.map((item) => {
@@ -45,8 +52,46 @@ const AdminNavbar = () => {
               );
             })}
           </ul>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setShowSearch(!showSearch)}
+              className="p-2 rounded-lg hover:bg-primary/10 transition-colors"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5 text-primary" />
+            </button>
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="relative p-2 rounded-lg hover:bg-primary/10 transition-colors"
+              aria-label="Notifications"
+            >
+              <Bell className="w-5 h-5 text-primary" />
+              {notifications > 0 && (
+                <span className="notification-badge">{notifications}</span>
+              )}
+            </button>
+          </div>
         </div>
+
+        {showSearch && (
+          <div className="mt-4 pb-2">
+            <input
+              type="text"
+              placeholder="Search admin panel..."
+              className="search-input"
+              autoFocus
+            />
+          </div>
+        )}
       </div>
+      
+      {/* Notification Center */}
+      <NotificationCenter 
+        isOpen={showNotifications} 
+        onClose={() => setShowNotifications(false)} 
+      />
     </nav>
   );
 };
