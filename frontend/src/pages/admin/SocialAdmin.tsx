@@ -283,7 +283,7 @@ const SocialAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F172A]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0F172A] transition-colors duration-300">
       <AdminNavbar />
       
       <main className="container mx-auto px-6 pt-24 pb-12">
@@ -292,14 +292,14 @@ const SocialAdmin = () => {
         {/* Pending Channel Requests */}
         {requests.length > 0 && (
           <Card className="neo-card p-6 mb-6 border-l-2 border-l-orange-500/50">
-            <h2 className="text-2xl font-bold mb-4 text-white">Pending Channel Requests</h2>
+            <h2 className="text-2xl font-bold mb-4 text-slate-800 dark:text-white">Pending Channel Requests</h2>
             <div className="space-y-4">
               {requests.map((req) => (
-                <div key={req.id} className="flex items-center justify-between p-4 border rounded-xl">
+                <div key={req.id} className="flex items-center justify-between p-4 border border-slate-200 dark:border-white/10 rounded-xl bg-white dark:bg-transparent">
                   <div>
-                    <h3 className="font-semibold text-white">{req.name}</h3>
-                    <p className="text-sm text-muted-foreground">{req.description}</p>
-                    <p className="text-xs text-muted-foreground">Requested by: {req.requesterId}</p>
+                    <h3 className="font-semibold text-slate-800 dark:text-white">{req.name}</h3>
+                    <p className="text-sm text-slate-600 dark:text-gray-400">{req.description}</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-500">Requested by: {req.requesterId}</p>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" onClick={() => handleApproveRequest(req.id)} className="bg-green-600">
@@ -356,7 +356,7 @@ const SocialAdmin = () => {
         {/* Tickets Section */}
         <Card className="neo-card p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-white">Support Tickets (@admin mentions)</h3>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-white">Support Tickets (@admin mentions)</h3>
             <Button variant="outline" size="sm" onClick={() => setShowTickets(!showTickets)}>
               {showTickets ? 'Hide' : `Show (${tickets.length})`}
             </Button>
@@ -364,15 +364,15 @@ const SocialAdmin = () => {
           {showTickets && (
             <div className="space-y-4">
               {tickets.length === 0 ? (
-                <p className="text-muted-foreground text-center py-4">No open tickets</p>
+                <p className="text-slate-600 dark:text-gray-400 text-center py-4">No open tickets</p>
               ) : (
                 tickets.map(ticket => (
-                  <div key={ticket.id} className="border rounded-xl p-4 bg-white/50">
+                  <div key={ticket.id} className="border border-slate-200 dark:border-white/10 rounded-xl p-4 bg-white dark:bg-white/5">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h4 className="font-semibold">{ticket.title}</h4>
-                        <p className="text-sm text-muted-foreground">From: {ticket.userId}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <h4 className="font-semibold text-slate-800 dark:text-white">{ticket.title}</h4>
+                        <p className="text-sm text-slate-600 dark:text-gray-400">From: {ticket.userId}</p>
+                        <p className="text-xs text-slate-500 dark:text-gray-500">
                           {new Date(ticket.createdAt).toLocaleString()}
                         </p>
                       </div>
@@ -419,9 +419,9 @@ const SocialAdmin = () => {
 
         {/* Always-visible message draft/send area - only enabled if exactly one channel selected */}
         <Card className="neo-card p-6 mb-6">
-          <h3 className="font-bold mb-2 text-white">Draft & Send Message</h3>
+          <h3 className="font-bold mb-2 text-slate-800 dark:text-white">Draft & Send Message</h3>
           {selectedChannels.length !== 1 ? (
-            <p className="text-muted-foreground">Select exactly one channel to enable drafting and sending a message.</p>
+            <p className="text-slate-600 dark:text-gray-400">Select exactly one channel to enable drafting and sending a message.</p>
           ) : (
             <div className="flex flex-col gap-2 md:flex-row md:items-end">
               <textarea
@@ -459,17 +459,17 @@ const SocialAdmin = () => {
         {/* Message History for selected channel */}
         {selectedChannels.length === 1 && (
           <Card className="neo-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2">Messages for {selectedChannels[0].name}</h3>
+            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Messages for {selectedChannels[0].name}</h3>
             {fetchingMessages ? (
-              <p className="text-muted-foreground">Loading messages...</p>
+              <p className="text-slate-600 dark:text-gray-400">Loading messages...</p>
             ) : messages.length === 0 ? (
-              <p className="text-muted-foreground">No messages yet.</p>
+              <p className="text-slate-600 dark:text-gray-400">No messages yet.</p>
             ) : (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {messages.map((msg) => (
-                  <div key={msg.id} className="border rounded p-2 flex flex-col">
-                    <div className="text-xs text-muted-foreground mb-1">{msg.userId} &bull; {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : ''}</div>
-                    <div>{msg.body}</div>
+                  <div key={msg.id} className="border border-slate-200 dark:border-white/10 rounded p-2 flex flex-col bg-white dark:bg-transparent">
+                    <div className="text-xs text-slate-500 dark:text-gray-400 mb-1">{msg.userId} &bull; {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : ''}</div>
+                    <div className="text-slate-700 dark:text-white">{msg.body}</div>
                   </div>
                 ))}
               </div>
@@ -478,14 +478,14 @@ const SocialAdmin = () => {
         )}
         {selectedChannels.length > 1 && (
           <Card className="neo-card p-6 mb-6">
-            <p className="text-center text-muted-foreground">Multiple channels selected: bulk actions only (send/view messages not available).</p>
+            <p className="text-center text-slate-600 dark:text-gray-400">Multiple channels selected: bulk actions only (send/view messages not available).</p>
           </Card>
         )}
 
         {/* Admin Controls: if any selected, support bulk delete, single send */}
         {selectedChannels.length > 0 && (
           <Card className="neo-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-4">
+            <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">
               Admin Controls: {selectedChannels.length === 1 ? selectedChannels[0].name : `${selectedChannels.length} channels selected`}
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -534,7 +534,7 @@ const SocialAdmin = () => {
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 placeholder="Type your message..."
-                className="w-full min-h-[120px] p-4 border-2 border-white/20 rounded-xl bg-white/10 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500"
+                className="w-full min-h-[120px] p-4 border-2 border-slate-300 dark:border-white/20 rounded-xl bg-white dark:bg-white/10 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors duration-300"
               />
               <div className="flex gap-2">
                 <Button 
@@ -582,7 +582,7 @@ const SocialAdmin = () => {
                 placeholder="Poll question"
               />
               <div className="space-y-2">
-                <label className="text-sm font-medium">Options</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-gray-200">Options</label>
                 {pollOptions.map((opt, i) => (
                   <Input
                     key={i}
@@ -707,16 +707,16 @@ const SocialAdmin = () => {
 
         {/* All Channels */}
         <Card className="neo-card p-6">
-          <h2 className="text-2xl font-bold mb-4 text-white">All Channels</h2>
+          <h2 className="text-2xl font-bold mb-4 text-slate-800 dark:text-white">All Channels</h2>
           {channels.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No channels yet. Create one!</p>
+            <p className="text-slate-600 dark:text-gray-400 text-center py-8">No channels yet. Create one!</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {channels.map((channel) => (
                 <div 
                   key={channel.id}
-                  className={`p-4 border rounded-xl hover-glow cursor-pointer transition-all ${
-                    selectedChannels.some(ch => ch.id === channel.id) ? 'bg-primary/10 border-primary' : ''
+                  className={`p-4 border border-slate-200 dark:border-white/10 rounded-xl hover-glow cursor-pointer transition-all bg-white dark:bg-transparent ${
+                    selectedChannels.some(ch => ch.id === channel.id) ? 'bg-purple-50 dark:bg-primary/10 border-purple-400 dark:border-primary' : ''
                   }`}
                   onClick={() => toggleChannelSelect(channel)}
                 >
@@ -728,9 +728,9 @@ const SocialAdmin = () => {
                     className="mr-2 align-middle"
                   />
                   <MessageSquare className="w-8 h-8 text-primary mb-2 inline-block align-middle" />
-                  <span className="font-bold text-lg align-middle">{channel.name}</span>
-                  <div className="text-sm text-muted-foreground">{channel.description}</div>
-                  <div className="text-xs text-muted-foreground mt-2">#{channel.slug}</div>
+                  <span className="font-bold text-lg align-middle text-slate-800 dark:text-white">{channel.name}</span>
+                  <div className="text-sm text-slate-600 dark:text-gray-400">{channel.description}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-500 mt-2">#{channel.slug}</div>
                 </div>
               ))}
             </div>
@@ -740,17 +740,17 @@ const SocialAdmin = () => {
         {/* Channel image gallery: render if exactly one selected, below message history */}
         {selectedChannels.length === 1 && (
           <Card className="neo-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2">Images for {selectedChannels[0].name}</h3>
+            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Images for {selectedChannels[0].name}</h3>
             {fetchingImages ? (
-              <p className="text-muted-foreground">Loading images...</p>
+              <p className="text-slate-600 dark:text-gray-400">Loading images...</p>
             ) : images.length === 0 ? (
-              <p className="text-muted-foreground">No images uploaded yet.</p>
+              <p className="text-slate-600 dark:text-gray-400">No images uploaded yet.</p>
             ) : (
               <div className="flex flex-wrap gap-4">
                 {images.map((img) => (
-                  <div key={img.id} className="w-48 flex flex-col items-center border rounded-xl p-2 bg-white/80">
+                  <div key={img.id} className="w-48 flex flex-col items-center border border-slate-200 dark:border-white/10 rounded-xl p-2 bg-white dark:bg-white/10">
                     <img src={img.url} alt={img.originalName || 'image'} className="object-contain max-h-40 w-full" />
-                    <div className="text-xs text-muted-foreground mt-1 truncate w-full">{img.originalName}</div>
+                    <div className="text-xs text-slate-500 dark:text-gray-400 mt-1 truncate w-full">{img.originalName}</div>
                   </div>
                 ))}
               </div>
@@ -761,11 +761,11 @@ const SocialAdmin = () => {
         {/* Channel polls: render if exactly one selected, below message/images, now fully interactive */}
         {selectedChannels.length === 1 && (
           <Card className="neo-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2">Polls for {selectedChannels[0].name}</h3>
+            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Polls for {selectedChannels[0].name}</h3>
             {fetchingPolls ? (
-              <p className="text-muted-foreground">Loading polls...</p>
+              <p className="text-slate-600 dark:text-gray-400">Loading polls...</p>
             ) : polls.length === 0 ? (
-              <p className="text-muted-foreground">No polls created yet.</p>
+              <p className="text-slate-600 dark:text-gray-400">No polls created yet.</p>
             ) : (
               <div className="space-y-6">
                 {polls.map((poll) => {
@@ -837,7 +837,7 @@ const SocialAdmin = () => {
                           })}
                         </div>
                       ) : (
-                        <p className="text-muted-foreground">Unable to load poll options.</p>
+                        <p className="text-slate-600 dark:text-gray-400">Unable to load poll options.</p>
                       )}
                       {/* Admin close poll */}
                       {!poll.isClosed && (
@@ -864,7 +864,7 @@ const SocialAdmin = () => {
                           >Close Poll</Button>
                         </div>
                       )}
-                      <div className="text-xs text-muted-foreground mt-1">Created: {poll.createdAt ? new Date(poll.createdAt).toLocaleString() : ''}</div>
+                      <div className="text-xs text-slate-500 dark:text-gray-500 mt-1">Created: {poll.createdAt ? new Date(poll.createdAt).toLocaleString() : ''}</div>
                     </div>
                   );
                 })}
