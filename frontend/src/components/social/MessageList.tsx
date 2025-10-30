@@ -83,7 +83,7 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
           {/* Message Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-slate-800 dark:text-white">
                 {msg.isBot ? "Pixi Bot" : msg.userId}
               </span>
               {msg.isBot && (
@@ -91,7 +91,7 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
                   Bot
                 </span>
               )}
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-slate-500 dark:text-gray-500">
                 {new Date(msg.createdAt).toLocaleString([], { 
                   month: 'short', 
                   day: 'numeric', 
@@ -100,11 +100,11 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
                 })}
               </span>
             </div>
-            <div className={`${msg.isBot ? 'bg-purple-500/10 border border-purple-500/30 rounded-lg p-3' : ''}`}>
+            <div className={`${msg.isBot ? 'bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/30 rounded-lg p-3' : ''}`}>
               {msg.imageUrl ? (
                 <ImageMessage imageUrl={msg.imageUrl} />
               ) : (
-                <div className="text-gray-200 break-words">{msg.body}</div>
+                <div className="text-slate-700 dark:text-gray-200 break-words">{msg.body}</div>
               )}
             </div>
           </div>

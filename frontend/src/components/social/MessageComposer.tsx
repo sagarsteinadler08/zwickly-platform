@@ -92,7 +92,7 @@ const MessageComposer: React.FC<Props> = ({ userId, userHandle, channel, onToast
   };
 
   return (
-    <div className="flex gap-3 items-end">
+    <div className="flex gap-3 items-end bg-white dark:bg-transparent rounded-lg p-3 transition-colors duration-300">
       {/* User Avatar */}
       <div className="flex-shrink-0 hidden sm:block">
         <img
@@ -108,13 +108,13 @@ const MessageComposer: React.FC<Props> = ({ userId, userHandle, channel, onToast
       </div>
 
       {/* Composer */}
-      <div className="flex-1 bg-[#1E293B] border border-white/20 rounded-lg shadow-lg overflow-hidden">
+      <div className="flex-1 bg-white dark:bg-[#1E293B] border border-slate-300 dark:border-white/20 rounded-lg shadow-sm dark:shadow-lg overflow-hidden transition-colors duration-300">
         <textarea
           value={body}
           onChange={e => setBody(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Message in this channel... (Use @username to mention, @pixi for bot)"
-          className="w-full px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 border-0 bg-transparent text-white placeholder:text-gray-400"
+          className="w-full px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 border-0 bg-transparent text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-400"
           rows={1}
           maxLength={500}
           style={{ minHeight: '48px', maxHeight: '120px' }}
@@ -122,12 +122,12 @@ const MessageComposer: React.FC<Props> = ({ userId, userHandle, channel, onToast
         
         {/* Uploaded File Preview */}
         {imageFile && (
-          <div className="px-4 pb-3 flex items-center gap-2 bg-white/5 border-t border-white/10">
-            <span className="text-sm text-gray-300 flex-1 truncate">{imageFile.name}</span>
+          <div className="px-4 pb-3 flex items-center gap-2 bg-slate-100 dark:bg-white/5 border-t border-slate-200 dark:border-white/10">
+            <span className="text-sm text-slate-700 dark:text-gray-300 flex-1 truncate">{imageFile.name}</span>
             <button
               type="button"
               onClick={() => setImageFile(null)}
-              className="text-red-400 hover:text-red-300 text-sm font-medium"
+              className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium"
             >
               Remove
             </button>
@@ -135,19 +135,19 @@ const MessageComposer: React.FC<Props> = ({ userId, userHandle, channel, onToast
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between px-4 py-2 bg-white/5 border-t border-white/10">
+        <div className="flex items-center justify-between px-4 py-2 bg-slate-50 dark:bg-white/5 border-t border-slate-200 dark:border-white/10">
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-800 dark:hover:text-white rounded-lg transition-colors"
             >
               <ImageIcon className="w-4 h-4" />
               <span className="text-sm font-medium">Image</span>
             </button>
             <button
               type="button"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-800 dark:hover:text-white rounded-lg transition-colors"
               onClick={() => onToast({ message: 'Poll creation coming soon!' })}
             >
               <BarChart3 className="w-4 h-4" />
@@ -157,7 +157,7 @@ const MessageComposer: React.FC<Props> = ({ userId, userHandle, channel, onToast
           <div className="flex gap-2">
             <button
               type="button"
-              className="p-2 text-gray-400 hover:bg-white/10 hover:text-white rounded-lg transition-colors"
+              className="p-2 text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-700 dark:hover:text-white rounded-lg transition-colors"
               onClick={() => onToast({ message: 'Help: Use @username to mention, @pixi for bot help' })}
               aria-label="Help"
             >
@@ -167,7 +167,7 @@ const MessageComposer: React.FC<Props> = ({ userId, userHandle, channel, onToast
               type="submit"
               onClick={sendMessage}
               disabled={pending || (!body && !imageFile)}
-              className="p-2.5 text-white bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] hover:shadow-lg hover:shadow-purple-500/40 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2.5 text-white bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] hover:shadow-md hover:shadow-purple-500/30 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Send message"
             >
               <Send className="w-5 h-5" />
