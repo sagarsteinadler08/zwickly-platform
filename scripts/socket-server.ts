@@ -155,7 +155,7 @@ io.on("connection", (socket) => {
               createdAt: ticket.createdAt,
             });
 
-            // Create notification
+            // Create notification for the user
             await prisma.notification.create({
               data: {
                 userId,
@@ -164,6 +164,22 @@ io.on("connection", (socket) => {
                   ticketId: ticket.id,
                   messageId: message.id,
                   channelId: payload.channelId,
+                  message: "Your support ticket has been created",
+                },
+              },
+            });
+
+            // Create notification for admin
+            await prisma.notification.create({
+              data: {
+                userId: 'admin',
+                type: "admin_ticket_new",
+                payload: {
+                  ticketId: ticket.id,
+                  messageId: message.id,
+                  channelId: payload.channelId,
+                  userId: userId,
+                  message: `New support ticket from ${userId}`,
                 },
               },
             });
