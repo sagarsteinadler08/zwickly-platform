@@ -22,39 +22,39 @@ const GreetingSection = () => {
   const greeting = getGreeting();
 
   return (
-    <Card className="relative overflow-hidden border-0 shadow-xl bg-white animate-fade-in">
+    <Card className="glass-widget border border-pink-500/20 shadow-2xl shadow-pink-500/10 animate-fadeInUp">
       {/* Gradient background */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${greeting.gradient} opacity-10`} />
+      <div className={`absolute inset-0 bg-gradient-to-br ${greeting.gradient} opacity-20`} />
       
       {/* Content */}
       <div className="relative z-10 p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-purple-600" />
-              <h3 className="text-xl font-bold text-gray-900">
+              <Sparkles className="w-5 h-5 text-pink-400" />
+              <h3 className="text-xl font-bold text-white">
                 {greeting.text}! {greeting.emoji}
               </h3>
             </div>
-            <p className="text-sm text-gray-600 mb-3">Ready to conquer your day?</p>
+            <p className="text-sm text-gray-400 mb-3">Ready to conquer your day?</p>
           </div>
         </div>
         
         <div className="flex items-baseline gap-2">
-          <p className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <p className="text-5xl font-bold bg-gradient-to-r from-pink-400 to-rose-500 bg-clip-text text-transparent">
             {getCurrentTime()}
           </p>
         </div>
         
         {/* Progress bar */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
             <span>Day Progress</span>
             <span>{Math.round((new Date().getHours() / 24) * 100)}%</span>
           </div>
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
             <div 
-              className={`h-full bg-gradient-to-r ${greeting.gradient} rounded-full transition-all duration-500`}
+              className={`h-full bg-gradient-to-r ${greeting.gradient} rounded-full transition-all duration-500 shadow-lg`}
               style={{ width: `${(new Date().getHours() / 24) * 100}%` }}
             />
           </div>

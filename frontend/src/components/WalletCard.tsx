@@ -38,28 +38,28 @@ const WalletCard = () => {
   };
 
   return (
-    <Card className="relative overflow-hidden border-0 shadow-xl bg-white animate-fade-in">
+    <Card className="glass-widget border border-teal-500/20 shadow-2xl shadow-teal-500/10 animate-fadeInUp">
       {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 opacity-60" />
+      <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-green-500/10" />
       
       {/* Content */}
       <div className="relative z-10 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg shadow-teal-500/30">
             <Wallet className="w-6 h-6 text-white" />
           </div>
-          <h3 className="text-lg font-bold text-gray-900">Student ID Wallet</h3>
+          <h3 className="text-lg font-bold text-white">Student ID Wallet</h3>
         </div>
         
         {/* Balance Display */}
-        <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-2xl">
+        <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 shadow-2xl shadow-teal-500/40">
           <p className="text-sm text-white/80 mb-2">Current Balance</p>
           <p className="text-5xl font-bold text-white mb-4">
             {loading ? "..." : `€${balance.toFixed(2)}`}
           </p>
           <Button 
             onClick={handleTopUp}
-            className="w-full bg-white text-green-700 hover:bg-gray-50 font-semibold shadow-lg"
+            className="w-full bg-white text-teal-700 hover:bg-gray-50 font-semibold shadow-lg hover:scale-105 transition-transform"
             size="lg"
           >
             <Plus className="w-5 h-5 mr-2" />

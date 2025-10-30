@@ -49,38 +49,34 @@ const TimetableCard = () => {
   };
 
   return (
-    <Card className="relative overflow-hidden border-0 shadow-xl bg-white animate-fade-in">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 opacity-40" />
-      
-      {/* Content */}
-      <div className="relative z-10 p-6">
+    <Card className="neo-card border-l-2 border-l-purple-500/50 shadow-lg shadow-purple-500/10 animate-fadeInUp">
+      <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-[#7B5CFA] to-[#48E0E4] shadow-lg shadow-purple-500/30">
               <Calendar className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900">Timetable</h3>
+            <h3 className="text-xl font-bold text-white">Timetable</h3>
           </div>
-          <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 shadow-md border border-gray-200">
+          <div className="flex items-center gap-2 bg-white/5 rounded-full px-3 py-1 border border-white/10">
             <Button
               variant="ghost"
               size="icon"
               onClick={handlePreviousDay}
-              className="h-7 w-7 hover:bg-purple-100 rounded-full"
+              className="h-7 w-7 hover:bg-purple-500/20 rounded-full"
             >
-              <ChevronLeft className="h-4 w-4 text-purple-600" />
+              <ChevronLeft className="h-4 w-4 text-gray-300" />
             </Button>
-            <span className="text-sm font-bold text-purple-600 min-w-[2.5rem] text-center px-2">
+            <span className="text-sm font-bold text-white min-w-[2.5rem] text-center px-2">
               {getDayAbbreviation(selectedDay)}
             </span>
             <Button
               variant="ghost"
               size="icon"
               onClick={handleNextDay}
-              className="h-7 w-7 hover:bg-purple-100 rounded-full"
+              className="h-7 w-7 hover:bg-purple-500/20 rounded-full"
             >
-              <ChevronRight className="h-4 w-4 text-purple-600" />
+              <ChevronRight className="h-4 w-4 text-gray-300" />
             </Button>
           </div>
         </div>
@@ -94,27 +90,27 @@ const TimetableCard = () => {
           {schedule.map((item, index) => (
             <div
               key={index}
-              className="relative p-4 rounded-xl bg-white border-l-4 border-purple-500 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
+              className="relative p-4 rounded-xl bg-white/5 border-l-4 border-[#7B5CFA] hover:bg-white/10 hover:border-[#48E0E4] shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
             >
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="p-1.5 rounded-lg bg-purple-100">
-                    <Clock className="w-4 h-4 text-purple-600" />
+                  <div className="p-1.5 rounded-lg bg-purple-500/20">
+                    <Clock className="w-4 h-4 text-[#48E0E4]" />
                   </div>
-                  <span className="font-bold text-purple-600">{item.dayTime}</span>
+                  <span className="font-bold text-[#48E0E4]">{item.dayTime}</span>
                 </div>
                 {item.room && (
-                  <div className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-full">
-                    <MapPin className="w-3 h-3 text-gray-600" />
-                    <span className="text-xs font-medium text-gray-700">{item.room}</span>
+                  <div className="flex items-center gap-1 px-2 py-1 bg-white/5 rounded-full border border-white/10">
+                    <MapPin className="w-3 h-3 text-gray-400" />
+                    <span className="text-xs font-medium text-gray-300">{item.room}</span>
                   </div>
                 )}
               </div>
               
-              <p className="font-bold text-gray-900 mb-2 text-sm leading-snug">{item.course}</p>
+              <p className="font-bold text-white mb-2 text-sm leading-snug">{item.course}</p>
               
               {item.instructor && (
-                <p className="text-xs text-gray-600 mb-1">👨‍🏫 {item.instructor}</p>
+                <p className="text-xs text-gray-400 mb-1">👨‍🏫 {item.instructor}</p>
               )}
               
               {item.cycle && (

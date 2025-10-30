@@ -258,31 +258,31 @@ const CarouselSection = () => {
   const CurrentIcon = slides[currentSlide].icon;
 
   return (
-    <Card className="relative overflow-hidden border-0 shadow-2xl bg-white animate-fade-in">
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 via-white to-blue-50/30" />
+    <Card className="relative overflow-hidden border border-purple-500/20 shadow-2xl shadow-purple-500/20 animate-fadeInUp">
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#7B5CFA]/10 via-transparent to-[#48E0E4]/10" />
       
       {/* Background pattern with faded image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-5"
+        className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ 
           backgroundImage: `url(${slides[currentSlide].image})`,
-          filter: 'blur(2px)'
+          filter: 'blur(3px)'
         }}
       />
       
-      <div className="relative z-10 p-10">
+      <div className="relative z-10 p-10 bg-gradient-to-br from-[#1E293B]/60 to-[#0F172A]/40 backdrop-blur-xl">
         <div className="flex items-start justify-between mb-8">
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 shadow-lg">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#7B5CFA] to-[#48E0E4] shadow-lg shadow-purple-500/40">
                 <CurrentIcon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h3 className="text-4xl font-bold gradient-text drop-shadow-lg">
                 {slides[currentSlide].title}
               </h3>
             </div>
-            <p className="text-gray-600 text-lg leading-relaxed max-w-3xl ml-20">
+            <p className="text-gray-300 text-lg leading-relaxed max-w-3xl ml-20">
               {slides[currentSlide].subtitle}
             </p>
           </div>
@@ -292,24 +292,24 @@ const CarouselSection = () => {
               variant="outline"
               size="icon"
               onClick={prevSlide}
-              className="rounded-full bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-purple-50 hover:border-purple-300 hover:scale-110 transition-all shadow-md"
+              className="rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 hover:border-purple-400 hover:scale-110 transition-all shadow-md"
             >
-              <ChevronLeft className="w-5 h-5 text-purple-600" />
+              <ChevronLeft className="w-5 h-5 text-gray-300" />
             </Button>
             <Button
               variant="outline"
               size="icon"
               onClick={nextSlide}
-              className="rounded-full bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-purple-50 hover:border-purple-300 hover:scale-110 transition-all shadow-md"
+              className="rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 hover:border-purple-400 hover:scale-110 transition-all shadow-md"
             >
-              <ChevronRight className="w-5 h-5 text-purple-600" />
+              <ChevronRight className="w-5 h-5 text-gray-300" />
             </Button>
           </div>
         </div>
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-semibold px-8 py-6 text-lg">
+            <Button className="rounded-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white shadow-xl shadow-purple-500/40 hover:shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transition-all font-semibold px-8 py-6 text-lg">
               Explore More →
             </Button>
           </DialogTrigger>
@@ -330,8 +330,8 @@ const CarouselSection = () => {
                 onClick={() => setCurrentSlide(index)}
                 className={`rounded-full transition-all duration-500 ${
                   index === currentSlide 
-                    ? "bg-gradient-to-r from-purple-600 to-blue-600 w-12 h-3 shadow-lg" 
-                    : "bg-gray-300 w-3 h-3 hover:bg-purple-400 hover:scale-125"
+                    ? "bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] w-12 h-3 shadow-lg shadow-purple-500/50" 
+                    : "bg-white/20 w-3 h-3 hover:bg-purple-400 hover:scale-125"
                 }`}
               />
             ))}
