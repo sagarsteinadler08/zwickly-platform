@@ -6,7 +6,7 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import webpush from 'web-push'
 import { PrismaClient } from '@prisma/client'
-import startReminderScheduler from './reminder-scheduler'
+import startReminderScheduler from './reminder-scheduler.js'
 
 const prisma = new PrismaClient()
 
