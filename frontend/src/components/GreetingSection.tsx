@@ -31,12 +31,12 @@ const GreetingSection = () => {
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-pink-400" />
-              <h3 className="text-xl font-bold text-white">
+              <Sparkles className="w-5 h-5 text-pink-400 dark:text-pink-400" />
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                 {greeting.text}! {greeting.emoji}
               </h3>
             </div>
-            <p className="text-sm text-gray-400 mb-3">Ready to conquer your day?</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Ready to conquer your day?</p>
           </div>
         </div>
         
@@ -47,12 +47,12 @@ const GreetingSection = () => {
         </div>
         
         {/* Progress bar */}
-        <div className="mt-4 pt-4 border-t border-white/10">
-          <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+        <div className="mt-4 pt-4 border-t border-gray-200/30 dark:border-white/10">
+          <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
             <span>Day Progress</span>
             <span>{Math.round((new Date().getHours() / 24) * 100)}%</span>
           </div>
-          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-2 bg-gray-200/50 dark:bg-white/10 rounded-full overflow-hidden">
             <div 
               className={`h-full bg-gradient-to-r ${greeting.gradient} rounded-full transition-all duration-500 shadow-lg`}
               style={{ width: `${(new Date().getHours() / 24) * 100}%` }}
