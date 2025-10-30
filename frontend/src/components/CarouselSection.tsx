@@ -337,7 +337,6 @@ const CarouselSection = () => {
             ))}
           </div>
         </div>
-      </div>
     </Card>
   );
 };
