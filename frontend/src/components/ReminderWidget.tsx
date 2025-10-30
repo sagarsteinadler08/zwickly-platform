@@ -73,6 +73,13 @@ const ReminderWidget = () => {
     try {
       const res = await fetch(`/api/reminders?userId=${userId}&status=active`);
       const data = await res.json();
+      
+      // Handle empty or error response
+      if (!data || !Array.isArray(data)) {
+        setReminders([]);
+        return;
+      }
+      
       setReminders(data.map((r: any) => ({
         ...r,
         reminderTime: new Date(r.reminderTime),
@@ -80,6 +87,7 @@ const ReminderWidget = () => {
       })));
     } catch (error) {
       console.error('Error fetching reminders:', error);
+      setReminders([]);
     } finally {
       setLoading(false);
     }

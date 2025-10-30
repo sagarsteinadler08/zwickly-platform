@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ['error', 'warn'],
+});
 
 function setCorsHeaders(res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -76,15 +78,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'userId, title, and reminderTime are required' });
       }
 
+      // Validate reminderTime is a valid date
+      const parsedTime = new Date(reminderTime);
+      if (isNaN(parsedTime.getTime())) {
+        return res.status(400).json({ error: 'Invalid reminderTime format' });
+      }
+
       const reminder = await prisma.reminder.create({
         data: {
-          userId,
-          title,
-          description: description || null,
-          reminderTime: new Date(reminderTime),
+          userId: String(userId),
+          title: String(title),
+          description: description ? String(description) : null,
+          reminderTime: parsedTime,
           recurrence: recurrence || 'once',
           source: source || 'manual',
-          sourceId: sourceId || null,
+          sourceId: sourceId ? String(sourceId) : null,
           timezone: timezone || 'Europe/Berlin',
         },
       });
