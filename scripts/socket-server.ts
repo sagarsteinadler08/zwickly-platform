@@ -6,7 +6,6 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import webpush from 'web-push'
 import { PrismaClient } from '@prisma/client'
-import startReminderScheduler from './reminder-scheduler.js'
 
 const prisma = new PrismaClient()
 
@@ -367,6 +366,104 @@ io.on("connection", (socket) => {
     console.log('[socket] client disconnected:', socket.id);
   });
 });
+
+// Reminder Scheduler - checks every minute for due reminders
+function startReminderScheduler(io: Server) {
+  console.log('[ReminderScheduler] Starting...');
+
+  setInterval(async () => {
+    try {
+      const now = new Date();
+      const dueReminders = await prisma.reminder.findMany({
+        where: {
+          completed: false,
+          reminderTime: { lte: now },
+          OR: [
+            { snoozedUntil: null },
+            { snoozedUntil: { lte: now } },
+          ],
+        },
+      });
+
+      for (const reminder of dueReminders) {
+        // Create notification
+        await prisma.notification.create({
+          data: {
+            userId: reminder.userId,
+            type: 'reminder',
+            payload: {
+              reminderId: reminder.id,
+              title: reminder.title,
+              description: reminder.description,
+            },
+          },
+        });
+
+        // Emit socket event
+        io.to(`user:${reminder.userId}`).emit('reminder:triggered', {
+          type: 'reminder:triggered',
+          id: reminder.id,
+          title: reminder.title,
+          description: reminder.description,
+        });
+
+        // Handle recurrence or mark complete
+        if (reminder.recurrence === 'once' || !reminder.recurrence) {
+          await prisma.reminder.update({
+            where: { id: reminder.id },
+            data: { completed: true },
+          });
+        } else if (reminder.recurrence === 'daily') {
+          const nextTime = new Date(reminder.reminderTime);
+          nextTime.setDate(nextTime.getDate() + 1);
+          
+          await prisma.reminder.create({
+            data: {
+              userId: reminder.userId,
+              title: reminder.title,
+              description: reminder.description,
+              reminderTime: nextTime,
+              recurrence: 'daily',
+              source: reminder.source,
+              sourceId: reminder.sourceId,
+              timezone: reminder.timezone,
+            },
+          });
+          
+          await prisma.reminder.update({
+            where: { id: reminder.id },
+            data: { completed: true },
+          });
+        } else if (reminder.recurrence === 'weekdays') {
+          const nextTime = new Date(reminder.reminderTime);
+          do {
+            nextTime.setDate(nextTime.getDate() + 1);
+          } while (nextTime.getDay() === 0 || nextTime.getDay() === 6);
+          
+          await prisma.reminder.create({
+            data: {
+              userId: reminder.userId,
+              title: reminder.title,
+              description: reminder.description,
+              reminderTime: nextTime,
+              recurrence: 'weekdays',
+              source: reminder.source,
+              sourceId: reminder.sourceId,
+              timezone: reminder.timezone,
+            },
+          });
+          
+          await prisma.reminder.update({
+            where: { id: reminder.id },
+            data: { completed: true },
+          });
+        }
+      }
+    } catch (error) {
+      console.error('[ReminderScheduler] Error:', error);
+    }
+  }, 60000);
+}
 
 httpServer.listen(PORT, () => {
   console.log(`Socket server running on port ${PORT}`)
