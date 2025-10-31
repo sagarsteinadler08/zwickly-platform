@@ -51,7 +51,7 @@ Welcome to the Zwickly Platform documentation! This index will help you find the
 - Contributing guidelines
 - Roadmap
 
-**Best for:** 
+**Best for:**
 - First-time setup
 - Understanding what Zwickly is
 - Getting the app running locally
