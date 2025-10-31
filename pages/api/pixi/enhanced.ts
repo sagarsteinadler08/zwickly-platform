@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let response: string;
       
       try {
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
         const systemPrompt = `You are Pixi, a friendly and helpful AI assistant for international students at West Saxon University of Zwickau (WHZ) in Saxony, Germany.
 
