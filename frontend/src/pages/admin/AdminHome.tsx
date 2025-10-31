@@ -42,7 +42,7 @@ const AdminHome = () => {
       // Fetch user profiles for the proposals (only if user_ids exist)
       const userIds = proposals?.map(p => p.user_id).filter(Boolean) || [];
       let profilesMap = new Map<string, string>();
-      
+
       if (userIds.length > 0) {
         const { data: profiles, error: profilesError } = await supabase
           .from("profiles")
@@ -320,7 +320,7 @@ const AdminHome = () => {
   return (
     <div className="min-h-screen admin-theme">
       <AdminNavbar />
-      
+
       <main className="container mx-auto px-6 pt-24 pb-12">
         <h1 className="text-5xl font-bold gradient-text mb-12 text-center">
           Analytics Dashboard
@@ -364,9 +364,9 @@ const AdminHome = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis dataKey="month" stroke="#9ca3af" />
                   <YAxis stroke="#9ca3af" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1f2937', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
                       border: '1px solid #374151',
                       borderRadius: '8px'
                     }}
@@ -391,9 +391,9 @@ const AdminHome = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis dataKey="month" stroke="#9ca3af" />
                   <YAxis stroke="#9ca3af" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1f2937', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
                       border: '1px solid #374151',
                       borderRadius: '8px'
                     }}
@@ -433,9 +433,9 @@ const AdminHome = () => {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#1f2937', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1f2937',
                         border: '1px solid #374151',
                         borderRadius: '8px'
                       }}
@@ -458,9 +458,9 @@ const AdminHome = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis dataKey="month" stroke="#9ca3af" />
                   <YAxis stroke="#9ca3af" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1f2937', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
                       border: '1px solid #374151',
                       borderRadius: '8px'
                     }}
@@ -487,9 +487,9 @@ const AdminHome = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis dataKey="month" stroke="#9ca3af" />
                   <YAxis stroke="#9ca3af" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1f2937', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
                       border: '1px solid #374151',
                       borderRadius: '8px'
                     }}
@@ -514,9 +514,9 @@ const AdminHome = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis type="number" stroke="#9ca3af" />
                     <YAxis dataKey="name" type="category" stroke="#9ca3af" width={150} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#1f2937', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1f2937',
                         border: '1px solid #374151',
                         borderRadius: '8px'
                       }}

@@ -15,7 +15,7 @@ Failed to resolve import "../../../src/lib/supabase-shim" from "src/integrations
    ```typescript
    // Before (broken):
    export { default } from '../../../src/lib/supabase-shim'
-   
+
    // After (working):
    export { default } from '../../lib/supabase-shim'
    ```

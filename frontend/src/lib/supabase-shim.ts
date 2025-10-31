@@ -74,7 +74,7 @@ function createQueryBuilder(tableName: string, initialState: {
 
   const applyFilters = (baseUrl: string) => {
     const url = new URL(baseUrl, API_BASE_URL)
-    
+
     // Apply filters
     state.filters.forEach(filter => {
       if (filter.type === 'eq') {
@@ -87,18 +87,18 @@ function createQueryBuilder(tableName: string, initialState: {
         url.searchParams.append(`${filter.col}_in`, JSON.stringify(filter.val))
       }
     })
-    
+
     // Apply ordering
     if (state.orderBy) {
       url.searchParams.append('order', state.orderBy.column)
       url.searchParams.append('orderAsc', String(state.orderBy.ascending))
     }
-    
+
     // Apply limit
     if (state.limit) {
       url.searchParams.append('limit', String(state.limit))
     }
-    
+
     return url.toString().replace(API_BASE_URL, '')
   }
 
@@ -109,7 +109,7 @@ function createQueryBuilder(tableName: string, initialState: {
   }
 
   const promise = execute() as any
-  
+
   // Add chainable methods - create new state for chaining
   promise.eq = (col: string, val: any) => {
     return createQueryBuilder(tableName, {
@@ -117,28 +117,28 @@ function createQueryBuilder(tableName: string, initialState: {
       filters: [...state.filters, { type: 'eq', col, val }]
     })
   }
-  
+
   promise.gte = (col: string, val: any) => {
     return createQueryBuilder(tableName, {
       ...state,
       filters: [...state.filters, { type: 'gte', col, val }]
     })
   }
-  
+
   promise.lte = (col: string, val: any) => {
     return createQueryBuilder(tableName, {
       ...state,
       filters: [...state.filters, { type: 'lte', col, val }]
     })
   }
-  
+
   promise.order = (col: string, opts?: { ascending?: boolean }) => {
     return createQueryBuilder(tableName, {
       ...state,
       orderBy: { column: col, ascending: opts?.ascending !== false }
     })
   }
-  
+
   promise.limit = (count: number) => {
     return createQueryBuilder(tableName, {
       ...state,
@@ -187,7 +187,7 @@ export default {
               url.searchParams.append(`${filter.col}_in`, JSON.stringify(filter.val))
             }
           })
-          
+
           return baseFetch(url.toString().replace(API_BASE_URL, ''), {
             method: 'PUT',
             body: JSON.stringify(payload),
@@ -236,15 +236,15 @@ export default {
         }
       }
     },
-    
+
     async getSession() {
       const session = localStorage.getItem('mock_session') ? JSON.parse(localStorage.getItem('mock_session') || '{}') : null
-      return { 
+      return {
         data: { session: session ? { user: session } : null },
-        error: null 
+        error: null
       }
     },
-    
+
     async getUser() {
       const user = localStorage.getItem('mock_session') ? JSON.parse(localStorage.getItem('mock_session') || '{}') : null
       return {
@@ -252,7 +252,7 @@ export default {
         error: null
       }
     },
-    
+
     async signUp({ email, password, options }: { email: string; password: string; options?: any }) {
       // Mock signup - just create a mock user session
       const mockUser = {
@@ -266,7 +266,7 @@ export default {
         error: null
       }
     },
-    
+
     async signInWithPassword({ email, password }: { email: string; password: string }) {
       // Mock signin - create a mock user session
       const mockUser = {
@@ -280,13 +280,13 @@ export default {
         error: null
       }
     },
-    
+
     async signOut() {
       localStorage.removeItem('mock_session')
       return { error: null }
     }
   },
-  
+
   // Add rpc method - called as supabase.rpc('function_name', params)
   rpc(name: string, params?: any) {
     console.log('Mock RPC:', name, params)

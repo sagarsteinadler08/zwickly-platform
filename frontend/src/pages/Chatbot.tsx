@@ -76,16 +76,16 @@ const Chatbot = () => {
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Error calling chatbot:', error);
-      
+
       const errorMessage: Message = {
         id: messages.length + 2,
         text: "Sorry, I encountered an error. Please try again! 😅",
         sender: "bot",
         timestamp: new Date()
       };
-      
+
       setMessages(prev => [...prev, errorMessage]);
-      
+
       toast({
         title: "Error",
         description: "Failed to get response from chatbot",
@@ -140,7 +140,7 @@ const Chatbot = () => {
                     <User className="w-5 h-5 text-primary-foreground" />
                   )}
                 </div>
-                
+
                 <div
                   className={`max-w-[70%] p-4 rounded-2xl ${
                     message.sender === "bot"

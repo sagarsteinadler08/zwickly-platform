@@ -17,7 +17,7 @@ const setCorsHeaders = (res: NextApiResponse) => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   setCorsHeaders(res);
-  
+
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();

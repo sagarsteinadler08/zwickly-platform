@@ -5,7 +5,9 @@
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import webpush from 'web-push'
-import { prisma } from '../src/lib/db'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 const PORT = Number(process.env.SOCIAL_SOCKET_PORT || 4001)
 const VAPID_PUBLIC = process.env.VAPID_PUBLIC || process.env.NEXT_PUBLIC_VAPID_PUBLIC
@@ -80,6 +82,19 @@ io.on("connection", (socket) => {
   console.log('[socket] authenticated user:', userId);
   socket.join(`user:${userId}`);
 
+  // Auto-join all channels for logged-in users
+  socket.on("auto_join_channels", async () => {
+    try {
+      const channels = await prisma.channel.findMany();
+      for (const ch of channels) {
+        socket.join(`channel:${ch.id}`);
+      }
+      console.log('[socket] auto-joined all channels for:', userId);
+    } catch (err) {
+      console.error('[auto_join] error:', err);
+    }
+  });
+
   // Join channel
   socket.on("join_channel", async (channelId: string) => {
     socket.join(`channel:${channelId}`);
@@ -118,9 +133,65 @@ io.on("connection", (socket) => {
       // Process mentions (create mention records, notifications, push)
       for (const username of mentions) {
         try {
+          // Check if it's @admin mention - create ticket
+          if (username.toLowerCase() === 'admin') {
+            // Create ticket for @admin mentions
+            const ticket = await prisma.ticket.create({
+              data: {
+                userId,
+                channelId: payload.channelId,
+                messageId: message.id,
+                title: `Support Request from ${userId}`,
+                description: payload.body,
+                status: 'open',
+                priority: 'normal',
+              },
+            });
+
+            // Notify admins about new ticket
+            io.to('admin:all').emit("ticket:new", {
+              id: ticket.id,
+              userId,
+              title: ticket.title,
+              description: ticket.description,
+              createdAt: ticket.createdAt,
+            });
+
+            // Create notification for the user
+            await prisma.notification.create({
+              data: {
+                userId,
+                type: "ticket_created",
+                payload: {
+                  ticketId: ticket.id,
+                  messageId: message.id,
+                  channelId: payload.channelId,
+                  message: "Your support ticket has been created",
+                },
+              },
+            });
+
+            // Create notification for admin
+            await prisma.notification.create({
+              data: {
+                userId: 'admin',
+                type: "admin_ticket_new",
+                payload: {
+                  ticketId: ticket.id,
+                  messageId: message.id,
+                  channelId: payload.channelId,
+                  userId: userId,
+                  message: `New support ticket from ${userId}`,
+                },
+              },
+            });
+
+            continue; // Skip regular mention processing for @admin
+          }
+
           // Try to find user by email (adjust based on your Profile model)
           const user = await prisma.profile.findUnique({ where: { email: username } });
-          
+
           if (user) {
             // Create mention
             await prisma.mention.create({
@@ -160,18 +231,18 @@ io.on("connection", (socket) => {
             });
 
             for (const sub of subs) {
-              try {
-                await webpush.sendNotification(
-                  { endpoint: sub.endpoint, keys: sub.keys as any },
-                  JSON.stringify({
-                    title: "You were mentioned",
-                    body: `${userId} mentioned you`,
-                    data: { messageId: message.id, channelId: payload.channelId },
-                  })
-                );
-              } catch (err) {
-                console.error('[push] failed:', err);
-              }
+            try {
+              await webpush.sendNotification(
+                { endpoint: sub.endpoint, keys: sub.keys as any },
+                JSON.stringify({
+                  title: "You were mentioned",
+                  body: `${userId} mentioned you`,
+                  data: { messageId: message.id, channelId: payload.channelId },
+                })
+              );
+            } catch (err: any) {
+              console.error('[push] failed:', err);
+            }
             }
           }
         } catch (err) {
@@ -179,10 +250,20 @@ io.on("connection", (socket) => {
         }
       }
 
+      // Get channel info for activity feed
+      const channel = await prisma.channel.findUnique({
+        where: { id: payload.channelId },
+      });
+
       // Broadcast message to channel
       io.to(`channel:${payload.channelId}`).emit("message:new", {
-        ...message,
-        userId,
+        type: 'message:new',
+        channelId: payload.channelId,
+        channelName: channel?.name || 'channel',
+        message: {
+          ...message,
+          userId,
+        },
       });
 
       // Check for @pixi bot command
@@ -261,10 +342,20 @@ io.on("connection", (socket) => {
         },
       });
 
+      // Get channel info
+      const channel = await prisma.channel.findUnique({
+        where: { id: channelId },
+      });
+
       // Broadcast bot message
       io.to(`channel:${channelId}`).emit("message:new", {
-        ...botMessage,
-        userId: "pixi-bot",
+        type: 'message:new',
+        channelId,
+        channelName: channel?.name || 'channel',
+        message: {
+          ...botMessage,
+          userId: "pixi-bot",
+        },
       });
     } catch (err) {
       console.error('[pixi] error:', err);
@@ -276,7 +367,109 @@ io.on("connection", (socket) => {
   });
 });
 
+// Reminder Scheduler - checks every minute for due reminders
+function startReminderScheduler(io: Server) {
+  console.log('[ReminderScheduler] Starting...');
+
+  setInterval(async () => {
+    try {
+      const now = new Date();
+      const dueReminders = await prisma.reminder.findMany({
+        where: {
+          completed: false,
+          reminderTime: { lte: now },
+          OR: [
+            { snoozedUntil: null },
+            { snoozedUntil: { lte: now } },
+          ],
+        },
+      });
+
+      for (const reminder of dueReminders) {
+        // Create notification
+        await prisma.notification.create({
+          data: {
+            userId: reminder.userId,
+            type: 'reminder',
+            payload: {
+              reminderId: reminder.id,
+              title: reminder.title,
+              description: reminder.description,
+            },
+          },
+        });
+
+        // Emit socket event
+        io.to(`user:${reminder.userId}`).emit('reminder:triggered', {
+          type: 'reminder:triggered',
+          id: reminder.id,
+          title: reminder.title,
+          description: reminder.description,
+        });
+
+        // Handle recurrence or mark complete
+        if (reminder.recurrence === 'once' || !reminder.recurrence) {
+          await prisma.reminder.update({
+            where: { id: reminder.id },
+            data: { completed: true },
+          });
+        } else if (reminder.recurrence === 'daily') {
+          const nextTime = new Date(reminder.reminderTime);
+          nextTime.setDate(nextTime.getDate() + 1);
+
+          await prisma.reminder.create({
+            data: {
+              userId: reminder.userId,
+              title: reminder.title,
+              description: reminder.description,
+              reminderTime: nextTime,
+              recurrence: 'daily',
+              source: reminder.source,
+              sourceId: reminder.sourceId,
+              timezone: reminder.timezone,
+            },
+          });
+
+          await prisma.reminder.update({
+            where: { id: reminder.id },
+            data: { completed: true },
+          });
+        } else if (reminder.recurrence === 'weekdays') {
+          const nextTime = new Date(reminder.reminderTime);
+          do {
+            nextTime.setDate(nextTime.getDate() + 1);
+          } while (nextTime.getDay() === 0 || nextTime.getDay() === 6);
+
+          await prisma.reminder.create({
+            data: {
+              userId: reminder.userId,
+              title: reminder.title,
+              description: reminder.description,
+              reminderTime: nextTime,
+              recurrence: 'weekdays',
+              source: reminder.source,
+              sourceId: reminder.sourceId,
+              timezone: reminder.timezone,
+            },
+          });
+
+          await prisma.reminder.update({
+            where: { id: reminder.id },
+            data: { completed: true },
+          });
+        }
+      }
+    } catch (error) {
+      console.error('[ReminderScheduler] Error:', error);
+    }
+  }, 60000);
+}
+
 httpServer.listen(PORT, () => {
   console.log(`Socket server running on port ${PORT}`)
+
+  // Start reminder scheduler
+  startReminderScheduler(io);
+  console.log('[Reminder] Scheduler started')
 })
 

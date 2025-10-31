@@ -35,7 +35,7 @@ const CarouselSection = () => {
       setMensaMeals(meals);
       setLoadingMensa(false);
     };
-    
+
     loadMensaData();
   }, []);
 
@@ -46,7 +46,7 @@ const CarouselSection = () => {
       setCampusNews(news);
       setLoadingNews(false);
     };
-    
+
     loadNewsData();
   }, []);
 
@@ -59,7 +59,7 @@ const CarouselSection = () => {
           .select('*')
           .order('event_date', { ascending: true })
           .limit(6);
-        
+
         if (error) throw error;
         // Filter out events with empty titles
         const validEvents = (data || []).filter(e => e.title && e.title.trim() !== '');
@@ -71,7 +71,7 @@ const CarouselSection = () => {
         setLoadingEvents(false);
       }
     };
-    
+
     loadEvents();
   }, []);
 
@@ -95,8 +95,8 @@ const CarouselSection = () => {
                 <div key={i} className="p-4 rounded-lg bg-muted/20 border border-primary/10">
                   <div className="flex gap-4">
                     {meal.imageUrl && (
-                      <img 
-                        src={meal.imageUrl} 
+                      <img
+                        src={meal.imageUrl}
                         alt={meal.title}
                         className="w-24 h-24 object-cover rounded-lg"
                       />
@@ -141,18 +141,18 @@ const CarouselSection = () => {
           ) : (
             <div className="grid gap-3">
               {events.map((event) => {
-                const eventDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { 
+                const eventDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', {
                   weekday: 'long',
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 }) : 'Date TBD';
                 return (
                   <div key={event.id} className="p-4 rounded-lg bg-muted/20 border border-primary/10 hover:border-primary/30 transition-all">
                     <div className="flex gap-4">
                       {event.image_url && (
-                        <img 
-                          src={event.image_url} 
+                        <img
+                          src={event.image_url}
                           alt={event.title}
                           className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
                           onError={(e) => {
@@ -195,8 +195,8 @@ const CarouselSection = () => {
           <div className="space-y-3 mb-6">
             <div className="flex items-center justify-between">
               <h4 className="font-semibold text-lg text-primary">Recent News</h4>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => window.open('https://www.whz.de/hochschule/informationen/pressemitteilungen/?no_cache=1', '_blank')}
                 className="text-xs hover:bg-primary/10"
@@ -205,7 +205,7 @@ const CarouselSection = () => {
               </Button>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Stay up to date with the latest announcements, research achievements, events, and important updates from WHZ. 
+              Stay up to date with the latest announcements, research achievements, events, and important updates from WHZ.
               Get insights into campus developments, student activities, and academic excellence.
             </p>
           </div>
@@ -224,8 +224,8 @@ const CarouselSection = () => {
                 <div key={news.id} className="p-4 rounded-lg bg-muted/20 border border-primary/10 hover:border-primary/30 transition-all">
                   <div className="flex gap-4">
                     {news.imageUrl && (
-                      <img 
-                        src={news.imageUrl} 
+                      <img
+                        src={news.imageUrl}
                         alt={news.title}
                         className="w-32 h-32 object-cover rounded-lg flex-shrink-0"
                       />
@@ -258,52 +258,54 @@ const CarouselSection = () => {
   const CurrentIcon = slides[currentSlide].icon;
 
   return (
-    <Card className="event-carousel-card hover-glow p-6 animate-fade-in">
-      <div className={`relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 border border-white/60 shadow-xl`}>
-        {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-15"
-          style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
-        />
-        
-        <div className="relative z-10 p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-accent">
-                  <CurrentIcon className="w-7 h-7 text-white" />
-                </div>
-                <h3 className="text-3xl font-bold gradient-text">{slides[currentSlide].title}</h3>
-              </div>
-              <p className="text-gray-700 text-base leading-relaxed max-w-2xl">{slides[currentSlide].subtitle}</p>
-            </div>
-          
-            <div className="flex items-center gap-3 ml-6">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={prevSlide}
-                className="rounded-full bg-white/80 backdrop-blur-sm border-white/60 hover:bg-white/90 hover:scale-110 transition-all"
-              >
-                <ChevronLeft className="w-5 h-5 text-primary" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={nextSlide}
-                className="rounded-full bg-white/80 backdrop-blur-sm border-white/60 hover:bg-white/90 hover:scale-110 transition-all"
-              >
-                <ChevronRight className="w-5 h-5 text-primary" />
-              </Button>
+    <Card className="relative overflow-hidden border border-purple-500/20 shadow-2xl shadow-purple-500/20 animate-fadeInUp">
+      {/* Split Layout: Image on Left, Content on Right */}
+      <div className="grid md:grid-cols-2 min-h-[400px]">
+        {/* Left Side - Featured Image */}
+        <div className="relative overflow-hidden group">
+          <img
+            src={slides[currentSlide].image}
+            alt={slides[currentSlide].title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-[#0F172A]/40 to-transparent" />
+
+          {/* Today's Special Badge */}
+          <div className="absolute bottom-6 left-6 right-6">
+            <div className="bg-[#0F172A]/80 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+              <p className="text-xs text-gray-400 mb-1">Today's Special</p>
+              <p className="text-2xl font-bold text-white">{slides[currentSlide].title}</p>
             </div>
           </div>
+        </div>
 
-          <Dialog>
-          <DialogTrigger asChild>
-            <Button className="rounded-full bg-gradient-to-r from-primary to-accent text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all font-semibold px-6 py-3">
-              View Details
-            </Button>
-          </DialogTrigger>
+        {/* Right Side - Content & Actions */}
+        <div className="relative bg-gradient-to-br from-[#1E293B] to-[#0F172A] p-10 flex flex-col justify-between">
+          {/* Header with Icon */}
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 rounded-2xl bg-gradient-to-br from-[#7B5CFA] to-[#48E0E4] shadow-lg shadow-purple-500/40">
+                <CurrentIcon className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold gradient-text">
+                {slides[currentSlide].title}
+              </h3>
+            </div>
+
+            <p className="text-gray-300 text-base leading-relaxed mb-8">
+              {slides[currentSlide].subtitle}
+            </p>
+          </div>
+
+          {/* Action Button */}
+          <div className="space-y-6">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="w-full rounded-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white shadow-xl shadow-purple-500/40 hover:shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transition-all font-semibold py-6 text-lg">
+                  Full Weekly Schedule →
+                </Button>
+              </DialogTrigger>
           <DialogContent className="bg-background/95 backdrop-blur-xl border-primary/30 max-w-2xl">
             <DialogHeader>
               <DialogTitle className="gradient-text text-xl">{slides[currentSlide].title}</DialogTitle>
@@ -314,18 +316,42 @@ const CarouselSection = () => {
           </DialogContent>
         </Dialog>
 
-          <div className="flex justify-center gap-2 mt-8">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`rounded-full transition-all duration-300 ${
-                  index === currentSlide 
-                    ? "bg-gradient-to-r from-primary to-accent w-10 h-2 shadow-md" 
-                    : "bg-gray-300 w-2 h-2 hover:bg-gray-400"
-                }`}
-              />
-            ))}
+            {/* Navigation Controls */}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-3">
+                {slides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`rounded-full transition-all duration-500 ${
+                      index === currentSlide
+                        ? "bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] w-12 h-3 shadow-lg shadow-purple-500/50"
+                        : "bg-white/20 w-3 h-3 hover:bg-purple-400 hover:scale-125"
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={prevSlide}
+                  className="rounded-full hover:bg-white/10 transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5 text-gray-400" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={nextSlide}
+                  className="rounded-full hover:bg-white/10 transition-all"
+                >
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

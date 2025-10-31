@@ -8,6 +8,12 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
   },
   // Vite automatically handles SPA routing in development
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),

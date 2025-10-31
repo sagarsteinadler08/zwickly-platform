@@ -6,9 +6,9 @@ Use this prompt in your prototype generation tool (Figma, Lovable, etc.) to crea
 
 ## PROJECT CONTEXT
 
-**App Name:** Zwickly Student Life Platform  
-**Type:** Student campus management web application  
-**Target Users:** University students (WHZ - Westsächsische Hochschule Zwickau)  
+**App Name:** Zwickly Student Life Platform
+**Type:** Student campus management web application
+**Target Users:** University students (WHZ - Westsächsische Hochschule Zwickau)
 **Platform:** Web app (responsive, mobile-first design)
 
 ---

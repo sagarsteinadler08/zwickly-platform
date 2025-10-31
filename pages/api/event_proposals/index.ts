@@ -17,14 +17,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const { status, order, orderAsc, ...filters } = req.query
-      
+
       let filtered = [...proposalsStore]
-      
+
       // Apply filters
       if (status) {
         filtered = filtered.filter(p => p.status === status)
       }
-      
+
       Object.entries(filters).forEach(([key, value]) => {
         if (key.endsWith('_in')) {
           const col = key.replace('_in', '')
@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           filtered = filtered.filter(p => p[key] === value)
         }
       })
-      
+
       // Sort by created_at desc (default) or by specified order
       if (order) {
         const ascending = orderAsc === 'true'
@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return bDate - aDate
         })
       }
-      
+
       return res.status(200).json(filtered)
     } catch (error) {
       console.error('Error fetching event proposals:', error)
@@ -85,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         status: 'pending',
         created_at: new Date().toISOString(),
       }
-      
+
       proposalsStore.push(proposal)
       return res.status(201).json(proposal)
     } catch (error) {
@@ -93,12 +93,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Failed to create event proposal' })
     }
   }
-  
+
   if (req.method === 'PATCH' || req.method === 'PUT') {
     try {
       const updateData = req.body
       const id = (req.query.id as string) || updateData.id
-      
+
       if (!id) {
         return res.status(400).json({ error: 'ID is required' })
       }
@@ -113,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ...updateData,
         updated_at: new Date().toISOString(),
       }
-      
+
       return res.status(200).json(proposalsStore[index])
     } catch (error) {
       console.error('Error updating event proposal:', error)

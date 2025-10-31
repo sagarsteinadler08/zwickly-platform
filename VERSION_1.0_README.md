@@ -2,8 +2,8 @@
 
 ## 📦 Version 1.0 Release
 
-**Commit:** `df0dde8`  
-**Tag:** `v1.0.0`  
+**Commit:** `df0dde8`
+**Tag:** `v1.0.0`
 **Date:** October 30, 2025
 
 ---

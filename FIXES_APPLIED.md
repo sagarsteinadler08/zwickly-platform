@@ -27,13 +27,13 @@
 
 ## Pages That Should Now Work
 
-✅ **http://localhost:8080/** - Home page  
-✅ **http://localhost:8080/events** - Events page (shows 19 events)  
-✅ **http://localhost:8080/student-auth** - Student authentication  
-✅ **http://localhost:8080/admin-auth** - Admin authentication  
-✅ **http://localhost:8080/chatbot** - Chatbot interface  
-✅ **http://localhost:8080/kommpakt** - KommPakt page  
-✅ **http://localhost:8080/users** - User selection page  
+✅ **http://localhost:8080/** - Home page
+✅ **http://localhost:8080/events** - Events page (shows 19 events)
+✅ **http://localhost:8080/student-auth** - Student authentication
+✅ **http://localhost:8080/admin-auth** - Admin authentication
+✅ **http://localhost:8080/chatbot** - Chatbot interface
+✅ **http://localhost:8080/kommpakt** - KommPakt page
+✅ **http://localhost:8080/users** - User selection page
 
 ## How to Test
 

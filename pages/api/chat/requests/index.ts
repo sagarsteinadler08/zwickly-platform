@@ -17,7 +17,7 @@ const setCorsHeaders = (res: NextApiResponse) => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   setCorsHeaders(res);
-  
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -45,6 +45,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const request = await prisma.channelRequest.create({
         data: { name, description, requesterId },
+      });
+
+      // Create notification for the requester
+      await prisma.notification.create({
+        data: {
+          userId: requesterId,
+          type: 'channel_request_submitted',
+          payload: {
+            requestId: request.id,
+            channelName: name,
+            message: `Your request for channel "${name}" has been submitted.`,
+          },
+        },
+      });
+
+      // Create notification for admin
+      await prisma.notification.create({
+        data: {
+          userId: 'admin', // Admin user ID
+          type: 'admin_channel_request_new',
+          payload: {
+            requestId: request.id,
+            channelName: name,
+            requesterId: requesterId,
+            message: `New channel request: "${name}" from ${requesterId}`,
+          },
+        },
       });
 
       return res.status(201).json(request);

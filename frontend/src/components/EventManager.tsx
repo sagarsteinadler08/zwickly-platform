@@ -64,7 +64,7 @@ const EventManager = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.location || !formData.event_date || 
+    if (!formData.title || !formData.location || !formData.event_date ||
         !formData.event_time || !formData.image_url || !formData.category) {
       toast.error("Please fill in all fields");
       return;
@@ -148,7 +148,7 @@ const EventManager = () => {
           <Calendar className="w-5 h-5 text-primary" />
           <h3 className="text-lg font-semibold gradient-text">Event Feed Manager</h3>
         </div>
-        <Button 
+        <Button
           onClick={() => {
             setShowForm(!showForm);
             if (showForm) {
@@ -290,7 +290,7 @@ const EventManager = () => {
             {events.length} {events.length === 1 ? 'event' : 'events'}
           </span>
         </div>
-        
+
         {loading ? (
           <p className="text-center text-muted-foreground py-8">Loading events...</p>
         ) : events.length === 0 ? (

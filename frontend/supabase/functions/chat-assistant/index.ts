@@ -18,7 +18,7 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json();
-    
+
     if (!GROQ_API_KEY) {
       throw new Error('GROQ_API_KEY is not configured');
     }
@@ -28,33 +28,33 @@ serve(async (req) => {
     // Get user's message
     const userMessage = messages[messages.length - 1]?.content?.toLowerCase() || '';
     console.log('User message:', userMessage);
-    
+
     // Fetch database data based on user query
     let databaseContext = '';
-    
+
     try {
       // Check for timetable/schedule keywords (handle variations)
-      const isTimetableQuery = userMessage.includes('timetable') || 
-                               userMessage.includes('time table') || 
-                               userMessage.includes('schedule') || 
+      const isTimetableQuery = userMessage.includes('timetable') ||
+                               userMessage.includes('time table') ||
+                               userMessage.includes('schedule') ||
                                userMessage.includes('class');
-      
+
       const isEventQuery = userMessage.includes('event');
       const isExamQuery = userMessage.includes('exam');
-      const isMensaQuery = userMessage.includes('mensa') || 
-                           userMessage.includes('food') || 
+      const isMensaQuery = userMessage.includes('mensa') ||
+                           userMessage.includes('food') ||
                            userMessage.includes('menu');
       const isNewsQuery = userMessage.includes('news');
-      const isCultureQuery = userMessage.includes('culture') || 
-                             userMessage.includes('german') || 
+      const isCultureQuery = userMessage.includes('culture') ||
+                             userMessage.includes('german') ||
                              userMessage.includes('behavior') ||
                              userMessage.includes('behaviour') ||
                              userMessage.includes('custom') ||
                              userMessage.includes('social') ||
                              userMessage.includes('interaction');
-      
+
       console.log('Query detection:', { isTimetableQuery, isEventQuery, isExamQuery, isMensaQuery, isNewsQuery, isCultureQuery });
-      
+
       if (isEventQuery) {
         const { data: events } = await supabase
           .from('events')
@@ -62,7 +62,7 @@ serve(async (req) => {
           .gte('event_date', new Date().toISOString().split('T')[0])
           .order('event_date', { ascending: true })
           .limit(10);
-        
+
         if (events && events.length > 0) {
           databaseContext += '\n\nUPCOMING EVENTS FROM DATABASE:\n';
           events.forEach(e => {
@@ -73,29 +73,29 @@ serve(async (req) => {
           databaseContext += '\n\nNo upcoming events found in database.\n';
         }
       }
-      
+
       if (isTimetableQuery) {
         console.log('Fetching timetable data...');
         const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
         const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
         const dayMap: { [key: string]: string } = {
           'Monday': 'Montag',
-          'Tuesday': 'Dienstag', 
+          'Tuesday': 'Dienstag',
           'Wednesday': 'Mittwoch',
           'Thursday': 'Donnerstag',
           'Friday': 'Freitag'
         };
         const germanDay = dayMap[today] || 'Montag';
-        
+
         const { data: timetable, error: timetableError } = await supabase
           .from('timetable')
           .select('day_time, course, room, instructor')
           .eq('day_name', germanDay)
           .eq('sem_group', '252035')
           .order('day_time', { ascending: true });
-        
+
         console.log('Timetable query result:', { count: timetable?.length, error: timetableError });
-        
+
         if (timetable && timetable.length > 0) {
           databaseContext += `\n\nTIMETABLE FOR ${germanDay} FROM DATABASE:\n`;
           timetable.forEach(t => {
@@ -105,7 +105,7 @@ serve(async (req) => {
           databaseContext += `\n\nNo timetable found for ${germanDay} in database.\n`;
         }
       }
-      
+
       if (isExamQuery) {
         const { data: exams } = await supabase
           .from('exams')
@@ -113,7 +113,7 @@ serve(async (req) => {
           .eq('sem_group', '252035')
           .order('date', { ascending: true })
           .limit(10);
-        
+
         if (exams && exams.length > 0) {
           databaseContext += '\n\nUPCOMING EXAMS FROM DATABASE:\n';
           exams.forEach(e => {
@@ -124,13 +124,13 @@ serve(async (req) => {
           databaseContext += '\n\nNo exams found in database.\n';
         }
       }
-      
+
       if (isMensaQuery) {
         const { data: menu } = await supabase
           .from('mensa_menu')
           .select('meal_station, dish_description, price_s, price_m, price_g, notes')
           .limit(10);
-        
+
         if (menu && menu.length > 0) {
           databaseContext += '\n\nMENSA MENU FROM DATABASE:\n';
           menu.forEach(m => {
@@ -141,14 +141,14 @@ serve(async (req) => {
           databaseContext += '\n\nNo mensa menu found in database.\n';
         }
       }
-      
+
       if (isNewsQuery) {
         const { data: news } = await supabase
           .from('whz_news')
           .select('title, description')
           .order('created_at', { ascending: false })
           .limit(5);
-        
+
         if (news && news.length > 0) {
           databaseContext += '\n\nLATEST CAMPUS NEWS FROM DATABASE:\n';
           news.forEach(n => {
@@ -158,13 +158,13 @@ serve(async (req) => {
           databaseContext += '\n\nNo news found in database.\n';
         }
       }
-      
+
       if (isCultureQuery) {
         const { data: culture } = await supabase
           .from('german_culture_interactions')
           .select('situation, culture_background, german_behavior, interpretation')
           .limit(20);
-        
+
         if (culture && culture.length > 0) {
           databaseContext += '\n\nGERMAN CULTURE & SOCIAL INTERACTIONS GUIDE FROM DATABASE:\n';
           culture.forEach(c => {
@@ -178,7 +178,7 @@ serve(async (req) => {
       console.error('Database fetch error:', dbError);
       databaseContext = '\n\nError fetching data from database.\n';
     }
-    
+
     console.log('Database context length:', databaseContext.length);
 
     // Call Groq API with database context
@@ -221,7 +221,7 @@ Here are the events I found:
   Brief description in one line
 
 
-• Another Event  
+• Another Event
   📍 Location Name
   📅 Date | ⏰ Time
   Brief description in one line
@@ -242,8 +242,8 @@ Always be friendly and concise.`
     // Check for errors first
     if (data.error) {
       console.error('Groq API error:', data.error);
-      return new Response(JSON.stringify({ 
-        message: "Sorry, I encountered an issue processing your request. Please try again or rephrase your question." 
+      return new Response(JSON.stringify({
+        message: "Sorry, I encountered an issue processing your request. Please try again or rephrase your question."
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -252,15 +252,15 @@ Always be friendly and concise.`
     // Check if choices exists
     if (!data.choices || !data.choices[0]) {
       console.error('No choices in response:', data);
-      return new Response(JSON.stringify({ 
-        message: "Sorry, I couldn't generate a response. Please try again." 
+      return new Response(JSON.stringify({
+        message: "Sorry, I couldn't generate a response. Please try again."
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     // Return the AI response (which now contains only database data)
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       message: data.choices[0].message.content
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -269,7 +269,7 @@ Always be friendly and concise.`
   } catch (error) {
     console.error('Error in chat-assistant:', error);
     const errorMessage = error instanceof Error ? error.message : 'An error occurred';
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       error: errorMessage
     }), {
       status: 500,

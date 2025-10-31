@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const { order, orderAsc, limit, ...filters } = req.query
-      
+
       // Build where clause from filters
       const where: any = {}
       Object.entries(filters).forEach(([key, value]) => {
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: Object.keys(where).length > 0 ? where : undefined,
         orderBy,
       }
-      
+
       if (limit) {
         queryOptions.take = parseInt(limit as string, 10)
       }
@@ -69,20 +69,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Failed to fetch events' })
     }
   }
-  
+
   if (req.method === 'POST') {
     try {
       const data = Array.isArray(req.body) ? req.body[0] : req.body
-      
+
       // Validate required fields
       if (!data.title || data.title.trim() === '') {
         return res.status(400).json({ error: 'Title is required' })
       }
-      
+
       // Generate UUID properly for Prisma
       const { randomUUID } = await import('crypto')
       const eventId = data.id || randomUUID()
-      
+
       const created = await prisma.event.create({
         data: {
           id: eventId,
@@ -138,7 +138,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const updateData = req.body
       // Get ID from query params (from .eq() filter) or body
       const id = (req.query.id as string) || updateData.id
-      
+
       if (!id) {
         return res.status(400).json({ error: 'ID is required (use ?id=xxx or include id in body)' })
       }
@@ -179,7 +179,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Failed to delete event' })
     }
   }
-  
+
   res.setHeader('Allow', ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'])
   res.status(405).end(`Method ${req.method} Not Allowed`)
 }

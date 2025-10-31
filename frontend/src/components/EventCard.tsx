@@ -23,14 +23,14 @@ interface EventCardProps {
   eventDate?: string;
 }
 
-const EventCard = ({ 
-  id, 
-  title, 
-  location, 
-  time, 
-  image, 
-  category, 
-  initialLikes = 0, 
+const EventCard = ({
+  id,
+  title,
+  location,
+  time,
+  image,
+  category,
+  initialLikes = 0,
   initialProsts = 0,
   description,
   language,
@@ -43,7 +43,7 @@ const EventCard = ({
   const [showDetails, setShowDetails] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [isCheckingRegistration, setIsCheckingRegistration] = useState(false);
-  
+
   useEffect(() => {
     setLikes(initialLikes);
     setProsts(initialProsts);
@@ -89,10 +89,11 @@ const EventCard = ({
   const [isDetecting, setIsDetecting] = useState(false);
   const [showProstAnimation, setShowProstAnimation] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [hasReminder, setHasReminder] = useState(false);
 
   const checkRegistration = async () => {
     if (!id) return;
-    
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -114,17 +115,17 @@ const EventCard = ({
   const handleLike = async () => {
     const newLikes = isLiked ? likes - 1 : likes + 1;
     const newIsLiked = !isLiked;
-    
+
     setLikes(newLikes);
     setIsLiked(newIsLiked);
-    
+
     if (id) {
       try {
         const { error } = await supabase
           .from('events')
           .update({ likes: newLikes })
           .eq('id', id);
-        
+
         if (error) throw error;
       } catch (error) {
         console.error('Error updating likes:', error);
@@ -132,7 +133,7 @@ const EventCard = ({
         setIsLiked(isLiked);
       }
     }
-    
+
     toast.success(newIsLiked ? "Liked! ❤️" : "Like removed");
   };
 
@@ -158,11 +159,11 @@ const EventCard = ({
     setIsDetecting(true);
     try {
       const result = await detectBeverage(selectedImage);
-      
+
       if (result.detected) {
         const newProsts = prosts + result.count;
         setProsts(newProsts);
-        
+
         if (id) {
           try {
             await supabase
@@ -173,7 +174,7 @@ const EventCard = ({
             console.error('Error updating prosts:', error);
           }
         }
-        
+
         setShowImageUpload(false);
         setShowProstAnimation(true);
         toast.success(`🍻 Prost! ${result.count} beverage(s) detected: ${result.labels.join(", ")}`);
@@ -227,6 +228,9 @@ const EventCard = ({
         if (error) throw error;
         setIsRegistered(true);
         toast.success("Registered successfully! 🎉");
+
+        // Auto-create reminder for registered event (1 day before)
+        createEventReminder(24);
       }
     } catch (error) {
       console.error('Error registering for event:', error);
@@ -236,89 +240,124 @@ const EventCard = ({
     }
   };
 
+  const createEventReminder = async (hoursBefore: number = 24) => {
+    if (!id) return;
+
+    try {
+      const userId = localStorage.getItem('userId') || 'user-demo';
+      const res = await fetch(`/api/events/${id}/reminder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, hoursBefore }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        if (error.message === 'Reminder already exists') {
+          setHasReminder(true);
+          return;
+        }
+        throw new Error(error.error || 'Failed to create reminder');
+      }
+
+      const data = await res.json();
+      setHasReminder(true);
+      toast.success(`Reminder set for ${hoursBefore}h before event!`);
+    } catch (error: any) {
+      console.error('Error creating event reminder:', error);
+      toast.error(error.message || 'Failed to create reminder');
+    }
+  };
+
   return (
     <>
-      <Card 
-        className="glass-card hover-glow overflow-hidden group cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-in"
+      <Card
+        className="neo-card hover-glow overflow-hidden group cursor-pointer transition-all duration-300 hover:scale-[1.02] animate-fadeInUp border-l-2 border-l-purple-500/50"
         onClick={() => setShowDetails(true)}
       >
-        <div className="relative h-48 overflow-hidden">
+        <div className="relative h-56 overflow-hidden">
           <img
             src={image || '/placeholder.svg'}
             alt={title || 'Event'}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/placeholder.svg'
             }}
           />
+          {/* Dark gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/60 to-transparent" />
+
           <div className="absolute top-3 right-3">
             {category && (
-              <span className="zw-badge bg-gray-800/80 text-white border-0">
+              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white text-xs font-bold shadow-lg">
                 {category}
               </span>
             )}
           </div>
+
+          {/* Title overlay on image */}
+          <div className="absolute bottom-0 left-0 right-0 p-5">
+            <h4 className="text-xl font-bold text-white mb-2 drop-shadow-lg">{title || 'Untitled Event'}</h4>
+          </div>
         </div>
-        
-        <div className="p-5">
-          <h4 className="text-lg font-bold text-foreground mb-4">{title || 'Untitled Event'}</h4>
-          
+
+        <div className="p-5 space-y-4">
           {(location || time || eventDate) && (
-            <div className="space-y-2 mb-4">
+            <div className="space-y-2">
               {eventDate && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="w-4 h-4" style={{color: 'var(--zw-primary)'}} />
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <Calendar className="w-4 h-4 text-[#48E0E4]" />
                   <span>{eventDate}</span>
                 </div>
               )}
               {time && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="w-4 h-4" style={{color: 'var(--zw-primary)'}} />
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <Clock className="w-4 h-4 text-[#48E0E4]" />
                   <span>{time}</span>
                 </div>
               )}
               {location && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" style={{color: 'var(--zw-primary)'}} />
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <MapPin className="w-4 h-4 text-[#48E0E4]" />
                   <span>{location}</span>
                 </div>
               )}
             </div>
           )}
-          
-          <div className="space-y-2">
+
+          <div className="space-y-3">
             <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLike();
-              }}
-              className={`flex-1 ${
-                isLiked
-                  ? "bg-primary/20 border-primary/40 text-primary"
-                  : ""
-              }`}
-            >
-              <Heart className={`w-4 h-4 mr-1 ${isLiked ? "fill-primary" : ""}`} />
-              {likes}
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleProst();
-              }}
-              className="flex-1"
-            >
-              <Wine className="w-4 h-4 mr-1" />
-              {prosts}
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLike();
+                }}
+                className={`flex-1 ${
+                  isLiked
+                    ? "bg-pink-500/20 border-pink-500/40 text-pink-400"
+                    : "text-gray-400"
+                }`}
+              >
+                <Heart className={`w-4 h-4 mr-1 ${isLiked ? "fill-pink-400" : ""}`} />
+                {likes}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleProst();
+                }}
+                className="flex-1 text-gray-400"
+              >
+                <Wine className="w-4 h-4 mr-1" />
+                {prosts}
+              </Button>
             </div>
-            
+
             <Button
               variant="primary"
               size="sm"
@@ -329,7 +368,7 @@ const EventCard = ({
               disabled={isCheckingRegistration}
               className={`w-full ${
                 isRegistered
-                  ? "bg-green-600 hover:bg-green-700"
+                  ? "bg-gradient-to-r from-[#22C55E] to-[#10B981]"
                   : ""
               }`}
             >
@@ -355,7 +394,7 @@ const EventCard = ({
               onChange={handleImageSelect}
               className="w-full p-3 rounded-lg glass-card border border-primary/20 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
             />
-            
+
             {previewUrl && (
               <div className="relative rounded-lg overflow-hidden border border-primary/20">
                 <img src={previewUrl} alt="Preview" className="w-full h-48 object-cover" />
@@ -389,7 +428,7 @@ const EventCard = ({
             <div className="relative h-64 rounded-lg overflow-hidden border border-border">
               <img src={image} alt={title} className="w-full h-full object-cover" />
             </div>
-            
+
             {description && (
               <div className="space-y-2">
                 <h3 className="font-semibold text-lg flex items-center gap-2 text-foreground">
@@ -399,7 +438,7 @@ const EventCard = ({
                 <p className="text-foreground text-base leading-relaxed">{description}</p>
               </div>
             )}
-            
+
             <div className="grid grid-cols-2 gap-4">
               {eventDate && (
                 <div className="space-y-1">
@@ -410,7 +449,7 @@ const EventCard = ({
                   <p className="text-foreground">{eventDate}</p>
                 </div>
               )}
-              
+
               <div className="space-y-1">
                 <h3 className="font-semibold flex items-center gap-2 text-foreground">
                   <Clock className="w-4 h-4 text-primary" />
@@ -419,7 +458,7 @@ const EventCard = ({
                 <p className="text-foreground">{time}</p>
               </div>
             </div>
-            
+
             <div className="space-y-1">
               <h3 className="font-semibold flex items-center gap-2 text-foreground">
                 <MapPin className="w-4 h-4 text-primary" />
@@ -427,21 +466,21 @@ const EventCard = ({
               </h3>
               <p className="text-foreground">{location}</p>
             </div>
-            
+
             {language && (
               <div className="space-y-1">
                 <h3 className="font-semibold text-foreground">Language</h3>
                 <p className="text-foreground">{language}</p>
               </div>
             )}
-            
+
             {registrationInfo && (
               <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
                 <h3 className="font-semibold mb-2 text-foreground">Registration Information</h3>
                 <p className="text-foreground leading-relaxed">{registrationInfo}</p>
               </div>
             )}
-            
+
             <div className="flex gap-2 pt-4">
               <Button
                 variant="outline"
@@ -458,7 +497,7 @@ const EventCard = ({
                 <Heart className={`w-4 h-4 mr-2 ${isLiked ? "fill-primary" : ""}`} />
                 {likes} Likes
               </Button>
-              
+
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -474,14 +513,25 @@ const EventCard = ({
                 <FileText className="w-4 h-4 mr-2" />
                 {isRegistered ? "Registered ✓" : "Register Now"}
               </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  createEventReminder(24);
+                }}
+                disabled={hasReminder}
+                variant="outline"
+                className="border-purple-500/50 hover:bg-purple-100 dark:hover:bg-purple-500/20"
+              >
+                {hasReminder ? '🔔 Set' : '🔔 Remind'}
+              </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      <ProstAnimation 
-        show={showProstAnimation} 
-        onComplete={() => setShowProstAnimation(false)} 
+      <ProstAnimation
+        show={showProstAnimation}
+        onComplete={() => setShowProstAnimation(false)}
       />
     </>
   );

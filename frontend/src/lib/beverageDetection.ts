@@ -30,43 +30,43 @@ export const initBeverageDetector = async () => {
 export const detectBeverage = async (imageFile: File): Promise<{ detected: boolean; count: number; labels: string[] }> => {
   try {
     const detector = await initBeverageDetector();
-    
+
     // Convert file to image URL
     const imageUrl = URL.createObjectURL(imageFile);
-    
+
     // Run detection with higher threshold to reduce false positives
     const results = await detector(imageUrl, {
       threshold: 0.65,
       percentage: true,
     });
-    
+
     // Clean up
     URL.revokeObjectURL(imageUrl);
-    
+
     // Filter for beverage-related objects with stricter matching
     const beverages = results.filter((result: any) => {
       const label = result.label.toLowerCase();
       const score = result.score;
-      
+
       // Must have high confidence (above 0.65) and match exact beverage labels
       if (score < 0.65) return false;
-      
+
       // Check for exact matches only
       return BEVERAGE_LABELS.some(beverageLabel => {
         const normalizedLabel = beverageLabel.toLowerCase();
         // Exact match or label contains the beverage type
-        return label === normalizedLabel || 
-               label.includes(normalizedLabel) || 
+        return label === normalizedLabel ||
+               label.includes(normalizedLabel) ||
                normalizedLabel.includes(label);
       });
     });
-    
+
     console.log('Detection results:', results);
     console.log('Beverages found:', beverages);
-    
+
     // Additional validation: must find at least one beverage with high confidence
     const validBeverages = beverages.filter((b: any) => b.score >= 0.7);
-    
+
     return {
       detected: validBeverages.length > 0,
       count: validBeverages.length,

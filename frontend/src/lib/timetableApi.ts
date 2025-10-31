@@ -33,13 +33,13 @@ export const fetchTimetable = async (dayId?: string): Promise<TimetableEntry[]> 
   try {
     const day = dayId || getTodayDayInGerman();
     const url = `${API_BASE_URL}?dayId=${day}&semGrp=${SEM_GROUP}&uid=${UID}`;
-    
+
     const text = await fetchWithFallback(url);
     const entries = parseTimetableText(text);
-    
+
     // Save to Supabase in the background
     saveToSupabase(day, entries).catch(err => console.error("Failed to save to Supabase:", err));
-    
+
     return entries;
   } catch (error) {
     console.error("Error fetching timetable:", error);
@@ -54,7 +54,7 @@ const saveToSupabase = async (dayName: string, entries: TimetableEntry[]) => {
     .delete()
     .eq('day_name', dayName)
     .eq('sem_group', SEM_GROUP);
-  
+
   // Insert new entries
   const supabaseEntries = entries.map(entry => ({
     day_name: dayName,
@@ -65,7 +65,7 @@ const saveToSupabase = async (dayName: string, entries: TimetableEntry[]) => {
     cycle: entry.cycle,
     sem_group: SEM_GROUP
   }));
-  
+
   if (supabaseEntries.length > 0) {
     await supabase.from('timetable').insert(supabaseEntries);
   }
@@ -82,23 +82,23 @@ const parseTimetableText = (text: string): TimetableEntry[] => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(text, "text/html");
   const entries: TimetableEntry[] = [];
-  
+
   const panels = doc.querySelectorAll(".panel");
-  
+
   panels.forEach((panel) => {
     const heading = panel.querySelector(".panel-heading")?.textContent?.trim() || "";
     const timeMatch = heading.match(/(\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2})/);
     const dayTime = timeMatch ? timeMatch[1] : "";
-    
+
     let course = "";
     let room = "";
     let instructor = "";
     let cycle = "";
-    
+
     const rows = panel.querySelectorAll("tr");
     rows.forEach((row) => {
       const cells = row.querySelectorAll("td");
-      
+
       if (cells.length === 1) {
         const text = cells[0].textContent?.trim() || "";
         if (text && !text.startsWith("Raum") && !text.startsWith("Dozent") && !text.startsWith("Zyklus")) {
@@ -107,7 +107,7 @@ const parseTimetableText = (text: string): TimetableEntry[] => {
       } else if (cells.length === 2) {
         const key = cells[0].textContent?.trim() || "";
         const value = cells[1].textContent?.trim() || "";
-        
+
         if (key === "Raum") {
           room = value.split("Karte")[0].trim();
         } else if (key === "Dozent") {
@@ -117,11 +117,11 @@ const parseTimetableText = (text: string): TimetableEntry[] => {
         }
       }
     });
-    
+
     if (dayTime && course) {
       entries.push({ dayTime, course, room, instructor, cycle });
     }
   });
-  
+
   return entries;
 };

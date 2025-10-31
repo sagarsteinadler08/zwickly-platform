@@ -13,12 +13,16 @@ import WordOfTheDay from "@/components/WordOfTheDay";
 import TimeTracker from "@/components/TimeTracker";
 import WalletCard from "@/components/WalletCard";
 import ExamPlanCard from "@/components/ExamPlanCard";
+import ActivityFeed from "@/components/ActivityFeed";
+import NoteTaker from "@/components/NoteTaker";
+import StudyPlanner from "@/components/StudyPlanner";
+import ReminderWidget from "@/components/ReminderWidget";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-      
+
       <main className="container mx-auto px-6 pt-24 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* LEFT PANE */}
@@ -33,12 +37,16 @@ const Index = () => {
           <div className="lg:col-span-6 space-y-6">
             <CarouselSection />
             <TrendingEvents />
+            <ActivityFeed />
           </div>
 
           {/* RIGHT PANE */}
           <div className="lg:col-span-3 space-y-6">
             <GreetingSection />
             <WalletCard />
+            <ReminderWidget />
+            <NoteTaker />
+            <StudyPlanner />
             <CalendarWidget />
             <MySpaceForm />
             <WordOfTheDay />

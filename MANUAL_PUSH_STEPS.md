@@ -79,10 +79,10 @@ You should see:
 
 ## 📍 Repository Info
 
-**Local:** `/Users/sagar/sagarneoprojects/zwickly-local-merged`  
-**Remote:** https://github.com/sagarsteinadler08/zwickly-platform.git  
-**Branch:** main  
-**Tag:** v1.0.0  
+**Local:** `/Users/sagar/sagarneoprojects/zwickly-local-merged`
+**Remote:** https://github.com/sagarsteinadler08/zwickly-platform.git
+**Branch:** main
+**Tag:** v1.0.0
 **Author:** Sagar Bhadravathi Ravi
 
 ---

@@ -72,7 +72,7 @@ const StudentAuth = () => {
         });
 
         if (error) throw error;
-        
+
         toast.success("Signed in successfully!");
         navigate("/");
       }

@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 const ChatbotNavbar = () => {
   const navItems = [
     { name: "Chatbot", path: "/chatbot", icon: MessageSquare },
-    { name: "Users", path: "/users", icon: Users },
+    { name: "Products", path: "/users", icon: Users },
   ];
 
   return (
@@ -12,7 +12,7 @@ const ChatbotNavbar = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold gradient-text overflow-visible">Pixie</h1>
-          
+
           <ul className="flex items-center gap-8">
             {navItems.map((item) => {
               const Icon = item.icon;

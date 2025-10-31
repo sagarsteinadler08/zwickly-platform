@@ -65,10 +65,10 @@ export const fetchMensaSchedule = async (dayId?: string): Promise<MensaMeal[]> =
       const week = getCurrentWeek();
       const timestamp = Date.now();
       const url = `${API_BASE_URL}?tag=${day}_4&week=${week}&_=${timestamp}`;
-      
+
       const text = await fetch(url).then(r => r.ok ? r.text() : Promise.reject(new Error(`Status ${r.status}`)));
       const meals = parseMensaHTML(text);
-      
+
       if (meals.length > 0) {
         setCachedMenu(meals);
         return meals;
@@ -83,7 +83,7 @@ export const fetchMensaSchedule = async (dayId?: string): Promise<MensaMeal[]> =
   // Try current day first
   const currentDay = dayId || getTodayDayName();
   let meals = await tryFetchDay(currentDay);
-  
+
   if (meals.length > 0) {
     return meals;
   }
@@ -91,7 +91,7 @@ export const fetchMensaSchedule = async (dayId?: string): Promise<MensaMeal[]> =
   // Try previous days in order
   const daysOrder = ["freitag", "donnerstag", "mittwoch", "dienstag", "montag"];
   const currentDayIndex = daysOrder.indexOf(currentDay);
-  
+
   // Try days before current day
   for (let i = currentDayIndex + 1; i < daysOrder.length; i++) {
     console.log(`Trying previous day: ${daysOrder[i]}`);
@@ -117,38 +117,38 @@ const parseMensaHTML = (html: string): MensaMeal[] => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
   const meals: MensaMeal[] = [];
-  
+
   // Find all meal divs with class "thumbnail"
   const thumbnails = doc.querySelectorAll('.thumbnail');
-  
+
   thumbnails.forEach((thumbnail) => {
     // Extract title (in bold div)
     const titleDiv = thumbnail.querySelector('div[style*="font-weight:bold"]');
     const title = titleDiv?.textContent?.trim().replace(" Zwickau", "") || "";
-    
+
     // Extract description (in the 120px height div)
     const descDiv = thumbnail.querySelector('div[style*="height:120px"]');
     const description = descDiv?.textContent?.trim() || "";
-    
+
     // Extract prices
     const priceDiv = thumbnail.querySelector('div[style*="text-align:center"]');
     const priceText = priceDiv?.textContent || "";
     const priceMatches = priceText.match(/(\d+,\d+)\s*€/g) || [];
-    
+
     const priceSmall = priceMatches[0] || "N/A";
     const priceMedium = priceMatches[1] || "N/A";
     const priceLarge = priceMatches[2] || "N/A";
-    
+
     // Extract image URL
     const img = thumbnail.querySelector('img[src*="pics/essen_id"]');
     const imgSrc = img?.getAttribute('src') || "";
     const imageUrl = imgSrc ? `https://mobile.whz.de/mensa/${imgSrc}` : "";
-    
+
     // Check for vegetarian
     const allText = thumbnail.textContent?.toLowerCase() || "";
-    const isVegetarian = allText.includes('veg') || 
+    const isVegetarian = allText.includes('veg') ||
                         thumbnail.querySelector('img[alt*="Veggie"]') !== null;
-    
+
     if (title && description) {
       meals.push({
         title,
@@ -161,6 +161,6 @@ const parseMensaHTML = (html: string): MensaMeal[] => {
       });
     }
   });
-  
+
   return meals;
 };

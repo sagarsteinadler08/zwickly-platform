@@ -202,6 +202,24 @@ model Image {
   @@map("images")
 }
 
+model Ticket {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String
+  channelId   String?  @db.Uuid
+  messageId   String?  @db.Uuid
+  title       String
+  description String   @db.Text
+  status      String   @default("open") // open, in_progress, resolved, closed
+  priority    String   @default("normal") // low, normal, high, urgent
+  assignedTo  String?  // admin user id
+  adminReply  String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tickets")
+  @@index([userId, status])
+}
+
 model PollVote {
   id        String   @id @default(uuid()) @db.Uuid
   poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
@@ -214,4 +232,24 @@ model PollVote {
 
   @@unique([pollId, userId])
   @@map("poll_votes")
+}
+
+model Reminder {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String
+  title         String
+  description   String?  @db.Text
+  reminderTime  DateTime
+  completed     Boolean  @default(false)
+  snoozedUntil  DateTime?
+  recurrence    String?  // "once", "daily", "weekdays"
+  source        String?  // "manual", "event", "study_plan", "calendar"
+  sourceId      String?  // Reference to event/session if applicable
+  timezone      String   @default("Europe/Berlin")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("reminders")
+  @@index([userId, reminderTime])
+  @@index([userId, completed])
 }

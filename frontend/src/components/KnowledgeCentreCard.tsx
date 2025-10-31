@@ -16,7 +16,7 @@ const KnowledgeCentreCard = () => {
         <BookOpen className="w-5 h-5 text-primary" />
         <h3 className="text-lg font-semibold gradient-text">Knowledge Centre</h3>
       </div>
-      
+
       <div className="space-y-2">
         {links.map((link, index) => (
           <a

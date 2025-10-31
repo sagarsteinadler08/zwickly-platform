@@ -18,12 +18,12 @@ export default function Page() {
             <h3 className="text-lg font-semibold text-gray-900 mb-3">✅ Frontend</h3>
             <p className="text-gray-600">Lovable UI preserved unchanged in <code>/frontend/</code></p>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">✅ Backend</h3>
             <p className="text-gray-600">Next.js API + Prisma + Postgres ready</p>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">✅ Database</h3>
             <p className="text-gray-600">Supabase data import script included</p>

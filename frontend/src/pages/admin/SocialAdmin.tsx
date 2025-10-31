@@ -34,11 +34,45 @@ const SocialAdmin = () => {
   const [pollResults, setPollResults] = useState<{[pollId: string]: any}>({});
   const [pollResultsLoading, setPollResultsLoading] = useState<{[pollId: string]: boolean}>({});
   const [selectedPollOptions, setSelectedPollOptions] = useState<{[pollId: string]: string}>({});
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [showTickets, setShowTickets] = useState(false);
 
   useEffect(() => {
     fetchChannels();
     fetchRequests();
+    fetchTickets();
   }, []);
+
+  // Fetch tickets
+  const fetchTickets = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/tickets?status=open');
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setTickets(data);
+      }
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      setTickets([]);
+    }
+  };
+
+  // Handle ticket reply
+  const handleTicketReply = async (ticketId: string, reply: string) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/tickets/${ticketId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'resolved', adminReply: reply }),
+      });
+      if (res.ok) {
+        toast.success('Ticket replied!');
+        fetchTickets();
+      }
+    } catch (error) {
+      toast.error('Failed to reply');
+    }
+  };
 
   useEffect(() => {
     // If single channel selected, fetch its messages, images, polls
@@ -176,7 +210,7 @@ const SocialAdmin = () => {
       });
 
       if (!res.ok) throw new Error('Failed');
-      
+
       toast.success('Request approved!');
       fetchChannels();
       fetchRequests();
@@ -194,7 +228,7 @@ const SocialAdmin = () => {
       });
 
       if (!res.ok) throw new Error('Failed');
-      
+
       toast.success('Request declined');
       fetchRequests();
     } catch (error) {
@@ -223,7 +257,7 @@ const SocialAdmin = () => {
       });
 
       if (!res.ok) throw new Error('Failed');
-      
+
       toast.success('Channel created!');
       setShowCreateDialog(false);
       setNewChannelName('');
@@ -249,23 +283,23 @@ const SocialAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen admin-theme">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0F172A] transition-colors duration-300">
       <AdminNavbar />
-      
+
       <main className="container mx-auto px-6 pt-24 pb-12">
         <h1 className="text-5xl font-bold gradient-text mb-8 text-center">Social Wall Admin</h1>
 
         {/* Pending Channel Requests */}
         {requests.length > 0 && (
-          <Card className="glass-card p-6 mb-6">
-            <h2 className="text-2xl font-bold mb-4">Pending Channel Requests</h2>
+          <Card className="neo-card p-6 mb-6 border-l-2 border-l-orange-500/50">
+            <h2 className="text-2xl font-bold mb-4 text-slate-800 dark:text-white">Pending Channel Requests</h2>
             <div className="space-y-4">
               {requests.map((req) => (
-                <div key={req.id} className="flex items-center justify-between p-4 border rounded-xl">
+                <div key={req.id} className="flex items-center justify-between p-4 border border-slate-200 dark:border-white/10 rounded-xl bg-white dark:bg-transparent">
                   <div>
-                    <h3 className="font-semibold">{req.name}</h3>
-                    <p className="text-sm text-muted-foreground">{req.description}</p>
-                    <p className="text-xs text-muted-foreground">Requested by: {req.requesterId}</p>
+                    <h3 className="font-semibold text-slate-800 dark:text-white">{req.name}</h3>
+                    <p className="text-sm text-slate-600 dark:text-gray-400">{req.description}</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-500">Requested by: {req.requesterId}</p>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" onClick={() => handleApproveRequest(req.id)} className="bg-green-600">
@@ -284,10 +318,10 @@ const SocialAdmin = () => {
         )}
 
         {/* Create Channel */}
-        <Card className="glass-card p-6 mb-6">
+        <Card className="neo-card p-6 mb-6">
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
-              <Button className="rounded-full">
+              <Button className="rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-xl hover:shadow-orange-500/40">
                 <Plus className="w-4 h-4 mr-2" />
                 Create New Channel
               </Button>
@@ -307,8 +341,8 @@ const SocialAdmin = () => {
                   value={newChannelDesc}
                   onChange={(e) => setNewChannelDesc(e.target.value)}
                 />
-                <Button 
-                  onClick={handleCreateChannel} 
+                <Button
+                  onClick={handleCreateChannel}
                   className="w-full rounded-full"
                   disabled={loading}
                 >
@@ -319,11 +353,75 @@ const SocialAdmin = () => {
           </Dialog>
         </Card>
 
+        {/* Tickets Section */}
+        <Card className="neo-card p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-slate-800 dark:text-white">Support Tickets (@admin mentions)</h3>
+            <Button variant="outline" size="sm" onClick={() => setShowTickets(!showTickets)}>
+              {showTickets ? 'Hide' : `Show (${tickets.length})`}
+            </Button>
+          </div>
+          {showTickets && (
+            <div className="space-y-4">
+              {tickets.length === 0 ? (
+                <p className="text-slate-600 dark:text-gray-400 text-center py-4">No open tickets</p>
+              ) : (
+                tickets.map(ticket => (
+                  <div key={ticket.id} className="border border-slate-200 dark:border-white/10 rounded-xl p-4 bg-white dark:bg-white/5">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-semibold text-slate-800 dark:text-white">{ticket.title}</h4>
+                        <p className="text-sm text-slate-600 dark:text-gray-400">From: {ticket.userId}</p>
+                        <p className="text-xs text-slate-500 dark:text-gray-500">
+                          {new Date(ticket.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                      <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs">
+                        {ticket.status}
+                      </span>
+                    </div>
+                    <p className="text-sm mb-3">{ticket.description}</p>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Type your reply..."
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                            handleTicketReply(ticket.id, e.currentTarget.value.trim());
+                            e.currentTarget.value = '';
+                          }
+                        }}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={(e) => {
+                          const input = e.currentTarget.parentElement?.querySelector('input');
+                          if (input?.value.trim()) {
+                            handleTicketReply(ticket.id, input.value.trim());
+                            input.value = '';
+                          }
+                        }}
+                      >
+                        Reply
+                      </Button>
+                    </div>
+                    {ticket.adminReply && (
+                      <div className="mt-2 p-2 bg-green-50 rounded">
+                        <p className="text-xs text-green-700 font-semibold">Admin Reply:</p>
+                        <p className="text-sm text-green-800">{ticket.adminReply}</p>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </Card>
+
         {/* Always-visible message draft/send area - only enabled if exactly one channel selected */}
-        <Card className="glass-card p-6 mb-6">
-          <h3 className="font-bold mb-2">Draft & Send Message</h3>
+        <Card className="neo-card p-6 mb-6">
+          <h3 className="font-bold mb-2 text-slate-800 dark:text-white">Draft & Send Message</h3>
           {selectedChannels.length !== 1 ? (
-            <p className="text-muted-foreground">Select exactly one channel to enable drafting and sending a message.</p>
+            <p className="text-slate-600 dark:text-gray-400">Select exactly one channel to enable drafting and sending a message.</p>
           ) : (
             <div className="flex flex-col gap-2 md:flex-row md:items-end">
               <textarea
@@ -360,18 +458,18 @@ const SocialAdmin = () => {
 
         {/* Message History for selected channel */}
         {selectedChannels.length === 1 && (
-          <Card className="glass-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2">Messages for {selectedChannels[0].name}</h3>
+          <Card className="neo-card p-6 mb-6">
+            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Messages for {selectedChannels[0].name}</h3>
             {fetchingMessages ? (
-              <p className="text-muted-foreground">Loading messages...</p>
+              <p className="text-slate-600 dark:text-gray-400">Loading messages...</p>
             ) : messages.length === 0 ? (
-              <p className="text-muted-foreground">No messages yet.</p>
+              <p className="text-slate-600 dark:text-gray-400">No messages yet.</p>
             ) : (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {messages.map((msg) => (
-                  <div key={msg.id} className="border rounded p-2 flex flex-col">
-                    <div className="text-xs text-muted-foreground mb-1">{msg.userId} &bull; {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : ''}</div>
-                    <div>{msg.body}</div>
+                  <div key={msg.id} className="border border-slate-200 dark:border-white/10 rounded p-2 flex flex-col bg-white dark:bg-transparent">
+                    <div className="text-xs text-slate-500 dark:text-gray-400 mb-1">{msg.userId} &bull; {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : ''}</div>
+                    <div className="text-slate-700 dark:text-white">{msg.body}</div>
                   </div>
                 ))}
               </div>
@@ -379,15 +477,15 @@ const SocialAdmin = () => {
           </Card>
         )}
         {selectedChannels.length > 1 && (
-          <Card className="glass-card p-6 mb-6">
-            <p className="text-center text-muted-foreground">Multiple channels selected: bulk actions only (send/view messages not available).</p>
+          <Card className="neo-card p-6 mb-6">
+            <p className="text-center text-slate-600 dark:text-gray-400">Multiple channels selected: bulk actions only (send/view messages not available).</p>
           </Card>
         )}
 
         {/* Admin Controls: if any selected, support bulk delete, single send */}
         {selectedChannels.length > 0 && (
-          <Card className="glass-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-4">
+          <Card className="neo-card p-6 mb-6">
+            <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">
               Admin Controls: {selectedChannels.length === 1 ? selectedChannels[0].name : `${selectedChannels.length} channels selected`}
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -403,7 +501,7 @@ const SocialAdmin = () => {
                 <ImageIcon className="w-4 h-4 mr-2" />
                 Upload Image
               </Button>
-              <Button variant="destructive" className="rounded-full" 
+              <Button variant="destructive" className="rounded-full"
                 onClick={async () => {
                   if (!confirm(`Delete ${selectedChannels.length} channel(s)?`)) return;
                   for (const ch of selectedChannels) {
@@ -427,7 +525,7 @@ const SocialAdmin = () => {
 
         {/* Send Message Dialog */}
         <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
-          <DialogContent className="glass-card">
+          <DialogContent className="neo-card">
             <DialogHeader>
               <DialogTitle>Send Message to {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
             </DialogHeader>
@@ -436,10 +534,10 @@ const SocialAdmin = () => {
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 placeholder="Type your message..."
-                className="w-full min-h-[120px] p-3 border rounded-xl"
+                className="w-full min-h-[120px] p-4 border-2 border-slate-300 dark:border-white/20 rounded-xl bg-white dark:bg-white/10 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors duration-300"
               />
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={async () => {
                     if (!messageText.trim() || selectedChannels.length === 0) return;
                     try {
@@ -473,7 +571,7 @@ const SocialAdmin = () => {
 
         {/* Create Poll Dialog, now uses backend API to create poll and refresh list */}
         <Dialog open={showPollDialog} onOpenChange={setShowPollDialog}>
-          <DialogContent className="glass-card">
+          <DialogContent className="neo-card">
             <DialogHeader>
               <DialogTitle>Create Poll in {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
             </DialogHeader>
@@ -484,7 +582,7 @@ const SocialAdmin = () => {
                 placeholder="Poll question"
               />
               <div className="space-y-2">
-                <label className="text-sm font-medium">Options</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-gray-200">Options</label>
                 {pollOptions.map((opt, i) => (
                   <Input
                     key={i}
@@ -499,15 +597,15 @@ const SocialAdmin = () => {
                 ))}
               </div>
               <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setPollOptions([...pollOptions, ''])}
                   className="rounded-full"
                 >
                   Add Option
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setPollOptions(pollOptions.slice(0, -1))}
                   disabled={pollOptions.length <= 2}
                   className="rounded-full"
@@ -516,7 +614,7 @@ const SocialAdmin = () => {
                 </Button>
               </div>
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={async () => {
                     if (!pollQuestion.trim() || selectedChannels.length !== 1) return;
                     if (pollOptions.filter(o => o.trim()).length < 2) {
@@ -554,7 +652,7 @@ const SocialAdmin = () => {
 
         {/* Upload Image Dialog, now actually uploads to backend and refreshes images */}
         <Dialog open={showImageDialog} onOpenChange={setShowImageDialog}>
-          <DialogContent className="glass-card">
+          <DialogContent className="neo-card">
             <DialogHeader>
               <DialogTitle>Upload Image to {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
             </DialogHeader>
@@ -567,15 +665,15 @@ const SocialAdmin = () => {
               />
               {imageFile && (
                 <div className="mt-2">
-                  <img 
-                    src={URL.createObjectURL(imageFile)} 
-                    alt="Preview" 
+                  <img
+                    src={URL.createObjectURL(imageFile)}
+                    alt="Preview"
                     className="max-h-48 rounded-xl"
                   />
                 </div>
               )}
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={async () => {
                     if (!imageFile || selectedChannels.length !== 1) return;
                     try {
@@ -608,17 +706,17 @@ const SocialAdmin = () => {
         </Dialog>
 
         {/* All Channels */}
-        <Card className="glass-card p-6">
-          <h2 className="text-2xl font-bold mb-4">All Channels</h2>
+        <Card className="neo-card p-6">
+          <h2 className="text-2xl font-bold mb-4 text-slate-800 dark:text-white">All Channels</h2>
           {channels.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No channels yet. Create one!</p>
+            <p className="text-slate-600 dark:text-gray-400 text-center py-8">No channels yet. Create one!</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {channels.map((channel) => (
-                <div 
+                <div
                   key={channel.id}
-                  className={`p-4 border rounded-xl hover-glow cursor-pointer transition-all ${
-                    selectedChannels.some(ch => ch.id === channel.id) ? 'bg-primary/10 border-primary' : ''
+                  className={`p-4 border border-slate-200 dark:border-white/10 rounded-xl hover-glow cursor-pointer transition-all bg-white dark:bg-transparent ${
+                    selectedChannels.some(ch => ch.id === channel.id) ? 'bg-purple-50 dark:bg-primary/10 border-purple-400 dark:border-primary' : ''
                   }`}
                   onClick={() => toggleChannelSelect(channel)}
                 >
@@ -630,9 +728,9 @@ const SocialAdmin = () => {
                     className="mr-2 align-middle"
                   />
                   <MessageSquare className="w-8 h-8 text-primary mb-2 inline-block align-middle" />
-                  <span className="font-bold text-lg align-middle">{channel.name}</span>
-                  <div className="text-sm text-muted-foreground">{channel.description}</div>
-                  <div className="text-xs text-muted-foreground mt-2">#{channel.slug}</div>
+                  <span className="font-bold text-lg align-middle text-slate-800 dark:text-white">{channel.name}</span>
+                  <div className="text-sm text-slate-600 dark:text-gray-400">{channel.description}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-500 mt-2">#{channel.slug}</div>
                 </div>
               ))}
             </div>
@@ -641,18 +739,18 @@ const SocialAdmin = () => {
 
         {/* Channel image gallery: render if exactly one selected, below message history */}
         {selectedChannels.length === 1 && (
-          <Card className="glass-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2">Images for {selectedChannels[0].name}</h3>
+          <Card className="neo-card p-6 mb-6">
+            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Images for {selectedChannels[0].name}</h3>
             {fetchingImages ? (
-              <p className="text-muted-foreground">Loading images...</p>
+              <p className="text-slate-600 dark:text-gray-400">Loading images...</p>
             ) : images.length === 0 ? (
-              <p className="text-muted-foreground">No images uploaded yet.</p>
+              <p className="text-slate-600 dark:text-gray-400">No images uploaded yet.</p>
             ) : (
               <div className="flex flex-wrap gap-4">
                 {images.map((img) => (
-                  <div key={img.id} className="w-48 flex flex-col items-center border rounded-xl p-2 bg-white/80">
+                  <div key={img.id} className="w-48 flex flex-col items-center border border-slate-200 dark:border-white/10 rounded-xl p-2 bg-white dark:bg-white/10">
                     <img src={img.url} alt={img.originalName || 'image'} className="object-contain max-h-40 w-full" />
-                    <div className="text-xs text-muted-foreground mt-1 truncate w-full">{img.originalName}</div>
+                    <div className="text-xs text-slate-500 dark:text-gray-400 mt-1 truncate w-full">{img.originalName}</div>
                   </div>
                 ))}
               </div>
@@ -662,12 +760,12 @@ const SocialAdmin = () => {
 
         {/* Channel polls: render if exactly one selected, below message/images, now fully interactive */}
         {selectedChannels.length === 1 && (
-          <Card className="glass-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2">Polls for {selectedChannels[0].name}</h3>
+          <Card className="neo-card p-6 mb-6">
+            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Polls for {selectedChannels[0].name}</h3>
             {fetchingPolls ? (
-              <p className="text-muted-foreground">Loading polls...</p>
+              <p className="text-slate-600 dark:text-gray-400">Loading polls...</p>
             ) : polls.length === 0 ? (
-              <p className="text-muted-foreground">No polls created yet.</p>
+              <p className="text-slate-600 dark:text-gray-400">No polls created yet.</p>
             ) : (
               <div className="space-y-6">
                 {polls.map((poll) => {
@@ -739,7 +837,7 @@ const SocialAdmin = () => {
                           })}
                         </div>
                       ) : (
-                        <p className="text-muted-foreground">Unable to load poll options.</p>
+                        <p className="text-slate-600 dark:text-gray-400">Unable to load poll options.</p>
                       )}
                       {/* Admin close poll */}
                       {!poll.isClosed && (
@@ -766,7 +864,7 @@ const SocialAdmin = () => {
                           >Close Poll</Button>
                         </div>
                       )}
-                      <div className="text-xs text-muted-foreground mt-1">Created: {poll.createdAt ? new Date(poll.createdAt).toLocaleString() : ''}</div>
+                      <div className="text-xs text-slate-500 dark:text-gray-500 mt-1">Created: {poll.createdAt ? new Date(poll.createdAt).toLocaleString() : ''}</div>
                     </div>
                   );
                 })}

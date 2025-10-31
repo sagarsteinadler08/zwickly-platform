@@ -26,18 +26,18 @@ const MySpaceForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.title.trim() || !formData.description.trim() || !formData.event_date || 
+
+    if (!formData.title.trim() || !formData.description.trim() || !formData.event_date ||
         !formData.event_time || !formData.location || !formData.category) {
       toast.error("Please fill in all required fields");
       return;
     }
 
     setIsSubmitting(true);
-    
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         toast.error("You must be logged in to submit an event");
         return;
@@ -86,12 +86,12 @@ const MySpaceForm = () => {
         <User className="w-5 h-5 text-primary" />
         <h3 className="text-lg font-semibold gradient-text">My Space</h3>
       </div>
-      
+
       <p className="text-sm text-muted-foreground mb-4">
         Create Event / Study Group
       </p>
 
-      <Button 
+      <Button
         onClick={() => setShowDialog(true)}
         className="w-full bg-primary hover:bg-primary/80 text-primary-foreground"
       >
@@ -115,7 +115,7 @@ const MySpaceForm = () => {
                 required
               />
             </div>
-            
+
             <div>
               <Label htmlFor="description" className="text-foreground">Description *</Label>
               <Textarea
@@ -200,7 +200,7 @@ const MySpaceForm = () => {
               />
             </div>
 
-            <Button 
+            <Button
               type="submit"
               className="w-full bg-primary hover:bg-primary/80 text-primary-foreground"
               disabled={isSubmitting}
