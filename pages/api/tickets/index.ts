@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
-      const { userId, title, description, channelId, messageId, priority } = req.body;
+      const { userId, title, description, channelId, messageId, priority, category, department } = req.body;
 
       if (!userId || !title || !description) {
         return res.status(400).json({ error: 'userId, title, and description required' });
@@ -58,6 +58,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           channelId,
           messageId,
           priority: priority || 'normal',
+          category: category || 'general',
+          department: department || 'support',
         },
       });
 

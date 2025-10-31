@@ -19,7 +19,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hi! I'm Pixie, your AI campus assistant! 🌟 I can help you with:\n\n• Events and workshops\n• Timetable and schedules\n• Exam dates\n• Mensa menu\n• Campus news\n• Transportation\n\nWhat would you like to know?",
+      text: "Hi! I'm Pixi, your enhanced AI assistant for international students at WHZ! 🌟✨\n\nI now have deep knowledge about:\n\n🇩🇪 German culture & traditions\n📋 Bureaucracy (Anmeldung, visa, permits)\n🎓 University life in Saxony\n🗣️ Language tips (Sie vs du)\n🎉 Events & festivals\n🏠 Integration & daily life\n\nI'm powered by Google Gemini AI + a comprehensive cultural knowledge base!\n\nWhat would you like to know?",
       sender: "bot",
       timestamp: new Date()
     }
@@ -54,41 +54,51 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      // Call the Supabase edge function
-      const { data, error } = await supabase.functions.invoke('chat-assistant', {
-        body: {
-          messages: [...messages, userMessage].map(m => ({
-            role: m.sender === 'user' ? 'user' : 'assistant',
-            content: m.text
-          }))
-        }
+      // Call the Enhanced Pixi API with cultural knowledge
+      const response = await fetch('http://localhost:3000/api/pixi/enhanced', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: inputText,
+          userId: 'student-demo', // TODO: Replace with actual user ID from auth
+        }),
       });
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('Failed to get response');
+
+      const data = await response.json();
 
       const botMessage: Message = {
         id: messages.length + 2,
-        text: data.message || "Sorry, I couldn't process that request.",
+        text: data.response || "Sorry, I couldn't process that request.",
         sender: "bot",
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMessage]);
-    } catch (error) {
-      console.error('Error calling chatbot:', error);
 
+      // Show helpful info if insights were used
+      if (data.insightsUsed > 0) {
+        toast({
+          title: "Cultural Insights Used",
+          description: `Pixi used ${data.insightsUsed} verified knowledge base entries to answer your question!`,
+        });
+      }
+    } catch (error) {
+      console.error('Error calling Pixi:', error);
+      
       const errorMessage: Message = {
         id: messages.length + 2,
-        text: "Sorry, I encountered an error. Please try again! 😅",
+        text: "Sorry, I encountered an error. Please try again! 😅\n\nYou can also try:\n• Asking in the #general channel\n• Contacting the WHZ International Office\n• Visiting the Studentenwerk",
         sender: "bot",
         timestamp: new Date()
       };
-
+      
       setMessages(prev => [...prev, errorMessage]);
-
+      
       toast({
         title: "Error",
-        description: "Failed to get response from chatbot",
+        description: "Failed to get response from Pixi AI",
         variant: "destructive"
       });
     } finally {
@@ -196,8 +206,9 @@ const Chatbot = () => {
               )}
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
-            Powered by AI • Connected to live campus data
+          <p className="text-xs text-muted-foreground mt-2 text-center flex items-center justify-center gap-2">
+            <Sparkles className="w-3 h-3" />
+            Powered by Google Gemini AI • 93 Cultural Insights • Leben in Sachsen
           </p>
         </div>
       </Card>

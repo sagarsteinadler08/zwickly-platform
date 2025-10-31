@@ -12,6 +12,7 @@ interface Message {
   createdAt: string;
   imageUrl?: string;
   isBot?: boolean;
+  reactions?: { [emoji: string]: number };
 }
 
 type Channel = { id: string; name: string };
@@ -35,6 +36,32 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
   const [images, setImages] = useState<any[]>([]);
   const { socket } = useSocket(userId, socketHandler);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Handle emoji reactions
+  const handleReaction = async (messageId: string, emoji: string) => {
+    try {
+      // Optimistically update UI
+      setMessages(curr => curr.map(msg => {
+        if (msg.id === messageId) {
+          const reactions = { ...(msg.reactions || {}) };
+          reactions[emoji] = (reactions[emoji] || 0) + 1;
+          return { ...msg, reactions };
+        }
+        return msg;
+      }));
+
+      // TODO: Send to backend
+      // await fetch(`/api/chat/messages/${messageId}/react`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ emoji, userId })
+      // });
+      
+      onToast({ message: `Reacted with ${emoji}`, type: 'success' });
+    } catch (error) {
+      console.error('Failed to react:', error);
+    }
+  };
 
   function socketHandler(evt: any) {
     if (evt.type === 'message:new' && evt.channelId === channel.id) {
@@ -100,12 +127,75 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
                 })}
               </span>
             </div>
+            {/* Message body */}
             <div className={`${msg.isBot ? 'bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/30 rounded-lg p-3' : ''}`}>
-              {msg.imageUrl ? (
-                <ImageMessage imageUrl={msg.imageUrl} />
-              ) : (
-                <div className="text-slate-700 dark:text-gray-200 break-words">{msg.body}</div>
+              <div className="text-slate-700 dark:text-gray-200 break-words whitespace-pre-wrap">{msg.body}</div>
+              
+              {/* Image if present - show ALONG with text */}
+              {msg.imageUrl && (
+                <div className="mt-3">
+                  <img 
+                    src={msg.imageUrl} 
+                    alt="Announcement attachment" 
+                    className="max-w-lg w-full rounded-lg border border-slate-300 dark:border-slate-600 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                    onClick={() => window.open(msg.imageUrl, '_blank')}
+                  />
+                </div>
               )}
+            </div>
+
+            {/* Emoji Reactions */}
+            <div className="flex gap-2 mt-2 flex-wrap">
+              <button
+                className="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm border border-slate-300 dark:border-slate-600"
+                onClick={() => handleReaction(msg.id, '👍')}
+                title="Like"
+              >
+                <span className="text-base">👍</span>
+                {msg.reactions?.['👍'] ? (
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{msg.reactions['👍']}</span>
+                ) : null}
+              </button>
+              <button
+                className="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm border border-slate-300 dark:border-slate-600"
+                onClick={() => handleReaction(msg.id, '❤️')}
+                title="Love"
+              >
+                <span className="text-base">❤️</span>
+                {msg.reactions?.['❤️'] ? (
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{msg.reactions['❤️']}</span>
+                ) : null}
+              </button>
+              <button
+                className="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm border border-slate-300 dark:border-slate-600"
+                onClick={() => handleReaction(msg.id, '🎉')}
+                title="Celebrate"
+              >
+                <span className="text-base">🎉</span>
+                {msg.reactions?.['🎉'] ? (
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{msg.reactions['🎉']}</span>
+                ) : null}
+              </button>
+              <button
+                className="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm border border-slate-300 dark:border-slate-600"
+                onClick={() => handleReaction(msg.id, '🔥')}
+                title="Fire"
+              >
+                <span className="text-base">🔥</span>
+                {msg.reactions?.['🔥'] ? (
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{msg.reactions['🔥']}</span>
+                ) : null}
+              </button>
+              <button
+                className="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm border border-slate-300 dark:border-slate-600"
+                onClick={() => handleReaction(msg.id, '😂')}
+                title="Funny"
+              >
+                <span className="text-base">😂</span>
+                {msg.reactions?.['😂'] ? (
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{msg.reactions['😂']}</span>
+                ) : null}
+              </button>
             </div>
           </div>
         </div>

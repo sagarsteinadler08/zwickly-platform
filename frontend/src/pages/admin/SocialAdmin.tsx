@@ -3,123 +3,57 @@ import { useNavigate } from 'react-router-dom';
 import AdminNavbar from '@/components/AdminNavbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { CheckCircle, XCircle, Plus, MessageSquare, Trash2, BarChart3, Send, Image as ImageIcon } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  CheckCircle, XCircle, Plus, MessageSquare, Trash2, BarChart3, Send, 
+  Image as ImageIcon, Users, Hash, Clock, Eye, X, Megaphone, LayoutDashboard,
+  Settings, Upload, Edit, Trash
+} from 'lucide-react';
 import { toast } from 'sonner';
 
-const SocialAdmin = () => {
+const SocialAdminImproved = () => {
   const navigate = useNavigate();
   const [channels, setChannels] = useState<any[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [tickets, setTickets] = useState<any[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  
+  // Forms
   const [newChannelName, setNewChannelName] = useState('');
   const [newChannelDesc, setNewChannelDesc] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showMessageDialog, setShowMessageDialog] = useState(false);
-  const [showPollDialog, setShowPollDialog] = useState(false);
-  const [showImageDialog, setShowImageDialog] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [pollQuestion, setPollQuestion] = useState('');
-  const [pollOptions, setPollOptions] = useState(['', '']);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [pollOptions, setPollOptions] = useState(['', '', '']);
+  
+  // Announcement form
+  const [announcementTitle, setAnnouncementTitle] = useState('');
+  const [announcementText, setAnnouncementText] = useState('');
+  const [announcementImage, setAnnouncementImage] = useState<File | null>(null);
+  const [announcementImagePreview, setAnnouncementImagePreview] = useState('');
+  const [selectedChannelsForAnnouncement, setSelectedChannelsForAnnouncement] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState('overview');
+  
+  // Edit channel
+  const [editingChannel, setEditingChannel] = useState<any>(null);
+  const [editChannelName, setEditChannelName] = useState('');
+  const [editChannelDesc, setEditChannelDesc] = useState('');
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  
+  // Data for selected channel
   const [messages, setMessages] = useState<any[]>([]);
-  const [fetchingMessages, setFetchingMessages] = useState(false);
-  const [selectedChannels, setSelectedChannels] = useState<any[]>([]);
-  const [images, setImages] = useState<any[]>([]);
-  const [fetchingImages, setFetchingImages] = useState(false);
   const [polls, setPolls] = useState<any[]>([]);
-  const [fetchingPolls, setFetchingPolls] = useState(false);
-  const [pollResults, setPollResults] = useState<{[pollId: string]: any}>({});
-  const [pollResultsLoading, setPollResultsLoading] = useState<{[pollId: string]: boolean}>({});
-  const [selectedPollOptions, setSelectedPollOptions] = useState<{[pollId: string]: string}>({});
-  const [tickets, setTickets] = useState<any[]>([]);
-  const [showTickets, setShowTickets] = useState(false);
+  const [images, setImages] = useState<any[]>([]);
 
   useEffect(() => {
     fetchChannels();
     fetchRequests();
     fetchTickets();
   }, []);
-
-  // Fetch tickets
-  const fetchTickets = async () => {
-    try {
-      const res = await fetch('http://localhost:3000/api/tickets?status=open');
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setTickets(data);
-      }
-    } catch (error) {
-      console.error('Error fetching tickets:', error);
-      setTickets([]);
-    }
-  };
-
-  // Handle ticket reply
-  const handleTicketReply = async (ticketId: string, reply: string) => {
-    try {
-      const res = await fetch(`http://localhost:3000/api/tickets/${ticketId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'resolved', adminReply: reply }),
-      });
-      if (res.ok) {
-        toast.success('Ticket replied!');
-        fetchTickets();
-      }
-    } catch (error) {
-      toast.error('Failed to reply');
-    }
-  };
-
-  useEffect(() => {
-    // If single channel selected, fetch its messages, images, polls
-    if (selectedChannels.length === 1) {
-      fetchMessages(selectedChannels[0].id);
-      fetchImages(selectedChannels[0].id);
-      fetchPolls(selectedChannels[0].id);
-    } else {
-      setMessages([]);
-      setImages([]);
-      setPolls([]);
-    }
-  }, [selectedChannels]);
-
-  // Fetch results for all polls whenever polls change
-  useEffect(() => {
-    const fetchAllPollResults = async () => {
-      if (selectedChannels.length !== 1 || polls.length === 0) {
-        setPollResults({});
-        setSelectedPollOptions({});
-        return;
-      }
-      const channelId = selectedChannels[0].id;
-      const nextResults: {[pollId: string]: any} = {};
-      const nextSelections: {[pollId: string]: string} = {};
-      await Promise.all(
-        polls.map(async (poll) => {
-          setPollResultsLoading(prev => ({ ...prev, [poll.id]: true }));
-          try {
-            const res = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/polls/${poll.id}/votes?userId=admin`);
-            if (!res.ok) throw new Error('Failed');
-            const data = await res.json();
-            nextResults[poll.id] = data;
-            nextSelections[poll.id] = data.userVote ?? '';
-          } catch {
-            nextResults[poll.id] = null;
-            nextSelections[poll.id] = '';
-          } finally {
-            setPollResultsLoading(prev => ({ ...prev, [poll.id]: false }));
-          }
-        })
-      );
-      setPollResults(nextResults);
-      setSelectedPollOptions(nextSelections);
-    };
-    fetchAllPollResults();
-  }, [polls, selectedChannels]);
 
   const fetchChannels = async () => {
     try {
@@ -129,8 +63,7 @@ const SocialAdmin = () => {
         setChannels(data);
       }
     } catch (error) {
-      console.error('Error:', error);
-      setChannels([]);
+      console.error('Error fetching channels:', error);
     }
   };
 
@@ -139,68 +72,128 @@ const SocialAdmin = () => {
       const res = await fetch('http://localhost:3000/api/chat/requests');
       const data = await res.json();
       if (Array.isArray(data)) {
-        setRequests(data);
+        setRequests(data.filter((r: any) => r.status === 'pending'));
       }
     } catch (error) {
-      console.error('Error:', error);
-      setRequests([]);
+      console.error('Error fetching requests:', error);
     }
   };
 
-  const fetchMessages = async (channelId: string) => {
-    setFetchingMessages(true);
+  const fetchTickets = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/messages`);
+      const res = await fetch('http://localhost:3000/api/tickets?status=open');
       const data = await res.json();
       if (Array.isArray(data)) {
-        setMessages(data);
+        setTickets(data);
       }
     } catch (error) {
-      setMessages([]);
-    } finally {
-      setFetchingMessages(false);
+      console.error('Error fetching tickets:', error);
     }
   };
 
-  const fetchImages = async (channelId: string) => {
-    setFetchingImages(true);
+  const fetchChannelData = async (channelId: string) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/images`);
-      const data = await res.json();
-      if (Array.isArray(data)) setImages(data);
-    } catch {
-      setImages([]);
-    } finally {
-      setFetchingImages(false);
+      // Fetch messages
+      const msgRes = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/messages`);
+      const msgData = await msgRes.json();
+      setMessages(Array.isArray(msgData) ? msgData.slice(0, 5) : []);
+
+      // Fetch polls  
+      const pollRes = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/polls`);
+      const pollData = await pollRes.json();
+      setPolls(Array.isArray(pollData) ? pollData.slice(0, 3) : []);
+
+      // Fetch images
+      const imgRes = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/images`);
+      const imgData = await imgRes.json();
+      setImages(Array.isArray(imgData) ? imgData.slice(0, 6) : []);
+    } catch (error) {
+      console.error('Error fetching channel data:', error);
     }
   };
 
-  const fetchPolls = async (channelId: string) => {
-    setFetchingPolls(true);
+  const handleSelectChannel = (channel: any) => {
+    setSelectedChannel(channel);
+    fetchChannelData(channel.id);
+  };
+
+  const handleCreateChannel = async () => {
+    if (!newChannelName.trim()) return;
+    setLoading(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/polls`);
-      const data = await res.json();
-      if (Array.isArray(data)) setPolls(data);
-    } catch {
-      setPolls([]);
-    } finally {
-      setFetchingPolls(false);
+      const res = await fetch('http://localhost:3000/api/chat/channels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newChannelName, description: newChannelDesc }),
+      });
+      if (res.ok) {
+        toast.success('Channel created!');
+        setNewChannelName('');
+        setNewChannelDesc('');
+        fetchChannels();
+      }
+    } catch (error) {
+      toast.error('Failed to create channel');
     }
+    setLoading(false);
   };
 
-  const handleDeleteChannel = async (channelId: string) => {
-    if (!confirm('Delete this channel?')) return;
+  const handleEditChannel = (channel: any) => {
+    setEditingChannel(channel);
+    setEditChannelName(channel.name);
+    setEditChannelDesc(channel.description || '');
+    setShowEditDialog(true);
+  };
+
+  const handleUpdateChannel = async () => {
+    if (!editChannelName.trim() || !editingChannel) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`http://localhost:3000/api/chat/channels/${editingChannel.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: editChannelName, 
+          description: editChannelDesc 
+        }),
+      });
+      if (res.ok) {
+        toast.success('Channel updated!');
+        setShowEditDialog(false);
+        setEditingChannel(null);
+        fetchChannels();
+      } else {
+        toast.error('Failed to update channel');
+      }
+    } catch (error) {
+      toast.error('Failed to update channel');
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteChannel = async (channelId: string, channelName: string) => {
+    if (!confirm(`Are you sure you want to delete "${channelName}"? This will delete all messages in this channel.`)) {
+      return;
+    }
+    
+    setLoading(true);
     try {
       const res = await fetch(`http://localhost:3000/api/chat/channels/${channelId}`, {
         method: 'DELETE',
       });
-      if (!res.ok) throw new Error('Failed');
-      toast.success('Channel deleted!');
-      setSelectedChannel(null);
-      fetchChannels();
+      if (res.ok) {
+        toast.success('Channel deleted!');
+        if (selectedChannel?.id === channelId) {
+          setSelectedChannel(null);
+        }
+        fetchChannels();
+      } else {
+        toast.error('Failed to delete channel');
+      }
     } catch (error) {
-      toast.error('Failed to delete');
+      toast.error('Failed to delete channel');
     }
+    setLoading(false);
   };
 
   const handleApproveRequest = async (requestId: string) => {
@@ -208,12 +201,11 @@ const SocialAdmin = () => {
       const res = await fetch(`http://localhost:3000/api/chat/requests/${requestId}/approve`, {
         method: 'POST',
       });
-
-      if (!res.ok) throw new Error('Failed');
-
-      toast.success('Request approved!');
-      fetchChannels();
-      fetchRequests();
+      if (res.ok) {
+        toast.success('Request approved!');
+        fetchRequests();
+        fetchChannels();
+      }
     } catch (error) {
       toast.error('Failed to approve');
     }
@@ -223,659 +215,798 @@ const SocialAdmin = () => {
     try {
       const res = await fetch(`http://localhost:3000/api/chat/requests/${requestId}/decline`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reason: 'Declined by admin' }),
       });
-
-      if (!res.ok) throw new Error('Failed');
-
-      toast.success('Request declined');
-      fetchRequests();
+      if (res.ok) {
+        toast.success('Request declined');
+        fetchRequests();
+      }
     } catch (error) {
       toast.error('Failed to decline');
     }
   };
 
-  const handleCreateChannel = async () => {
-    if (!newChannelName.trim()) {
-      toast.error('Channel name required');
+  const handleSendMessage = async () => {
+    if (!messageText.trim() || !selectedChannel) return;
+    try {
+      const res = await fetch(`http://localhost:3000/api/chat/channels/${selectedChannel.id}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          body: messageText,
+          userId: 'admin-user-id',
+          mentions: []
+        }),
+      });
+      if (res.ok) {
+        toast.success('Message sent!');
+        setMessageText('');
+        fetchChannelData(selectedChannel.id);
+      }
+    } catch (error) {
+      toast.error('Failed to send message');
+    }
+  };
+
+  const handleCreatePoll = async () => {
+    if (!pollQuestion.trim() || !selectedChannel) return;
+    const validOptions = pollOptions.filter(o => o.trim());
+    if (validOptions.length < 2) {
+      toast.error('Need at least 2 options');
+      return;
+    }
+    try {
+      const res = await fetch(`http://localhost:3000/api/chat/channels/${selectedChannel.id}/polls`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: pollQuestion, options: validOptions }),
+      });
+      if (res.ok) {
+        toast.success('Poll created!');
+        setPollQuestion('');
+        setPollOptions(['', '', '']);
+        fetchChannelData(selectedChannel.id);
+      }
+    } catch (error) {
+      toast.error('Failed to create poll');
+    }
+  };
+
+  // Calculate stats
+  const totalMembers = channels.reduce((sum, ch) => sum + (ch.memberCount || 0), 0);
+  const publicChannels = channels.filter(ch => ch.is_public).length;
+
+  // Handle image selection for announcement
+  const handleAnnouncementImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAnnouncementImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAnnouncementImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle send announcement
+  const handleSendAnnouncement = async () => {
+    if (!announcementText.trim() || selectedChannelsForAnnouncement.length === 0) {
+      toast.error('Please select channels and add text');
       return;
     }
 
     setLoading(true);
     try {
-      const slug = newChannelName.toLowerCase().replace(/\s+/g, '-');
-      const res = await fetch('http://localhost:3000/api/chat/channels', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newChannelName,
-          slug,
-          description: newChannelDesc,
-          is_public: true,
-        }),
-      });
+      // Send to each selected channel
+      for (const channelId of selectedChannelsForAnnouncement) {
+        let imageUrl = '';
+        
+        // Upload image if provided
+        if (announcementImage) {
+          const formData = new FormData();
+          formData.append('image', announcementImage);
+          const imgRes = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/images`, {
+            method: 'POST',
+            body: formData,
+          });
+          if (imgRes.ok) {
+            const imgData = await imgRes.json();
+            imageUrl = imgData.imageUrl || '';
+          }
+        }
 
-      if (!res.ok) throw new Error('Failed');
+        // Build message body with proper formatting
+        let messageBody = announcementTitle 
+          ? `📢 **${announcementTitle}**\n\n${announcementText}`
+          : `📢 ${announcementText}`;
 
-      toast.success('Channel created!');
-      setShowCreateDialog(false);
-      setNewChannelName('');
-      setNewChannelDesc('');
-      fetchChannels();
+        // Send message with image URL embedded
+        const msgRes = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/messages`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            body: messageBody,
+            userId: 'Admin',
+            userHandle: 'admin',
+            mentions: ['@everyone'], // Notify everyone
+            imageUrl: imageUrl || undefined, // Include image URL in message
+            isAnnouncement: true // Flag as announcement
+          }),
+        });
+
+        if (!msgRes.ok) {
+          console.error('Failed to send message to channel:', channelId);
+        }
+      }
+
+      toast.success(`📢 Announcement sent to ${selectedChannelsForAnnouncement.length} channel(s)! Students will be notified.`);
+      setAnnouncementTitle('');
+      setAnnouncementText('');
+      setAnnouncementImage(null);
+      setAnnouncementImagePreview('');
+      setSelectedChannelsForAnnouncement([]);
     } catch (error) {
-      toast.error('Failed to create channel');
+      console.error('Error sending announcement:', error);
+      toast.error('Failed to send announcement');
     } finally {
       setLoading(false);
     }
   };
 
-  // Helper for toggling channel selection
-  const toggleChannelSelect = (channel) => {
-    setSelectedChannels((prev) => {
-      const idx = prev.findIndex((ch) => ch.id === channel.id);
-      if (idx > -1) {
-        const copy = prev.slice(); copy.splice(idx, 1); return copy;
-      } else {
-        return [...prev, channel];
-      }
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0F172A] transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <AdminNavbar />
-
-      <main className="container mx-auto px-6 pt-24 pb-12">
-        <h1 className="text-5xl font-bold gradient-text mb-8 text-center">Social Wall Admin</h1>
-
-        {/* Pending Channel Requests */}
-        {requests.length > 0 && (
-          <Card className="neo-card p-6 mb-6 border-l-2 border-l-orange-500/50">
-            <h2 className="text-2xl font-bold mb-4 text-slate-800 dark:text-white">Pending Channel Requests</h2>
-            <div className="space-y-4">
-              {requests.map((req) => (
-                <div key={req.id} className="flex items-center justify-between p-4 border border-slate-200 dark:border-white/10 rounded-xl bg-white dark:bg-transparent">
-                  <div>
-                    <h3 className="font-semibold text-slate-800 dark:text-white">{req.name}</h3>
-                    <p className="text-sm text-slate-600 dark:text-gray-400">{req.description}</p>
-                    <p className="text-xs text-slate-500 dark:text-gray-500">Requested by: {req.requesterId}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => handleApproveRequest(req.id)} className="bg-green-600">
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      Approve
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleDeclineRequest(req.id)}>
-                      <XCircle className="w-4 h-4 mr-1" />
-                      Decline
-                    </Button>
-                  </div>
-                </div>
-              ))}
+      
+      {/* Add proper spacing below navbar */}
+      <div className="container mx-auto px-6 pt-24 pb-6 max-w-[1800px]">
+        {/* Header Section with proper spacing */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent mb-2">
+                Social Wall Admin
+              </h1>
+              <p className="text-slate-400 text-base">Manage channels, content, and community</p>
             </div>
-          </Card>
-        )}
+            <div className="flex gap-3 shrink-0">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 h-11 px-6 text-base font-semibold shadow-lg shadow-purple-500/20">
+                    <Plus className="h-5 w-5 mr-2" />
+                    Create Channel
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-slate-900 border-slate-700">
+                  <DialogHeader>
+                    <DialogTitle className="text-white">Create New Channel</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <Input
+                      placeholder="Channel Name"
+                      value={newChannelName}
+                      onChange={(e) => setNewChannelName(e.target.value)}
+                      className="bg-slate-800 border-slate-600 text-white"
+                    />
+                    <Textarea
+                      placeholder="Description"
+                      value={newChannelDesc}
+                      onChange={(e) => setNewChannelDesc(e.target.value)}
+                      className="bg-slate-800 border-slate-600 text-white"
+                    />
+                    <Button onClick={handleCreateChannel} disabled={loading} className="w-full">
+                      {loading ? 'Creating...' : 'Create Channel'}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
 
-        {/* Create Channel */}
-        <Card className="neo-card p-6 mb-6">
-          <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-            <DialogTrigger asChild>
-              <Button className="rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-xl hover:shadow-orange-500/40">
-                <Plus className="w-4 h-4 mr-2" />
-                Create New Channel
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
+          {/* Edit Channel Dialog */}
+          <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+            <DialogContent className="bg-slate-900 border-slate-700">
               <DialogHeader>
-                <DialogTitle>Create Channel</DialogTitle>
+                <DialogTitle className="text-white">Edit Channel</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
-                <Input
-                  placeholder="Channel name"
-                  value={newChannelName}
-                  onChange={(e) => setNewChannelName(e.target.value)}
-                />
-                <Input
-                  placeholder="Description (optional)"
-                  value={newChannelDesc}
-                  onChange={(e) => setNewChannelDesc(e.target.value)}
-                />
-                <Button
-                  onClick={handleCreateChannel}
-                  className="w-full rounded-full"
-                  disabled={loading}
-                >
-                  {loading ? 'Creating...' : 'Create'}
-                </Button>
+              <div className="space-y-4 py-4">
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-2 block">Channel Name</label>
+                  <Input
+                    placeholder="Channel Name"
+                    value={editChannelName}
+                    onChange={(e) => setEditChannelName(e.target.value)}
+                    className="bg-slate-800 border-slate-600 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-2 block">Description</label>
+                  <Textarea
+                    placeholder="Description"
+                    value={editChannelDesc}
+                    onChange={(e) => setEditChannelDesc(e.target.value)}
+                    className="bg-slate-800 border-slate-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleUpdateChannel} 
+                    disabled={loading || !editChannelName.trim()} 
+                    className="flex-1"
+                  >
+                    {loading ? 'Updating...' : 'Update Channel'}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowEditDialog(false)}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                </div>
               </div>
             </DialogContent>
           </Dialog>
-        </Card>
 
-        {/* Tickets Section */}
-        <Card className="neo-card p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-slate-800 dark:text-white">Support Tickets (@admin mentions)</h3>
-            <Button variant="outline" size="sm" onClick={() => setShowTickets(!showTickets)}>
-              {showTickets ? 'Hide' : `Show (${tickets.length})`}
-            </Button>
+          {/* Stats Cards with better spacing */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-all p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-slate-400 text-xs uppercase tracking-wide font-semibold mb-2">Active Channels</p>
+                  <p className="text-4xl font-bold text-white">{channels.length}</p>
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                  <Hash className="h-7 w-7 text-purple-400" />
+                </div>
+              </div>
+            </Card>
+            <Card className="bg-slate-800/50 border-slate-700 hover:border-cyan-500/50 transition-all p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-slate-400 text-xs uppercase tracking-wide font-semibold mb-2">Total Members</p>
+                  <p className="text-4xl font-bold text-white">{totalMembers}</p>
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                  <Users className="h-7 w-7 text-cyan-400" />
+                </div>
+              </div>
+            </Card>
+            <Card className="bg-slate-800/50 border-slate-700 hover:border-orange-500/50 transition-all p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-slate-400 text-xs uppercase tracking-wide font-semibold mb-2">Pending Requests</p>
+                  <p className="text-4xl font-bold text-white">{requests.length}</p>
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                  <Clock className="h-7 w-7 text-orange-400" />
+                </div>
+              </div>
+            </Card>
+            <Card className="bg-slate-800/50 border-slate-700 hover:border-red-500/50 transition-all p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-slate-400 text-xs uppercase tracking-wide font-semibold mb-2">Support Tickets</p>
+                  <p className="text-4xl font-bold text-white">{tickets.length}</p>
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-red-500/20 flex items-center justify-center">
+                  <MessageSquare className="h-7 w-7 text-red-400" />
+                </div>
+              </div>
+            </Card>
           </div>
-          {showTickets && (
-            <div className="space-y-4">
-              {tickets.length === 0 ? (
-                <p className="text-slate-600 dark:text-gray-400 text-center py-4">No open tickets</p>
-              ) : (
-                tickets.map(ticket => (
-                  <div key={ticket.id} className="border border-slate-200 dark:border-white/10 rounded-xl p-4 bg-white dark:bg-white/5">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-semibold text-slate-800 dark:text-white">{ticket.title}</h4>
-                        <p className="text-sm text-slate-600 dark:text-gray-400">From: {ticket.userId}</p>
-                        <p className="text-xs text-slate-500 dark:text-gray-500">
-                          {new Date(ticket.createdAt).toLocaleString()}
-                        </p>
-                      </div>
-                      <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs">
-                        {ticket.status}
-                      </span>
+        </div>
+
+        {/* Tabs Navigation */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 bg-slate-800/50 border-slate-700 mb-6">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-purple-600">
+              <LayoutDashboard className="h-4 w-4 mr-2" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="channels" className="data-[state=active]:bg-purple-600">
+              <Hash className="h-4 w-4 mr-2" />
+              Channel Management
+            </TabsTrigger>
+            <TabsTrigger value="announcements" className="data-[state=active]:bg-purple-600">
+              <Megaphone className="h-4 w-4 mr-2" />
+              Announcements
+            </TabsTrigger>
+          </TabsList>
+
+          {/* OVERVIEW TAB */}
+          <TabsContent value="overview" className="mt-0">
+            {/* Pending Requests Banner */}
+            {requests.length > 0 && (
+          <Card className="bg-orange-500/10 border-orange-500/30 p-4 mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Clock className="h-5 w-5 text-orange-400" />
+                Pending Channel Requests
+                <Badge className="bg-orange-500">{requests.length}</Badge>
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {requests.map((req) => (
+                <Card key={req.id} className="bg-slate-800/50 border-slate-700 p-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-white">{req.name}</h4>
+                      <p className="text-sm text-slate-400 mt-1">{req.description}</p>
+                      <p className="text-xs text-slate-500 mt-2">Requested {new Date(req.created_at).toLocaleDateString()}</p>
                     </div>
-                    <p className="text-sm mb-3">{ticket.description}</p>
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Type your reply..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                            handleTicketReply(ticket.id, e.currentTarget.value.trim());
-                            e.currentTarget.value = '';
-                          }
-                        }}
-                      />
+                    <div className="flex gap-2 ml-3">
                       <Button
                         size="sm"
-                        onClick={(e) => {
-                          const input = e.currentTarget.parentElement?.querySelector('input');
-                          if (input?.value.trim()) {
-                            handleTicketReply(ticket.id, input.value.trim());
-                            input.value = '';
-                          }
-                        }}
+                        variant="outline"
+                        onClick={() => handleApproveRequest(req.id)}
+                        className="bg-green-500/20 border-green-500/50 hover:bg-green-500/30 text-green-400"
                       >
-                        Reply
+                        <CheckCircle className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDeclineRequest(req.id)}
+                        className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30 text-red-400"
+                      >
+                        <XCircle className="h-4 w-4" />
                       </Button>
                     </div>
-                    {ticket.adminReply && (
-                      <div className="mt-2 p-2 bg-green-50 rounded">
-                        <p className="text-xs text-green-700 font-semibold">Admin Reply:</p>
-                        <p className="text-sm text-green-800">{ticket.adminReply}</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Main Content: Channel Grid + Detail Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left: Channel Grid */}
+          <div className="lg:col-span-2">
+            <h2 className="text-xl font-semibold text-white mb-4">All Channels</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {channels.map((channel) => (
+                <Card
+                  key={channel.id}
+                  className={`bg-slate-800/50 border-slate-700 p-4 cursor-pointer transition-all hover:bg-slate-800 hover:border-purple-500/50 ${
+                    selectedChannel?.id === channel.id ? 'ring-2 ring-purple-500 border-purple-500' : ''
+                  }`}
+                  onClick={() => handleSelectChannel(channel)}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                        <Hash className="h-5 w-5 text-purple-400" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-white text-sm">{channel.name}</h3>
+                        <p className="text-xs text-slate-400">#{channel.slug}</p>
+                      </div>
+                    </div>
+                    <Badge variant={channel.is_public ? "default" : "secondary"} className="text-xs">
+                      {channel.is_public ? 'Public' : 'Private'}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-slate-400 mb-3 line-clamp-2">{channel.description || 'No description'}</p>
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <Users className="h-3 w-3" />
+                      {channel.memberCount || 0} members
+                    </span>
+                    {selectedChannel?.id === channel.id && (
+                      <span className="text-purple-400 font-semibold">Selected</span>
+                    )}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Selected Channel Detail */}
+          <div className="lg:col-span-1">
+            {selectedChannel ? (
+              <div className="sticky top-6">
+                <Card className="bg-slate-800/50 border-slate-700">
+                  {/* Channel Header */}
+                  <div className="p-4 border-b border-slate-700">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">{selectedChannel.name}</h3>
+                        <p className="text-sm text-slate-400">#{selectedChannel.slug}</p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setSelectedChannel(null)}
+                        className="text-slate-400 hover:text-white"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="flex gap-2">
+                      <Badge variant={selectedChannel.is_public ? "default" : "secondary"} className="text-xs">
+                        {selectedChannel.is_public ? 'Public' : 'Private'}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        <Users className="h-3 w-3 mr-1" />
+                        {selectedChannel.memberCount || 0}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Quick Actions */}
+                  <div className="p-4 border-b border-slate-700">
+                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-3">Quick Actions</p>
+                    <div className="space-y-3">
+                      {/* Send Message */}
+                      <div>
+                        <Textarea
+                          placeholder="Post a message..."
+                          value={messageText}
+                          onChange={(e) => setMessageText(e.target.value)}
+                          className="bg-slate-900 border-slate-600 text-white text-sm mb-2"
+                          rows={2}
+                        />
+                        <Button size="sm" onClick={handleSendMessage} className="w-full">
+                          <Send className="h-4 w-4 mr-2" />
+                          Post Message
+                        </Button>
+                      </div>
+
+                      {/* Create Poll */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button size="sm" variant="outline" className="w-full">
+                            <BarChart3 className="h-4 w-4 mr-2" />
+                            Create Poll
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-slate-900 border-slate-700">
+                          <DialogHeader>
+                            <DialogTitle className="text-white">Create Poll</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <Input
+                              placeholder="Poll question"
+                              value={pollQuestion}
+                              onChange={(e) => setPollQuestion(e.target.value)}
+                              className="bg-slate-800 border-slate-600 text-white"
+                            />
+                            {pollOptions.map((opt, i) => (
+                              <Input
+                                key={i}
+                                placeholder={`Option ${i + 1}`}
+                                value={opt}
+                                onChange={(e) => {
+                                  const newOpts = [...pollOptions];
+                                  newOpts[i] = e.target.value;
+                                  setPollOptions(newOpts);
+                                }}
+                                className="bg-slate-800 border-slate-600 text-white"
+                              />
+                            ))}
+                            <Button onClick={handleCreatePoll} className="w-full">
+                              Create Poll
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </div>
+
+                  {/* Recent Activity */}
+                  <div className="p-4">
+                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-3">Recent Activity</p>
+                    <div className="space-y-4">
+                      {/* Messages */}
+                      <div>
+                        <p className="text-sm font-semibold text-white mb-2">Messages ({messages.length})</p>
+                        <div className="space-y-2">
+                          {messages.slice(0, 3).map((msg, i) => (
+                            <div key={i} className="text-xs text-slate-400 bg-slate-900/50 p-2 rounded">
+                              <p className="line-clamp-2">{msg.body}</p>
+                            </div>
+                          ))}
+                          {messages.length === 0 && (
+                            <p className="text-xs text-slate-500">No messages yet</p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Polls */}
+                      <div>
+                        <p className="text-sm font-semibold text-white mb-2">Polls ({polls.length})</p>
+                        <div className="space-y-2">
+                          {polls.slice(0, 2).map((poll, i) => (
+                            <div key={i} className="text-xs text-slate-400 bg-slate-900/50 p-2 rounded">
+                              <p className="font-semibold text-white">{poll.question}</p>
+                              <p className="text-xs text-slate-500 mt-1">{poll.options?.length || 0} options</p>
+                            </div>
+                          ))}
+                          {polls.length === 0 && (
+                            <p className="text-xs text-slate-500">No polls yet</p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Images */}
+                      {images.length > 0 && (
+                        <div>
+                          <p className="text-sm font-semibold text-white mb-2">Images ({images.length})</p>
+                          <div className="grid grid-cols-3 gap-2">
+                            {images.slice(0, 6).map((img, i) => (
+                              <div key={i} className="aspect-square rounded bg-slate-900/50 overflow-hidden">
+                                <img
+                                  src={img.imageUrl}
+                                  alt="Channel image"
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            ) : (
+              <Card className="bg-slate-800/50 border-slate-700 p-8 text-center">
+                <Eye className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-400 mb-2">No Channel Selected</h3>
+                <p className="text-sm text-slate-500">Select a channel from the grid to view details and take actions</p>
+              </Card>
+            )}
+          </div>
+        </div>
+          </TabsContent>
+
+          {/* CHANNELS TAB */}
+          <TabsContent value="channels" className="mt-0">
+            <div className="grid grid-cols-1 gap-6">
+              <Card className="bg-slate-800/50 border-slate-700 p-6">
+                <h2 className="text-2xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <Hash className="h-6 w-6 text-purple-400" />
+                  Active Channels
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {channels.map((channel) => (
+                    <Card
+                      key={channel.id}
+                      className="bg-slate-900/50 border-slate-600 p-4 hover:border-purple-500/50 transition-all"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                            <Hash className="h-5 w-5 text-purple-400" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-white text-sm">{channel.name}</h3>
+                            <p className="text-xs text-slate-400">#{channel.slug}</p>
+                          </div>
+                        </div>
+                        <Badge variant={channel.is_public ? "default" : "secondary"} className="text-xs">
+                          {channel.is_public ? 'Public' : 'Private'}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-slate-400 mb-3 line-clamp-2">{channel.description || 'No description'}</p>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="flex items-center gap-1 text-slate-500">
+                          <Users className="h-3 w-3" />
+                          {channel.memberCount || 0} members
+                        </span>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleEditChannel(channel)}
+                            className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 h-7 px-2"
+                            title="Edit channel"
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleDeleteChannel(channel.id, channel.name)}
+                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-7 px-2"
+                            title="Delete channel"
+                          >
+                            <Trash className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* ANNOUNCEMENTS TAB */}
+          <TabsContent value="announcements" className="mt-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Create Announcement Form */}
+              <Card className="bg-slate-800/50 border-slate-700 p-6">
+                <h2 className="text-2xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <Megaphone className="h-6 w-6 text-purple-400" />
+                  Create Announcement
+                </h2>
+                <p className="text-sm text-slate-400 mb-6">
+                  Send announcements with optional images to multiple channels
+                </p>
+
+                <div className="space-y-4">
+                  {/* Title */}
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 block">
+                      Title (Optional)
+                    </label>
+                    <Input
+                      placeholder="Announcement title..."
+                      value={announcementTitle}
+                      onChange={(e) => setAnnouncementTitle(e.target.value)}
+                      className="bg-slate-900 border-slate-600 text-white"
+                    />
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 block">
+                      Message *
+                    </label>
+                    <Textarea
+                      placeholder="Write your announcement message..."
+                      value={announcementText}
+                      onChange={(e) => setAnnouncementText(e.target.value)}
+                      className="bg-slate-900 border-slate-600 text-white min-h-[120px]"
+                    />
+                  </div>
+
+                  {/* Image Upload */}
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 block">
+                      Image (Optional)
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAnnouncementImageChange}
+                        className="bg-slate-900 border-slate-600 text-white"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setAnnouncementImage(null);
+                          setAnnouncementImagePreview('');
+                        }}
+                        disabled={!announcementImage}
+                        className="shrink-0"
+                      >
+                        Clear
+                      </Button>
+                    </div>
+                    {announcementImagePreview && (
+                      <div className="mt-3">
+                        <img
+                          src={announcementImagePreview}
+                          alt="Preview"
+                          className="w-full h-48 object-cover rounded-lg border border-slate-600"
+                        />
                       </div>
                     )}
                   </div>
-                ))
-              )}
-            </div>
-          )}
-        </Card>
 
-        {/* Always-visible message draft/send area - only enabled if exactly one channel selected */}
-        <Card className="neo-card p-6 mb-6">
-          <h3 className="font-bold mb-2 text-slate-800 dark:text-white">Draft & Send Message</h3>
-          {selectedChannels.length !== 1 ? (
-            <p className="text-slate-600 dark:text-gray-400">Select exactly one channel to enable drafting and sending a message.</p>
-          ) : (
-            <div className="flex flex-col gap-2 md:flex-row md:items-end">
-              <textarea
-                className="border rounded-xl p-3 flex-grow min-h-[60px]"
-                placeholder={`Type a message for ${selectedChannels[0].name}`}
-                value={messageText}
-                onChange={e => setMessageText(e.target.value)}
-              />
-              <Button
-                onClick={async () => {
-                  if (!messageText.trim() || selectedChannels.length !== 1) return;
-                  try {
-                    const res = await fetch(`http://localhost:3000/api/chat/channels/${selectedChannels[0].id}/messages`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ userId: 'admin', body: messageText }),
-                    });
-                    if (!res.ok) throw new Error('Failed');
-                    toast.success('Message sent!');
-                    setMessageText('');
-                    fetchMessages(selectedChannels[0].id);
-                  } catch {
-                    toast.error('Failed to send message');
-                  }
-                }}
-                disabled={!messageText.trim() || selectedChannels.length !== 1}
-                className="md:w-32 mt-2 md:mt-0 rounded-full"
-              >
-                Send
-              </Button>
-            </div>
-          )}
-        </Card>
-
-        {/* Message History for selected channel */}
-        {selectedChannels.length === 1 && (
-          <Card className="neo-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Messages for {selectedChannels[0].name}</h3>
-            {fetchingMessages ? (
-              <p className="text-slate-600 dark:text-gray-400">Loading messages...</p>
-            ) : messages.length === 0 ? (
-              <p className="text-slate-600 dark:text-gray-400">No messages yet.</p>
-            ) : (
-              <div className="space-y-2 max-h-48 overflow-y-auto">
-                {messages.map((msg) => (
-                  <div key={msg.id} className="border border-slate-200 dark:border-white/10 rounded p-2 flex flex-col bg-white dark:bg-transparent">
-                    <div className="text-xs text-slate-500 dark:text-gray-400 mb-1">{msg.userId} &bull; {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : ''}</div>
-                    <div className="text-slate-700 dark:text-white">{msg.body}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
-        )}
-        {selectedChannels.length > 1 && (
-          <Card className="neo-card p-6 mb-6">
-            <p className="text-center text-slate-600 dark:text-gray-400">Multiple channels selected: bulk actions only (send/view messages not available).</p>
-          </Card>
-        )}
-
-        {/* Admin Controls: if any selected, support bulk delete, single send */}
-        {selectedChannels.length > 0 && (
-          <Card className="neo-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">
-              Admin Controls: {selectedChannels.length === 1 ? selectedChannels[0].name : `${selectedChannels.length} channels selected`}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" className="rounded-full" onClick={() => selectedChannels.length === 1 && setShowMessageDialog(true)} disabled={selectedChannels.length !== 1}>
-                <Send className="w-4 h-4 mr-2" />
-                Send Message
-              </Button>
-              <Button variant="outline" className="rounded-full" onClick={() => setShowPollDialog(true)}>
-                <BarChart3 className="w-4 h-4 mr-2" />
-                Create Poll
-              </Button>
-              <Button variant="outline" className="rounded-full" onClick={() => setShowImageDialog(true)}>
-                <ImageIcon className="w-4 h-4 mr-2" />
-                Upload Image
-              </Button>
-              <Button variant="destructive" className="rounded-full"
-                onClick={async () => {
-                  if (!confirm(`Delete ${selectedChannels.length} channel(s)?`)) return;
-                  for (const ch of selectedChannels) {
-                    try {
-                      const res = await fetch(`http://localhost:3000/api/chat/channels/${ch.id}`, { method: 'DELETE' });
-                      if (!res.ok) throw new Error('Failed');
-                    } catch {
-                      toast.error(`Failed to delete channel ${ch.name}`);
-                    }
-                  }
-                  toast.success('Channel(s) deleted!');
-                  setSelectedChannels([]);
-                  fetchChannels();
-                }}>
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Channel(s)
-              </Button>
-            </div>
-          </Card>
-        )}
-
-        {/* Send Message Dialog */}
-        <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
-          <DialogContent className="neo-card">
-            <DialogHeader>
-              <DialogTitle>Send Message to {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <textarea
-                value={messageText}
-                onChange={(e) => setMessageText(e.target.value)}
-                placeholder="Type your message..."
-                className="w-full min-h-[120px] p-4 border-2 border-slate-300 dark:border-white/20 rounded-xl bg-white dark:bg-white/10 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors duration-300"
-              />
-              <div className="flex gap-2">
-                <Button
-                  onClick={async () => {
-                    if (!messageText.trim() || selectedChannels.length === 0) return;
-                    try {
-                      for (const ch of selectedChannels) {
-                        const res = await fetch(`http://localhost:3000/api/chat/channels/${ch.id}/messages`, {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ userId: 'admin', body: messageText }),
-                        });
-                        if (!res.ok) throw new Error('Failed');
-                      }
-                      toast.success('Message sent!');
-                      setMessageText('');
-                      setShowMessageDialog(false);
-                      // No need to refetch messages here, they are already fetched by the useEffect
-                    } catch (error) {
-                      toast.error('Failed to send message');
-                    }
-                  }}
-                  className="rounded-full"
-                >
-                  Send
-                </Button>
-                <Button variant="outline" onClick={() => setShowMessageDialog(false)} className="rounded-full">
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Create Poll Dialog, now uses backend API to create poll and refresh list */}
-        <Dialog open={showPollDialog} onOpenChange={setShowPollDialog}>
-          <DialogContent className="neo-card">
-            <DialogHeader>
-              <DialogTitle>Create Poll in {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <Input
-                value={pollQuestion}
-                onChange={(e) => setPollQuestion(e.target.value)}
-                placeholder="Poll question"
-              />
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700 dark:text-gray-200">Options</label>
-                {pollOptions.map((opt, i) => (
-                  <Input
-                    key={i}
-                    value={opt}
-                    onChange={(e) => {
-                      const newOpts = [...pollOptions];
-                      newOpts[i] = e.target.value;
-                      setPollOptions(newOpts);
-                    }}
-                    placeholder={`Option ${i + 1}`}
-                  />
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setPollOptions([...pollOptions, ''])}
-                  className="rounded-full"
-                >
-                  Add Option
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setPollOptions(pollOptions.slice(0, -1))}
-                  disabled={pollOptions.length <= 2}
-                  className="rounded-full"
-                >
-                  Remove Option
-                </Button>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  onClick={async () => {
-                    if (!pollQuestion.trim() || selectedChannels.length !== 1) return;
-                    if (pollOptions.filter(o => o.trim()).length < 2) {
-                      toast.error('Need at least 2 options');
-                      return;
-                    }
-                    try {
-                      const res = await fetch(`http://localhost:3000/api/chat/channels/${selectedChannels[0].id}/polls`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ question: pollQuestion, options: pollOptions }),
-                      });
-                      if (!res.ok) throw new Error('Failed');
-                      toast.success('Poll created!');
-                      setPollQuestion('');
-                      setPollOptions(['', '']);
-                      setShowPollDialog(false);
-                      fetchPolls(selectedChannels[0].id);
-                    } catch (error) {
-                      toast.error('Failed to create poll');
-                    }
-                  }}
-                  disabled={selectedChannels.length !== 1}
-                  className="rounded-full"
-                >
-                  Create Poll
-                </Button>
-                <Button variant="outline" onClick={() => setShowPollDialog(false)} className="rounded-full">
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Upload Image Dialog, now actually uploads to backend and refreshes images */}
-        <Dialog open={showImageDialog} onOpenChange={setShowImageDialog}>
-          <DialogContent className="neo-card">
-            <DialogHeader>
-              <DialogTitle>Upload Image to {selectedChannels.length === 1 ? selectedChannels[0].name : 'Selected Channels'}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                className="w-full"
-              />
-              {imageFile && (
-                <div className="mt-2">
-                  <img
-                    src={URL.createObjectURL(imageFile)}
-                    alt="Preview"
-                    className="max-h-48 rounded-xl"
-                  />
-                </div>
-              )}
-              <div className="flex gap-2">
-                <Button
-                  onClick={async () => {
-                    if (!imageFile || selectedChannels.length !== 1) return;
-                    try {
-                      const formData = new FormData();
-                      formData.append('image', imageFile);
-                      const res = await fetch(`http://localhost:3000/api/chat/channels/${selectedChannels[0].id}/images`, {
-                          method: 'POST',
-                          body: formData,
-                      });
-                      if (!res.ok) throw new Error('Failed to upload');
-                      toast.success('Image uploaded!');
-                      setImageFile(null);
-                      setShowImageDialog(false);
-                      fetchImages(selectedChannels[0].id);
-                    } catch {
-                      toast.error('Failed to upload image');
-                    }
-                  }}
-                  disabled={!imageFile || selectedChannels.length !== 1}
-                  className="rounded-full"
-                >
-                  Upload
-                </Button>
-                <Button variant="outline" onClick={() => setShowImageDialog(false)} className="rounded-full">
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* All Channels */}
-        <Card className="neo-card p-6">
-          <h2 className="text-2xl font-bold mb-4 text-slate-800 dark:text-white">All Channels</h2>
-          {channels.length === 0 ? (
-            <p className="text-slate-600 dark:text-gray-400 text-center py-8">No channels yet. Create one!</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {channels.map((channel) => (
-                <div
-                  key={channel.id}
-                  className={`p-4 border border-slate-200 dark:border-white/10 rounded-xl hover-glow cursor-pointer transition-all bg-white dark:bg-transparent ${
-                    selectedChannels.some(ch => ch.id === channel.id) ? 'bg-purple-50 dark:bg-primary/10 border-purple-400 dark:border-primary' : ''
-                  }`}
-                  onClick={() => toggleChannelSelect(channel)}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedChannels.some(ch => ch.id === channel.id)}
-                    onChange={() => toggleChannelSelect(channel)}
-                    onClick={e => e.stopPropagation()}
-                    className="mr-2 align-middle"
-                  />
-                  <MessageSquare className="w-8 h-8 text-primary mb-2 inline-block align-middle" />
-                  <span className="font-bold text-lg align-middle text-slate-800 dark:text-white">{channel.name}</span>
-                  <div className="text-sm text-slate-600 dark:text-gray-400">{channel.description}</div>
-                  <div className="text-xs text-slate-500 dark:text-gray-500 mt-2">#{channel.slug}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </Card>
-
-        {/* Channel image gallery: render if exactly one selected, below message history */}
-        {selectedChannels.length === 1 && (
-          <Card className="neo-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Images for {selectedChannels[0].name}</h3>
-            {fetchingImages ? (
-              <p className="text-slate-600 dark:text-gray-400">Loading images...</p>
-            ) : images.length === 0 ? (
-              <p className="text-slate-600 dark:text-gray-400">No images uploaded yet.</p>
-            ) : (
-              <div className="flex flex-wrap gap-4">
-                {images.map((img) => (
-                  <div key={img.id} className="w-48 flex flex-col items-center border border-slate-200 dark:border-white/10 rounded-xl p-2 bg-white dark:bg-white/10">
-                    <img src={img.url} alt={img.originalName || 'image'} className="object-contain max-h-40 w-full" />
-                    <div className="text-xs text-slate-500 dark:text-gray-400 mt-1 truncate w-full">{img.originalName}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
-        )}
-
-        {/* Channel polls: render if exactly one selected, below message/images, now fully interactive */}
-        {selectedChannels.length === 1 && (
-          <Card className="neo-card p-6 mb-6">
-            <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Polls for {selectedChannels[0].name}</h3>
-            {fetchingPolls ? (
-              <p className="text-slate-600 dark:text-gray-400">Loading polls...</p>
-            ) : polls.length === 0 ? (
-              <p className="text-slate-600 dark:text-gray-400">No polls created yet.</p>
-            ) : (
-              <div className="space-y-6">
-                {polls.map((poll) => {
-                  const r = pollResults[poll.id];
-                  const loading = pollResultsLoading[poll.id];
-                  const userVoted = !!(r && r.userVote !== null && r.userVote !== undefined);
-                  return (
-                    <div key={poll.id} className="border rounded-xl bg-white/80 p-3">
-                      <div className="font-semibold mb-1">Q: {poll.question} {poll.isClosed && <span className="text-xs text-red-600 ml-2">[Closed]</span>}</div>
-                      {/* Voting UI */}
-                      {(!poll.isClosed && !userVoted) ? (
-                        <div>
-                          {r && r.options.map((opt, i) => (
-                            <div key={i} className="flex items-center gap-2 mb-1">
-                              <input
-                                type="radio"
-                                name={`poll-${poll.id}`}
-                                id={`poll-${poll.id}-opt-${i}`}
-                                value={opt.optionId}
-                                checked={selectedPollOptions[poll.id] === opt.optionId}
-                                onChange={() => setSelectedPollOptions(prev => ({...prev, [poll.id]: opt.optionId}))}
-                                disabled={loading}
-                              />
-                              <label htmlFor={`poll-${poll.id}-opt-${i}`}>{opt.text}</label>
-                            </div>
-                          ))}
-                          <Button
-                            className="rounded-full mt-2"
-                            size="sm"
-                            onClick={async () => {
-                              if (!selectedPollOptions[poll.id]) return;
-                              setPollResultsLoading(prev => ({ ...prev, [poll.id]: true }));
-                              try {
-                                const channelId = selectedChannels[0].id;
-                                const res = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/polls/${poll.id}/votes`, {
-                                  method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ userId: 'admin', optionId: selectedPollOptions[poll.id] }),
-                                });
-                                if (!res.ok) throw new Error('Failed');
-                                toast.success('Vote recorded!');
-                                // refresh this poll result
-                                const res2 = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/polls/${poll.id}/votes?userId=admin`);
-                                const data = await res2.json();
-                                setPollResults(prev => ({ ...prev, [poll.id]: data }));
-                              } catch { toast.error('Failed to vote'); }
-                              setPollResultsLoading(prev => ({ ...prev, [poll.id]: false }));
-                            }}
-                            disabled={loading || !selectedPollOptions[poll.id]}
-                          >Vote</Button>
-                        </div>
-                      ) : r ? (
-                        <div className="space-y-1 mt-1">
-                          {r.options.map((opt, i) => {
-                            const percent = r.options.reduce((sum, o) => sum + o.count, 0)
-                              ? (opt.count / r.options.reduce((sum, o) => sum + o.count, 0)) * 100
-                              : 0;
-                            const voted = r.userVote === opt.optionId;
-                            return (
-                              <div key={i} className="flex items-center gap-2">
-                                <div className={`flex-1 relative rounded bg-primary/10 border h-8 flex items-center ${voted ? 'ring-2 ring-primary' : ''}`}
-                                     style={{width:`100%`, background:`linear-gradient(90deg, #cfe6fd ${percent}%, #f0f0f0 ${percent}%)`}}>
-                                  <span className="block px-2 z-10">{opt.text}</span>
-                                  <span className="absolute right-2 z-10">{opt.count} vote{opt.count!==1?'s':''}</span>
-                                </div>
-                                {voted && <span title="Your vote" className="text-lg ml-2">✅</span>}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <p className="text-slate-600 dark:text-gray-400">Unable to load poll options.</p>
-                      )}
-                      {/* Admin close poll */}
-                      {!poll.isClosed && (
-                        <div className="mt-2">
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            className="rounded-full"
-                            onClick={async () => {
-                              try {
-                                const channelId = selectedChannels[0].id;
-                                const res = await fetch(`http://localhost:3000/api/chat/channels/${channelId}/polls/${poll.id}`, {
-                                  method: 'PATCH',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ isClosed: true })
-                                });
-                                if (!res.ok) throw new Error('Failed');
-                                toast.success('Poll closed.');
-                                fetchPolls(selectedChannels[0].id);
-                              } catch {
-                                toast.error('Failed to close poll');
+                  {/* Channel Selection */}
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 block">
+                      Select Channels *
+                    </label>
+                    <div className="grid grid-cols-1 gap-2 max-h-[200px] overflow-y-auto bg-slate-900 border border-slate-600 rounded-lg p-3">
+                      {channels.map((channel) => (
+                        <label
+                          key={channel.id}
+                          className="flex items-center gap-2 cursor-pointer hover:bg-slate-800 p-2 rounded"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedChannelsForAnnouncement.includes(channel.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedChannelsForAnnouncement([...selectedChannelsForAnnouncement, channel.id]);
+                              } else {
+                                setSelectedChannelsForAnnouncement(
+                                  selectedChannelsForAnnouncement.filter((id) => id !== channel.id)
+                                );
                               }
                             }}
-                          >Close Poll</Button>
-                        </div>
-                      )}
-                      <div className="text-xs text-slate-500 dark:text-gray-500 mt-1">Created: {poll.createdAt ? new Date(poll.createdAt).toLocaleString() : ''}</div>
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm text-white">
+                            {channel.name}
+                            <span className="text-xs text-slate-400 ml-2">
+                              ({channel.memberCount || 0} members)
+                            </span>
+                          </span>
+                        </label>
+                      ))}
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </Card>
-        )}
-      </main>
+                    <p className="text-xs text-slate-500 mt-2">
+                      Selected: {selectedChannelsForAnnouncement.length} channels
+                    </p>
+                  </div>
+
+                  {/* Send Button */}
+                  <Button
+                    onClick={handleSendAnnouncement}
+                    disabled={!announcementText.trim() || selectedChannelsForAnnouncement.length === 0}
+                    className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700"
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Announcement to {selectedChannelsForAnnouncement.length} Channel(s)
+                  </Button>
+                </div>
+              </Card>
+
+              {/* Preview */}
+              <Card className="bg-slate-800/50 border-slate-700 p-6">
+                <h2 className="text-2xl font-semibold text-white mb-4">Preview</h2>
+                <p className="text-sm text-slate-400 mb-6">
+                  How your announcement will appear
+                </p>
+
+                {announcementText || announcementImage ? (
+                  <Card className="bg-slate-900 border-slate-600 p-4">
+                    {announcementTitle && (
+                      <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <Megaphone className="h-5 w-5 text-purple-400" />
+                        {announcementTitle}
+                      </h3>
+                    )}
+                    {!announcementTitle && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <Megaphone className="h-5 w-5 text-purple-400" />
+                        <span className="text-sm font-semibold text-purple-400">Announcement</span>
+                      </div>
+                    )}
+                    {announcementImagePreview && (
+                      <img
+                        src={announcementImagePreview}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-lg mb-3"
+                      />
+                    )}
+                    <p className="text-white whitespace-pre-wrap">{announcementText}</p>
+                    <div className="mt-3 pt-3 border-t border-slate-700">
+                      <p className="text-xs text-slate-500">
+                        Will be sent to: {selectedChannelsForAnnouncement.length > 0 
+                          ? selectedChannelsForAnnouncement.map(id => 
+                              channels.find(ch => ch.id === id)?.name
+                            ).join(', ')
+                          : 'No channels selected'
+                        }
+                      </p>
+                    </div>
+                  </Card>
+                ) : (
+                  <Card className="bg-slate-900 border-slate-600 p-8 text-center">
+                    <Megaphone className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+                    <p className="text-slate-500">
+                      Start typing to see preview
+                    </p>
+                  </Card>
+                )}
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
 
-export default SocialAdmin;
+export default SocialAdminImproved;
 

@@ -17,6 +17,8 @@ import ActivityFeed from "@/components/ActivityFeed";
 import NoteTaker from "@/components/NoteTaker";
 import StudyPlanner from "@/components/StudyPlanner";
 import ReminderWidget from "@/components/ReminderWidget";
+import TicketSummaryWidget from "@/components/TicketSummaryWidget";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   return (
@@ -43,6 +45,8 @@ const Index = () => {
           {/* RIGHT PANE */}
           <div className="lg:col-span-3 space-y-6">
             <GreetingSection />
+            {/* Support Ticket Summary Widget */}
+            <TicketSummaryWidget userId="student-123" />
             <WalletCard />
             <ReminderWidget />
             <NoteTaker />

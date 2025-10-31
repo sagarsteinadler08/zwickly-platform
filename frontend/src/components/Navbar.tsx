@@ -1,4 +1,4 @@
-import { Home, Users, Calendar, MessageSquare, Bell, Search } from "lucide-react";
+import { Home, Users, Calendar, MessageSquare, Bell, Search, Ticket } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import NotificationCenter from "./NotificationCenter";
@@ -13,6 +13,7 @@ const Navbar = () => {
     { name: "Home", path: "/", icon: Home },
     { name: "Social", path: "/social", icon: MessageSquare },
     { name: "Events", path: "/events", icon: Calendar },
+    { name: "My Tickets", path: "/my-tickets", icon: Ticket },
     { name: "Products", path: "/users", icon: Users },
     { name: "Chatbot", path: "/chatbot", icon: MessageSquare },
   ];

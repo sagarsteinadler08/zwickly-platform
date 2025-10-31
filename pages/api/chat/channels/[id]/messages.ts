@@ -33,13 +33,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
-      const { userId, body } = req.body;
+      const { userId, body, imageUrl, isBot } = req.body;
 
+      // Create message with optional imageUrl
       const message = await prisma.message.create({
         data: {
           channelId: channelId as string,
           userId,
           body,
+          imageUrl: imageUrl || null, // Save imageUrl if provided
+          isBot: isBot || false,
         },
         include: { mentions: true },
       });

@@ -1,6 +1,7 @@
 import React, { useState, lazy, Suspense, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import NotificationToast from "@/components/social/NotificationToast";
+import SubmitTicket from "@/components/SubmitTicket";
 import "@/styles/social.css";
 
 // Lazy load components for better performance
@@ -126,6 +127,15 @@ const Social = () => {
                   onToast={setToast}
                 />
               </Suspense>
+              
+              {/* Submit Ticket Button */}
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-white/10">
+                <div className="mb-3">
+                  <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Need Help?</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Submit a support ticket</p>
+                </div>
+                <SubmitTicket userId={userId} channelId={selectedChannel?.id} />
+              </div>
             </div>
           </aside>
 

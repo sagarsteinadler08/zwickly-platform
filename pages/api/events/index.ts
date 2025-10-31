@@ -100,6 +100,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           created_by: data.created_by || null,
         },
       })
+
+      // Handle publishToSocial - post event to selected channel
+      if (data.publishToSocial && data.selectedChannel) {
+        try {
+          const eventMessage = `📅 **New Event: ${data.title}**\n\n📍 Location: ${data.location || 'TBA'}\n🗓️ Date: ${data.event_date ? new Date(data.event_date).toLocaleDateString() : 'TBA'}\n⏰ Time: ${data.event_time || 'TBA'}\n\n${data.description || ''}\n\n📝 ${data.registration_info || 'Check event details for registration'}`;
+
+          await prisma.message.create({
+            data: {
+              channelId: data.selectedChannel,
+              userId: 'Admin',
+              body: eventMessage,
+              imageUrl: data.image_url || null,
+              isBot: false,
+            },
+          });
+          console.log('Event published to social wall');
+        } catch (socialError) {
+          console.error('Failed to publish to social:', socialError);
+          // Don't fail the whole request if social publish fails
+        }
+      }
+
+      // Handle publishToBanner - could add to a banner table or set a flag
+      // For now, we'll just log it (you can extend this later)
+      if (data.publishToBanner) {
+        console.log('Event marked for banner:', eventId);
+        // TODO: Add to banner rotation or set featured flag
+      }
+
       return res.status(201).json(created)
     } catch (error: any) {
       console.error('Error creating event:', error)
