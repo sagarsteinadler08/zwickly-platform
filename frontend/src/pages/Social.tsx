@@ -102,7 +102,7 @@ const Social = () => {
     <SocialErrorBoundary>
       <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0F172A] transition-colors duration-300">
         <Navbar />
-        
+
         <div className="flex flex-1 pt-20">
           {/* Responsive wrapper */}
           <main className="flex flex-1 overflow-hidden relative bg-slate-50 dark:bg-[#0F172A] w-full transition-colors duration-300" role="main">
@@ -110,7 +110,7 @@ const Social = () => {
           <NotificationToast toast={toast} onClose={() => setToast(null)} position="top" />
 
           {/* Collapsible sidebar on mobile */}
-          <aside 
+          <aside
             className={`bg-white dark:bg-[#1E293B]/80 backdrop-blur-xl border-r border-slate-200 dark:border-white/10 shadow-sm shadow-slate-200/50 dark:shadow-purple-500/10
             ${sidebarOpen ? "" : "hidden"} md:block`}
             aria-label="Channel list sidebar"

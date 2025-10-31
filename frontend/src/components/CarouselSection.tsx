@@ -35,7 +35,7 @@ const CarouselSection = () => {
       setMensaMeals(meals);
       setLoadingMensa(false);
     };
-    
+
     loadMensaData();
   }, []);
 
@@ -46,7 +46,7 @@ const CarouselSection = () => {
       setCampusNews(news);
       setLoadingNews(false);
     };
-    
+
     loadNewsData();
   }, []);
 
@@ -59,7 +59,7 @@ const CarouselSection = () => {
           .select('*')
           .order('event_date', { ascending: true })
           .limit(6);
-        
+
         if (error) throw error;
         // Filter out events with empty titles
         const validEvents = (data || []).filter(e => e.title && e.title.trim() !== '');
@@ -71,7 +71,7 @@ const CarouselSection = () => {
         setLoadingEvents(false);
       }
     };
-    
+
     loadEvents();
   }, []);
 
@@ -95,8 +95,8 @@ const CarouselSection = () => {
                 <div key={i} className="p-4 rounded-lg bg-muted/20 border border-primary/10">
                   <div className="flex gap-4">
                     {meal.imageUrl && (
-                      <img 
-                        src={meal.imageUrl} 
+                      <img
+                        src={meal.imageUrl}
                         alt={meal.title}
                         className="w-24 h-24 object-cover rounded-lg"
                       />
@@ -141,18 +141,18 @@ const CarouselSection = () => {
           ) : (
             <div className="grid gap-3">
               {events.map((event) => {
-                const eventDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { 
+                const eventDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', {
                   weekday: 'long',
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 }) : 'Date TBD';
                 return (
                   <div key={event.id} className="p-4 rounded-lg bg-muted/20 border border-primary/10 hover:border-primary/30 transition-all">
                     <div className="flex gap-4">
                       {event.image_url && (
-                        <img 
-                          src={event.image_url} 
+                        <img
+                          src={event.image_url}
                           alt={event.title}
                           className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
                           onError={(e) => {
@@ -195,8 +195,8 @@ const CarouselSection = () => {
           <div className="space-y-3 mb-6">
             <div className="flex items-center justify-between">
               <h4 className="font-semibold text-lg text-primary">Recent News</h4>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => window.open('https://www.whz.de/hochschule/informationen/pressemitteilungen/?no_cache=1', '_blank')}
                 className="text-xs hover:bg-primary/10"
@@ -205,7 +205,7 @@ const CarouselSection = () => {
               </Button>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Stay up to date with the latest announcements, research achievements, events, and important updates from WHZ. 
+              Stay up to date with the latest announcements, research achievements, events, and important updates from WHZ.
               Get insights into campus developments, student activities, and academic excellence.
             </p>
           </div>
@@ -224,8 +224,8 @@ const CarouselSection = () => {
                 <div key={news.id} className="p-4 rounded-lg bg-muted/20 border border-primary/10 hover:border-primary/30 transition-all">
                   <div className="flex gap-4">
                     {news.imageUrl && (
-                      <img 
-                        src={news.imageUrl} 
+                      <img
+                        src={news.imageUrl}
                         alt={news.title}
                         className="w-32 h-32 object-cover rounded-lg flex-shrink-0"
                       />
@@ -263,14 +263,14 @@ const CarouselSection = () => {
       <div className="grid md:grid-cols-2 min-h-[400px]">
         {/* Left Side - Featured Image */}
         <div className="relative overflow-hidden group">
-          <img 
+          <img
             src={slides[currentSlide].image}
             alt={slides[currentSlide].title}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
           {/* Dark overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-[#0F172A]/40 to-transparent" />
-          
+
           {/* Today's Special Badge */}
           <div className="absolute bottom-6 left-6 right-6">
             <div className="bg-[#0F172A]/80 backdrop-blur-md rounded-2xl p-4 border border-white/10">
@@ -292,7 +292,7 @@ const CarouselSection = () => {
                 {slides[currentSlide].title}
               </h3>
             </div>
-            
+
             <p className="text-gray-300 text-base leading-relaxed mb-8">
               {slides[currentSlide].subtitle}
             </p>
@@ -324,15 +324,15 @@ const CarouselSection = () => {
                     key={index}
                     onClick={() => setCurrentSlide(index)}
                     className={`rounded-full transition-all duration-500 ${
-                      index === currentSlide 
-                        ? "bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] w-12 h-3 shadow-lg shadow-purple-500/50" 
+                      index === currentSlide
+                        ? "bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] w-12 h-3 shadow-lg shadow-purple-500/50"
                         : "bg-white/20 w-3 h-3 hover:bg-purple-400 hover:scale-125"
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
                 ))}
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"

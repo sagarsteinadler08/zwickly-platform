@@ -107,7 +107,7 @@ const TimeTracker = () => {
             })}
             <circle cx="50" cy="50" r="25" fill="hsl(270 60% 98%)" />
           </svg>
-          
+
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <p className="text-2xl font-bold text-primary">{totalHours}h</p>
             <p className="text-xs text-muted-foreground">Total</p>

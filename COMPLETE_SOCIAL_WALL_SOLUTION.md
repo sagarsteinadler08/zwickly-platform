@@ -11,10 +11,10 @@ Build a WhatsApp-style social wall where students can:
 
 ## Architecture
 
-**Frontend:** React + Vite (existing Lovable UI)  
-**Backend:** Next.js API routes  
-**Real-time:** Socket.IO  
-**Database:** PostgreSQL + Prisma  
+**Frontend:** React + Vite (existing Lovable UI)
+**Backend:** Next.js API routes
+**Real-time:** Socket.IO
+**Database:** PostgreSQL + Prisma
 **Push:** Web Push API (VAPID)
 
 ## Database Schema

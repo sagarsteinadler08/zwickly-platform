@@ -16,17 +16,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const where: any = {}
       if (id) where.id = id
       if (email) where.email = email
-      
+
       const profiles = await prisma.profile.findMany({
         where: Object.keys(where).length > 0 ? where : undefined,
       })
-      
+
       // Add wallet_balance field (default to 0) for compatibility
       const profilesWithWallet = profiles.map(p => ({
         ...p,
         wallet_balance: 0
       }))
-      
+
       return res.status(200).json(profilesWithWallet)
     } catch (error) {
       console.error('Error fetching profiles:', error)

@@ -254,22 +254,22 @@ All critical tests passing:
 
 Log any issues here:
 
-1. **Issue**: 
-   - **Steps to reproduce**: 
-   - **Expected**: 
-   - **Actual**: 
-   - **Console errors**: 
+1. **Issue**:
+   - **Steps to reproduce**:
+   - **Expected**:
+   - **Actual**:
+   - **Console errors**:
 
-2. **Issue**: 
-   - **Steps to reproduce**: 
-   - **Expected**: 
-   - **Actual**: 
-   - **Console errors**: 
+2. **Issue**:
+   - **Steps to reproduce**:
+   - **Expected**:
+   - **Actual**:
+   - **Console errors**:
 
 ---
 
-**Test Date**: $(date)  
-**Tester**:  
-**Browser**:  
-**Version**:  
+**Test Date**: $(date)
+**Tester**:
+**Browser**:
+**Version**:
 

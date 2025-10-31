@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Bell, 
-  Calendar, 
-  MessageCircle, 
-  BarChart3, 
-  Users, 
+import {
+  Bell,
+  Calendar,
+  MessageCircle,
+  BarChart3,
+  Users,
   Pin,
   Megaphone,
   AtSign,
@@ -88,7 +88,7 @@ const ActivityFeed = () => {
       // Fetch recent events
       const eventsRes = await fetch('/api/events?limit=5');
       const events = await eventsRes.json();
-      
+
       const eventActivities: Activity[] = (Array.isArray(events) ? events : []).map((e: any) => ({
         id: `event-${e.id}`,
         type: 'event' as const,
@@ -100,13 +100,13 @@ const ActivityFeed = () => {
       // Fetch notifications
       const notifRes = await fetch(`/api/notifications?userId=${userId}`);
       const notifications = await notifRes.json();
-      
+
       const notifActivities: Activity[] = (Array.isArray(notifications) ? notifications.slice(0, 5) : []).map((n: any) => {
         const payload = typeof n.payload === 'string' ? JSON.parse(n.payload) : n.payload;
         return {
           id: `notif-${n.id}`,
-          type: n.type.includes('announcement') ? 'announcement' : 
-                n.type.includes('mention') ? 'mention' : 
+          type: n.type.includes('announcement') ? 'announcement' :
+                n.type.includes('mention') ? 'mention' :
                 n.type.includes('poll') ? 'poll' : 'highlight',
           title: payload.title || 'Update',
           description: payload.message || '',
@@ -114,7 +114,7 @@ const ActivityFeed = () => {
         };
       });
 
-      setActivities([...notifActivities, ...eventActivities].sort((a, b) => 
+      setActivities([...notifActivities, ...eventActivities].sort((a, b) =>
         b.timestamp.getTime() - a.timestamp.getTime()
       ));
     } catch (error) {
@@ -185,8 +185,8 @@ const ActivityFeed = () => {
               size="sm"
               onClick={() => setFilter(f.id)}
               className={`rounded-full text-xs ${
-                filter === f.id 
-                  ? 'bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white shadow-md' 
+                filter === f.id
+                  ? 'bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white shadow-md'
                   : 'text-slate-600 dark:text-gray-300 border-slate-300 dark:border-white/20 hover:bg-slate-100 dark:hover:bg-white/10'
               }`}
             >

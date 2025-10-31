@@ -26,7 +26,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
   useEffect(() => {
     // Fetch notifications from API
     loadNotifications();
-    
+
     // Poll for new notifications every 30 seconds
     const interval = setInterval(() => {
       loadNotifications();
@@ -41,7 +41,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
       const userId = localStorage.getItem('userId') || 'user-demo';
       const response = await fetch(`/api/notifications?userId=${userId}`);
       const data = await response.json();
-      
+
       // Transform API notifications to component format
       const transformedNotifications: Notification[] = data.map((n: any) => {
         const payload = typeof n.payload === 'string' ? JSON.parse(n.payload) : n.payload;
@@ -54,7 +54,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
           read: n.read,
         };
       });
-      
+
       // Fallback to mock if no notifications
       if (transformedNotifications.length === 0) {
         const mockNotifications: Notification[] = [
@@ -79,7 +79,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
       setUnreadCount(0);
     }
   };
-  
+
   const getNotificationType = (type: string): 'success' | 'error' | 'info' | 'warning' => {
     if (type.includes('approved') || type.includes('success')) return 'success';
     if (type.includes('declined') || type.includes('error') || type.includes('failed')) return 'error';
@@ -87,7 +87,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
     if (type.includes('admin_channel_request_new') || type.includes('admin_ticket_new')) return 'warning';
     return 'info';
   };
-  
+
   const getNotificationTitle = (type: string, payload: any): string => {
     if (type.includes('mention')) return 'You were mentioned!';
     if (type.includes('ticket')) return 'Support Ticket Created';
@@ -99,7 +99,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
     if (type.includes('admin_ticket_new')) return 'New Support Ticket';
     return 'Notification';
   };
-  
+
   const getNotificationMessage = (type: string, payload: any): string => {
     if (payload.message) return payload.message;
     if (type.includes('mention')) return payload.text || 'Someone mentioned you';
@@ -108,19 +108,19 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
     if (type.includes('channel_request')) return payload.channelName || 'Channel update';
     return 'You have a new notification';
   };
-  
+
   const formatTimestamp = (dateString: string): string => {
     const date = new Date(dateString);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    
+
     if (diffMins < 1) return 'Just now';
     if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
-    
+
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-    
+
     const diffDays = Math.floor(diffHours / 24);
     return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
   };
@@ -132,7 +132,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
       timestamp: 'Just now',
       read: false,
     };
-    
+
     setNotifications(prev => [newNotification, ...prev]);
     setUnreadCount(prev => prev + 1);
   };
@@ -216,7 +216,7 @@ const NotificationCenter = ({ isOpen, onClose }: NotificationCenterProps) => {
                 <X className="w-5 h-5 text-white" />
               </button>
             </div>
-            
+
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}

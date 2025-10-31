@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Clock, 
-  Play, 
-  Pause, 
-  RotateCcw, 
+import {
+  Clock,
+  Play,
+  Pause,
+  RotateCcw,
   CheckCircle,
   BookOpen,
   Target,
@@ -128,7 +128,7 @@ const StudyPlanner = () => {
     };
 
     saveAssignments([...assignments, assignment]);
-    
+
     // Create reminder for assignment (1 day before due date)
     try {
       const userId = localStorage.getItem('userId') || 'user-demo';
@@ -150,7 +150,7 @@ const StudyPlanner = () => {
             sourceId: assignment.id,
           }),
         });
-        
+
         toast.success('Assignment and reminder added!');
       } else {
         toast.success('Assignment added!');
@@ -159,7 +159,7 @@ const StudyPlanner = () => {
       console.error('Error creating reminder:', error);
       toast.success('Assignment added!');
     }
-    
+
     setNewAssignment('');
     setNewDueDate('');
   };
@@ -305,7 +305,7 @@ const StudyPlanner = () => {
               upcomingAssignments.map((assignment) => {
                 const daysLeft = Math.ceil((assignment.dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
                 const isUrgent = daysLeft <= 2;
-                
+
                 return (
                   <div
                     key={assignment.id}

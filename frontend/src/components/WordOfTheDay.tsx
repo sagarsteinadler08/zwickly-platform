@@ -103,7 +103,7 @@ const WordOfTheDay = () => {
             <p className="text-sm font-medium text-foreground mb-1">Example:</p>
             <p className="text-sm text-muted-foreground italic">{word.example}</p>
           </div>
-          
+
           <div className="p-3 rounded-lg bg-muted/20">
             <p className="text-sm text-muted-foreground italic">{word.translation}</p>
           </div>

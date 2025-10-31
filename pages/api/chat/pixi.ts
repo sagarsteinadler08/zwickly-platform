@@ -16,7 +16,7 @@ const setCorsHeaders = (res: NextApiResponse) => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   setCorsHeaders(res);
-  
+
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { q } = req.body;
-      
+
       if (!q || typeof q !== 'string') {
         return res.status(400).json({ error: 'Query is required' });
       }

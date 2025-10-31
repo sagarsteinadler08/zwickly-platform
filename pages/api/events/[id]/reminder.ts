@@ -45,9 +45,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Parse event date and time
     let eventDateTime: Date;
-    
+
     if (eventData.event_date && eventData.event_time) {
-      const dateStr = eventData.event_date instanceof Date 
+      const dateStr = eventData.event_date instanceof Date
         ? eventData.event_date.toISOString().split('T')[0]
         : eventData.event_date;
       eventDateTime = new Date(`${dateStr}T${eventData.event_time}`);

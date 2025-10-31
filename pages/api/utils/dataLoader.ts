@@ -38,7 +38,7 @@ export function loadJsonData(tableName: string): any[] {
 
     const fileContent = fs.readFileSync(filePath, 'utf-8');
     const data = JSON.parse(fileContent);
-    
+
     // Cache the data
     dataCache[tableName] = Array.isArray(data) ? data : [];
     return dataCache[tableName];
@@ -68,17 +68,17 @@ export function filterData(data: any[], query: Record<string, string | string[] 
   // Handle ordering
   const orderColumn = query.order as string | undefined;
   const orderAsc = query.orderAsc === 'true' || query.orderAsc === undefined;
-  
+
   if (orderColumn) {
     filtered.sort((a, b) => {
       const aVal = a[orderColumn];
       const bVal = b[orderColumn];
-      
+
       // Handle dates
       if (aVal && bVal && (orderColumn.includes('date') || orderColumn.includes('created_at') || orderColumn.includes('updated_at'))) {
         // Handle German date format (DD.MM.YYYY) for exam dates
         let dateA: Date, dateB: Date;
-        
+
         if (typeof aVal === 'string' && aVal.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
           // German format: DD.MM.YYYY
           const [dayA, monthA, yearA] = aVal.split('.').map(Number);
@@ -86,7 +86,7 @@ export function filterData(data: any[], query: Record<string, string | string[] 
         } else {
           dateA = new Date(aVal);
         }
-        
+
         if (typeof bVal === 'string' && bVal.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
           // German format: DD.MM.YYYY
           const [dayB, monthB, yearB] = bVal.split('.').map(Number);
@@ -94,22 +94,22 @@ export function filterData(data: any[], query: Record<string, string | string[] 
         } else {
           dateB = new Date(bVal);
         }
-        
+
         const timeA = dateA.getTime();
         const timeB = dateB.getTime();
         return orderAsc ? timeA - timeB : timeB - timeA;
       }
-      
+
       // Handle strings
       if (typeof aVal === 'string' && typeof bVal === 'string') {
         return orderAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
-      
+
       // Handle numbers
       if (typeof aVal === 'number' && typeof bVal === 'number') {
         return orderAsc ? aVal - bVal : bVal - aVal;
       }
-      
+
       return 0;
     });
   }

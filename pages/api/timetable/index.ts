@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const data = Array.isArray(req.body) ? req.body : [req.body]
       const { randomUUID } = await import('crypto')
-      
+
       const created = await prisma.timetable.createMany({
         data: data.map(item => ({
           id: randomUUID(),
@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const where: any = {}
       if (day_name) where.day_name = day_name
       if (sem_group) where.sem_group = sem_group
-      
+
       await prisma.timetable.deleteMany({
         where: Object.keys(where).length > 0 ? where : undefined,
       })
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const { order, orderAsc, ...filters } = req.query
-      
+
       const where: any = {}
       Object.entries(filters).forEach(([key, value]) => {
         if (key !== 'select' && value !== undefined && value !== null && value !== '') {

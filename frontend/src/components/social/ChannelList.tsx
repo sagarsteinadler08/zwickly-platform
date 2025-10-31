@@ -69,7 +69,7 @@ const ChannelList: React.FC<Props> = ({
   return (
     <div className="space-y-4">
       {/* Request Channel Button */}
-      <Button 
+      <Button
         onClick={() => setReqOpen(o => !o)}
         className="w-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white font-semibold py-3 rounded-full flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40"
       >
@@ -82,28 +82,28 @@ const ChannelList: React.FC<Props> = ({
         <div className="bg-slate-100 dark:bg-white/5 backdrop-blur-sm rounded-lg p-4 space-y-3 animate-fadeIn border border-slate-200 dark:border-white/10">
           <input
             className="w-full px-3 py-2 bg-white dark:bg-white/5 border border-slate-300 dark:border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500"
-            placeholder="Channel name" 
+            placeholder="Channel name"
             maxLength={50}
-            value={reqName} 
+            value={reqName}
             onChange={e => setReqName(e.target.value)}
           />
           <input
             className="w-full px-3 py-2 bg-white dark:bg-white/5 border border-slate-300 dark:border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500"
-            placeholder="Description (optional)" 
+            placeholder="Description (optional)"
             maxLength={120}
-            value={reqDesc} 
+            value={reqDesc}
             onChange={e => setReqDesc(e.target.value)}
           />
           <div className="flex gap-2">
-            <Button 
-              disabled={reqLoading} 
+            <Button
+              disabled={reqLoading}
               className="flex-1"
               onClick={requestCh}
             >
               {reqLoading ? "Sending..." : "Submit"}
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex-1"
               onClick={() => setReqOpen(false)}
             >
@@ -128,8 +128,8 @@ const ChannelList: React.FC<Props> = ({
               <li key={ch.id} className="relative">
                 <button
                   className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 flex items-center justify-between group
-                  ${selectedChannelId === ch.id 
-                    ? 'bg-gradient-to-r from-[#7B5CFA]/20 to-[#48E0E4]/20 text-slate-800 dark:text-white border border-purple-400 dark:border-purple-500/30 shadow-md shadow-purple-500/10 dark:shadow-lg dark:shadow-purple-500/20' 
+                  ${selectedChannelId === ch.id
+                    ? 'bg-gradient-to-r from-[#7B5CFA]/20 to-[#48E0E4]/20 text-slate-800 dark:text-white border border-purple-400 dark:border-purple-500/30 shadow-md shadow-purple-500/10 dark:shadow-lg dark:shadow-purple-500/20'
                     : 'hover:bg-slate-100 dark:hover:bg-white/5 text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
                   onClick={() => onSelect(ch)}
                   tabIndex={0}

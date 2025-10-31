@@ -52,7 +52,7 @@ Contact: sustainability@whz.de`
         <Newspaper className="w-5 h-5 text-primary" />
         <h3 className="text-lg font-semibold gradient-text">Campus Newsletter</h3>
       </div>
-      
+
       <div className="space-y-3">
         {newsletters.map((newsletter, index) => (
           <Dialog key={index}>
@@ -67,7 +67,7 @@ Contact: sustainability@whz.de`
                 </div>
               </div>
             </DialogTrigger>
-            
+
             <DialogContent className="bg-background/95 backdrop-blur-xl border-primary/30 max-w-2xl">
               <DialogHeader>
                 <DialogTitle className="gradient-text text-xl">{newsletter.title}</DialogTitle>

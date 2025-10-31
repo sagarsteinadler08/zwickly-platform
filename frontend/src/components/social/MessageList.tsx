@@ -92,11 +92,11 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
                 </span>
               )}
               <span className="text-xs text-slate-500 dark:text-gray-500">
-                {new Date(msg.createdAt).toLocaleString([], { 
-                  month: 'short', 
-                  day: 'numeric', 
-                  hour: 'numeric', 
-                  minute: '2-digit' 
+                {new Date(msg.createdAt).toLocaleString([], {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit'
                 })}
               </span>
             </div>
@@ -110,13 +110,13 @@ const MessageList: React.FC<Props> = ({ userId, userHandle, channel, onToast }) 
           </div>
         </div>
       ))}
-      
+
       {polls.map(poll => (
         <div key={poll.id} className="max-w-4xl mx-auto w-full">
           <PollView poll={poll} channelId={channel.id} userId={userId} />
         </div>
       ))}
-      
+
       <div ref={bottomRef} />
     </div>
   );

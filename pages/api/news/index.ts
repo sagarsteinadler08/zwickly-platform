@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const { order, orderAsc, ...filters } = req.query
-      
+
       const where: any = {}
       Object.entries(filters).forEach(([key, value]) => {
         if (key !== 'select' && value !== undefined && value !== null && value !== '') {

@@ -15,7 +15,7 @@ const DiscordFeedCard = () => {
         <MessageCircle className="w-5 h-5 text-secondary" />
         <h3 className="text-lg font-semibold gradient-text">Student Community</h3>
       </div>
-      
+
       <div className="space-y-2 mb-4">
         {messages.map((msg, index) => (
           <div key={index} className="p-2 rounded-lg bg-muted/10 border border-primary/5">
@@ -27,7 +27,7 @@ const DiscordFeedCard = () => {
           </div>
         ))}
       </div>
-      
+
       <Button className="w-full bg-primary hover:bg-primary/80 text-primary-foreground">
         <ExternalLink className="w-4 h-4 mr-2" />
         Open Community

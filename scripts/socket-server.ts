@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
 
   console.log('[socket] authenticated user:', userId);
   socket.join(`user:${userId}`);
-  
+
   // Auto-join all channels for logged-in users
   socket.on("auto_join_channels", async () => {
     try {
@@ -191,7 +191,7 @@ io.on("connection", (socket) => {
 
           // Try to find user by email (adjust based on your Profile model)
           const user = await prisma.profile.findUnique({ where: { email: username } });
-          
+
           if (user) {
             // Create mention
             await prisma.mention.create({
@@ -416,7 +416,7 @@ function startReminderScheduler(io: Server) {
         } else if (reminder.recurrence === 'daily') {
           const nextTime = new Date(reminder.reminderTime);
           nextTime.setDate(nextTime.getDate() + 1);
-          
+
           await prisma.reminder.create({
             data: {
               userId: reminder.userId,
@@ -429,7 +429,7 @@ function startReminderScheduler(io: Server) {
               timezone: reminder.timezone,
             },
           });
-          
+
           await prisma.reminder.update({
             where: { id: reminder.id },
             data: { completed: true },
@@ -439,7 +439,7 @@ function startReminderScheduler(io: Server) {
           do {
             nextTime.setDate(nextTime.getDate() + 1);
           } while (nextTime.getDay() === 0 || nextTime.getDay() === 6);
-          
+
           await prisma.reminder.create({
             data: {
               userId: reminder.userId,
@@ -452,7 +452,7 @@ function startReminderScheduler(io: Server) {
               timezone: reminder.timezone,
             },
           });
-          
+
           await prisma.reminder.update({
             where: { id: reminder.id },
             data: { completed: true },
@@ -467,7 +467,7 @@ function startReminderScheduler(io: Server) {
 
 httpServer.listen(PORT, () => {
   console.log(`Socket server running on port ${PORT}`)
-  
+
   // Start reminder scheduler
   startReminderScheduler(io);
   console.log('[Reminder] Scheduler started')

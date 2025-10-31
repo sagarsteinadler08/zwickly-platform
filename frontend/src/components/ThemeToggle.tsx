@@ -15,7 +15,7 @@ const ThemeToggle = () => {
       ) : (
         <Moon className="w-5 h-5 text-slate-700 group-hover:text-purple-600 transition-colors" />
       )}
-      
+
       {/* Tooltip */}
       <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-white/10 rounded-lg text-xs text-slate-800 dark:text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
         {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}

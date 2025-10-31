@@ -41,7 +41,7 @@ const WalletCard = () => {
     <Card className="glass-widget border border-teal-500/20 shadow-2xl shadow-teal-500/10 animate-fadeInUp">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-green-500/10" />
-      
+
       {/* Content */}
       <div className="relative z-10 p-6">
         <div className="flex items-center gap-3 mb-6">
@@ -50,14 +50,14 @@ const WalletCard = () => {
           </div>
           <h3 className="text-lg font-bold text-slate-700 dark:text-white">Student ID Wallet</h3>
         </div>
-        
+
         {/* Balance Display */}
         <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 shadow-2xl shadow-teal-500/40">
           <p className="text-sm text-white/80 mb-2">Current Balance</p>
           <p className="text-5xl font-bold text-white mb-4">
             {loading ? "..." : `€${balance.toFixed(2)}`}
           </p>
-          <Button 
+          <Button
             onClick={handleTopUp}
             className="w-full bg-white text-teal-700 hover:bg-gray-50 font-semibold shadow-lg hover:scale-105 transition-transform"
             size="lg"

@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Bell, 
-  Plus, 
-  Clock, 
-  CheckCircle, 
+import {
+  Bell,
+  Plus,
+  Clock,
+  CheckCircle,
   RotateCcw,
   Trash2,
   Calendar as CalendarIcon,
@@ -37,7 +37,7 @@ const ReminderWidget = () => {
   const [newDate, setNewDate] = useState('');
   const [recurrence, setRecurrence] = useState('once');
   const [loading, setLoading] = useState(true);
-  
+
   const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') || 'user-demo' : 'user-demo';
   const { socket } = useSocket(userId, handleSocketEvent);
 
@@ -51,7 +51,7 @@ const ReminderWidget = () => {
           onClick: () => snoozeReminder(event.id, 10),
         },
       });
-      
+
       // Refresh reminders
       fetchReminders();
     }
@@ -59,7 +59,7 @@ const ReminderWidget = () => {
 
   useEffect(() => {
     fetchReminders();
-    
+
     // Poll for reminders every minute
     const interval = setInterval(() => {
       checkDueReminders();
@@ -73,13 +73,13 @@ const ReminderWidget = () => {
     try {
       const res = await fetch(`/api/reminders?userId=${userId}&status=active`);
       const data = await res.json();
-      
+
       // Handle empty or error response
       if (!data || !Array.isArray(data)) {
         setReminders([]);
         return;
       }
-      
+
       setReminders(data.map((r: any) => ({
         ...r,
         reminderTime: new Date(r.reminderTime),
@@ -100,7 +100,7 @@ const ReminderWidget = () => {
         if (reminder.snoozedUntil && reminder.snoozedUntil > now) {
           return; // Still snoozed
         }
-        
+
         // Play notification sound
         try {
           const audio = new Audio('/notification-sound.mp3');
@@ -109,7 +109,7 @@ const ReminderWidget = () => {
         } catch (e) {
           console.log('Audio not available');
         }
-        
+
         // Trigger reminder with sound and actions
         toast.error(`⏰ ${reminder.title}`, {
           description: reminder.description || 'Reminder time!',
@@ -123,7 +123,7 @@ const ReminderWidget = () => {
             onClick: () => completeReminder(reminder.id),
           },
         });
-        
+
         // Request desktop notification permission and show
         if ('Notification' in window && Notification.permission === 'granted') {
           new Notification(`⏰ ${reminder.title}`, {
@@ -155,7 +155,7 @@ const ReminderWidget = () => {
 
     try {
       const reminderDateTime = new Date(`${newDate}T${newTime}`);
-      
+
       const res = await fetch('/api/reminders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -325,7 +325,7 @@ const ReminderWidget = () => {
               {todayReminders.map((reminder) => {
                 const isOverdue = reminder.reminderTime < new Date();
                 const isSnoozed = reminder.snoozedUntil && reminder.snoozedUntil > new Date();
-                
+
                 return (
                   <div
                     key={reminder.id}

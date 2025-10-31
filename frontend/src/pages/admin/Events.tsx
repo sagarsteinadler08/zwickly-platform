@@ -125,26 +125,26 @@ const AdminEvents = () => {
       // Create lookup maps
       const eventsMap = new Map(eventsData?.map(e => [e.id, e.title]) || []);
       const profilesMap = new Map(profilesData?.map(p => [p.id, p.email]) || []);
-      
+
       // Group registrations by event
       const groupedByEvent = new Map<string, string[]>();
-      
+
       (data || []).forEach((reg: any) => {
         const eventName = eventsMap.get(reg.event_id) || 'Unknown Event';
         const userEmail = profilesMap.get(reg.user_id) || 'Unknown User';
-        
+
         if (!groupedByEvent.has(eventName)) {
           groupedByEvent.set(eventName, []);
         }
         groupedByEvent.get(eventName)?.push(userEmail);
       });
-      
+
       const formattedData: EventRegistration[] = Array.from(groupedByEvent.entries()).map(([eventName, emails]) => ({
         event_name: eventName,
         user_emails: emails,
         registration_count: emails.length
       }));
-      
+
       setRegistrations(formattedData);
     } catch (error) {
       console.error('Error fetching registrations:', error);
@@ -155,7 +155,7 @@ const AdminEvents = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.location || !formData.event_date || 
+    if (!formData.title || !formData.location || !formData.event_date ||
         !formData.event_time || !formData.image_url || !formData.category) {
       toast.error("Please fill in all required fields");
       return;
@@ -178,7 +178,7 @@ const AdminEvents = () => {
           likes: 0,
           prosts: 0,
         };
-        
+
         // Insert as single object (shim will handle it)
         const { data, error } = await supabase
           .from('events')
@@ -187,7 +187,7 @@ const AdminEvents = () => {
         if (error) throw error;
         toast.success("Event created successfully!");
       }
-      
+
       // Always refresh the list after create/update
       await fetchEvents();
 
@@ -259,7 +259,7 @@ const AdminEvents = () => {
   return (
     <div className="min-h-screen admin-theme">
       <AdminNavbar />
-      
+
       <main className="container mx-auto px-6 pt-24 pb-12">
         <Button
           variant="ghost"
@@ -275,7 +275,7 @@ const AdminEvents = () => {
           <h1 className="text-4xl font-bold gradient-text">
             Event Feed Manager
           </h1>
-          <Button 
+          <Button
             onClick={() => {
               setShowForm(!showForm);
               if (showForm) {
@@ -409,7 +409,7 @@ const AdminEvents = () => {
               {/* Publishing Options */}
               <div className="border-t pt-4 space-y-4">
                 <h3 className="font-semibold text-lg">Publishing Options</h3>
-                
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -436,10 +436,10 @@ const AdminEvents = () => {
                       Publish to Social Wall
                     </Label>
                   </div>
-                  
+
                   {formData.publishToSocial && (
-                    <Select 
-                      value={formData.selectedChannel} 
+                    <Select
+                      value={formData.selectedChannel}
                       onValueChange={(value) => setFormData({ ...formData, selectedChannel: value })}
                     >
                       <SelectTrigger>
@@ -475,7 +475,7 @@ const AdminEvents = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {events.filter(e => e.title && e.title.trim()).map((event) => (
                 <div key={event.id} className="relative group">
-                  <EventCard 
+                  <EventCard
                     id={event.id}
                     title={event.title}
                     location={event.location}
@@ -487,10 +487,10 @@ const AdminEvents = () => {
                     description={event.description}
                     language={event.language}
                     registrationInfo={event.registration_info}
-                  eventDate={event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  eventDate={event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                   }) : undefined}
                   />
                   <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">

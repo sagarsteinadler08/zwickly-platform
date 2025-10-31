@@ -171,7 +171,7 @@ const Events = () => {
 
     // Category filter
     if (selectedCategory !== "all") {
-      filtered = filtered.filter(event => 
+      filtered = filtered.filter(event =>
         event.category?.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
@@ -193,7 +193,7 @@ const Events = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-      
+
       <main className="container mx-auto px-6 pt-24 pb-12">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-center gradient-text mb-4">
@@ -202,7 +202,7 @@ const Events = () => {
           <p className="text-center text-muted-foreground mb-6">
             Discover and join exciting events on campus
           </p>
-          
+
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-6">
             <div className="relative">
@@ -250,8 +250,8 @@ const Events = () => {
         ) : filteredEvents.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground mb-4">
-              {searchQuery || selectedCategory !== "all" 
-                ? "No events match your search criteria." 
+              {searchQuery || selectedCategory !== "all"
+                ? "No events match your search criteria."
                 : "No events available yet."}
             </p>
             {(searchQuery || selectedCategory !== "all") && (
@@ -269,7 +269,7 @@ const Events = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredEvents.map((event) => (
-              <EventCard 
+              <EventCard
                 key={event.id}
                 id={event.id}
                 title={event.title}
@@ -282,10 +282,10 @@ const Events = () => {
                 description={event.description}
                 language={event.language}
                 registrationInfo={event.registration_info}
-                eventDate={event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                eventDate={event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 }) : undefined}
               />
             ))}

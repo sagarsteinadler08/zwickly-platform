@@ -2,9 +2,9 @@
 
 ## ✅ Services Status
 
-**Database:** ✅ Running (PostgreSQL on port 5432)  
-**Backend API:** ✅ Running (Next.js on port 3000)  
-**Socket.IO:** ✅ Running (WebSocket on port 4001)  
+**Database:** ✅ Running (PostgreSQL on port 5432)
+**Backend API:** ✅ Running (Next.js on port 3000)
+**Socket.IO:** ✅ Running (WebSocket on port 4001)
 **Frontend:** 🔄 Starting (Vite on port 8080/8081)
 
 ---

@@ -23,7 +23,7 @@ const AdminNavbar = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <h1 className="text-2xl font-bold gradient-text overflow-visible">Zwickly Admin</h1>
-          
+
           <ul className="flex items-center gap-8">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -88,11 +88,11 @@ const AdminNavbar = () => {
           </div>
         )}
       </div>
-      
+
       {/* Notification Center */}
-      <NotificationCenter 
-        isOpen={showNotifications} 
-        onClose={() => setShowNotifications(false)} 
+      <NotificationCenter
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
       />
     </nav>
   );

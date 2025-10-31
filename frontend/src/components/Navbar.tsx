@@ -23,7 +23,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <h1 className="text-2xl font-bold gradient-text overflow-visible">Zwickly Student</h1>
-            
+
             <div className="hidden md:flex items-center gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -53,7 +53,7 @@ const Navbar = () => {
               })}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <button
               onClick={() => setShowSearch(!showSearch)}
@@ -75,7 +75,7 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        
+
         {showSearch && (
           <div className="mt-4 pb-2">
             <input
@@ -87,11 +87,11 @@ const Navbar = () => {
           </div>
         )}
       </div>
-      
+
       {/* Notification Center */}
-      <NotificationCenter 
-        isOpen={showNotifications} 
-        onClose={() => setShowNotifications(false)} 
+      <NotificationCenter
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
       />
     </nav>
   );

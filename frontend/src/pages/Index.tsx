@@ -22,7 +22,7 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-      
+
       <main className="container mx-auto px-6 pt-24 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* LEFT PANE */}

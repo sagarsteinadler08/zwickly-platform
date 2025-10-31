@@ -15,7 +15,7 @@ const setCorsHeaders = (res: NextApiResponse) => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   setCorsHeaders(res);
-  
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const { userId, unread } = req.query;
-      
+
       const where: any = {};
       if (userId && typeof userId === 'string') {
         where.userId = userId;
@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'PATCH') {
     try {
       const { id } = req.body;
-      
+
       if (!id) {
         return res.status(400).json({ error: 'Notification ID is required' });
       }

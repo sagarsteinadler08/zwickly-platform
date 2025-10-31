@@ -80,7 +80,7 @@ const TimetableCard = () => {
             </Button>
           </div>
         </div>
-      
+
       {loading ? (
         <div className="text-center text-muted-foreground py-8">Loading schedule...</div>
       ) : schedule.length === 0 ? (
@@ -106,13 +106,13 @@ const TimetableCard = () => {
                   </div>
                 )}
               </div>
-              
+
               <p className="font-bold text-slate-700 dark:text-white mb-2 text-sm leading-snug">{item.course}</p>
-              
+
               {item.instructor && (
                 <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">👨‍🏫 {item.instructor}</p>
               )}
-              
+
               {item.cycle && (
                 <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-500 mt-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>

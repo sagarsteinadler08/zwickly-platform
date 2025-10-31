@@ -87,7 +87,7 @@ const AdminAuth = () => {
         });
 
         if (error) throw error;
-        
+
         toast.success("Signed in successfully!");
         navigate("/admin/home");
       }

@@ -119,7 +119,7 @@ const MessageComposer: React.FC<Props> = ({ userId, userHandle, channel, onToast
           maxLength={500}
           style={{ minHeight: '48px', maxHeight: '120px' }}
         />
-        
+
         {/* Uploaded File Preview */}
         {imageFile && (
           <div className="px-4 pb-3 flex items-center gap-2 bg-slate-100 dark:bg-white/5 border-t border-slate-200 dark:border-white/10">

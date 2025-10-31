@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const { order, orderAsc, limit, ...filters } = req.query
-      
+
       const where: any = {}
       Object.entries(filters).forEach(([key, value]) => {
         if (key !== 'select' && value !== undefined && value !== null && value !== '') {
@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: Object.keys(where).length > 0 ? where : undefined,
         orderBy,
       }
-      
+
       if (limit) {
         queryOptions.take = parseInt(limit as string, 10)
       }

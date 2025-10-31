@@ -18,7 +18,7 @@ The Social Wall is a real-time chat feature for the Zwickly student platform, en
    ```bash
    # Start database
    docker-compose up -d
-   
+
    # Start Next.js API + Socket.IO
    cd zwickly-local-merged
    npm run dev

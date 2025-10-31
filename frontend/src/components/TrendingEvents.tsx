@@ -66,13 +66,13 @@ const TrendingEvents = () => {
           Upcoming Events
         </h3>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {events.length === 0 ? (
           <p className="text-center text-muted-foreground col-span-2">No upcoming events yet.</p>
         ) : (
           events.map((event) => (
-            <EventCard 
+            <EventCard
               key={event.id}
               id={event.id}
               title={event.title}
@@ -85,10 +85,10 @@ const TrendingEvents = () => {
               description={event.description}
               language={event.language}
               registrationInfo={event.registration_info}
-              eventDate={event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              eventDate={event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
               }) : 'Date TBD'}
             />
           ))

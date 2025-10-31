@@ -30,8 +30,8 @@ const ExamPlanCard = () => {
           <GraduationCap className="w-5 h-5 text-primary" />
           <h3 className="text-lg font-semibold gradient-text">Next 3 Exams</h3>
         </div>
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           size="sm"
           onClick={openExamPortal}
           className="text-xs"
@@ -41,14 +41,14 @@ const ExamPlanCard = () => {
         </Button>
       </div>
       <p className="text-xs text-muted-foreground mb-4">Seminar Group 252035</p>
-      
+
       {loading ? (
         <div className="text-center text-muted-foreground py-8">Loading exams...</div>
       ) : exams.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-muted-foreground mb-4">No upcoming exams found</p>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={openExamPortal}
           >
@@ -67,7 +67,7 @@ const ExamPlanCard = () => {
                 <BookOpen className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <p className="font-semibold text-foreground leading-tight">{exam.course}</p>
               </div>
-              
+
               <div className="space-y-2 text-sm">
                 {exam.space && (
                   <div className="flex items-center gap-2 text-muted-foreground">
@@ -75,21 +75,21 @@ const ExamPlanCard = () => {
                     <span>Space: {exam.space}</span>
                   </div>
                 )}
-                
+
                 {exam.lecturer && (
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <User className="w-4 h-4 text-primary flex-shrink-0" />
                     <span>Lecturer: {exam.lecturer}</span>
                   </div>
                 )}
-                
+
                 {exam.date && (
                   <div className="flex items-center gap-2 text-primary font-medium">
                     <Calendar className="w-4 h-4 flex-shrink-0" />
                     <span>Date: {exam.date}</span>
                   </div>
                 )}
-                
+
                 {exam.period && (
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock className="w-4 h-4 text-primary flex-shrink-0" />

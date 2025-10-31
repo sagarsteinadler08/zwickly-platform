@@ -12,7 +12,7 @@ const CalendarWidget = () => {
 
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
-  
+
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -41,7 +41,7 @@ const CalendarWidget = () => {
     try {
       const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
       const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-      
+
       const { data, error } = await supabase
         .from('events')
         .select('title, event_date')
@@ -52,7 +52,7 @@ const CalendarWidget = () => {
 
       const dates: number[] = [];
       const details: Record<number, string> = {};
-      
+
       data?.forEach((event) => {
         const date = new Date(event.event_date);
         const day = date.getDate();
@@ -63,7 +63,7 @@ const CalendarWidget = () => {
           details[day] += `, ${event.title}`;
         }
       });
-      
+
       setEventDates(dates);
       setEventDetails(details);
     } catch (error) {
@@ -74,7 +74,7 @@ const CalendarWidget = () => {
   const daysInMonth = getDaysInMonth(currentDate);
   const firstDay = getFirstDayOfMonth(currentDate);
   const today = new Date().getDate();
-  const isCurrentMonth = 
+  const isCurrentMonth =
     currentDate.getMonth() === new Date().getMonth() &&
     currentDate.getFullYear() === new Date().getFullYear();
 
@@ -150,7 +150,7 @@ const CalendarWidget = () => {
                     <div className="w-1.5 h-1.5 bg-[#48E0E4] rounded-full shadow-sm shadow-teal-500/50" />
                   )}
                 </div>
-              
+
               {hoveredDate === day && hasEvent && (
                 <a
                   href={`https://calendar.google.com/calendar/u/0/r/eventedit?dates=${currentDate.getFullYear()}${String(currentDate.getMonth() + 1).padStart(2, '0')}${String(day).padStart(2, '0')}/${currentDate.getFullYear()}${String(currentDate.getMonth() + 1).padStart(2, '0')}${String(day).padStart(2, '0')}&text=${encodeURIComponent(eventDetails[day])}`}

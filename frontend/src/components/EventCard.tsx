@@ -23,14 +23,14 @@ interface EventCardProps {
   eventDate?: string;
 }
 
-const EventCard = ({ 
-  id, 
-  title, 
-  location, 
-  time, 
-  image, 
-  category, 
-  initialLikes = 0, 
+const EventCard = ({
+  id,
+  title,
+  location,
+  time,
+  image,
+  category,
+  initialLikes = 0,
   initialProsts = 0,
   description,
   language,
@@ -43,7 +43,7 @@ const EventCard = ({
   const [showDetails, setShowDetails] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [isCheckingRegistration, setIsCheckingRegistration] = useState(false);
-  
+
   useEffect(() => {
     setLikes(initialLikes);
     setProsts(initialProsts);
@@ -93,7 +93,7 @@ const EventCard = ({
 
   const checkRegistration = async () => {
     if (!id) return;
-    
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -115,17 +115,17 @@ const EventCard = ({
   const handleLike = async () => {
     const newLikes = isLiked ? likes - 1 : likes + 1;
     const newIsLiked = !isLiked;
-    
+
     setLikes(newLikes);
     setIsLiked(newIsLiked);
-    
+
     if (id) {
       try {
         const { error } = await supabase
           .from('events')
           .update({ likes: newLikes })
           .eq('id', id);
-        
+
         if (error) throw error;
       } catch (error) {
         console.error('Error updating likes:', error);
@@ -133,7 +133,7 @@ const EventCard = ({
         setIsLiked(isLiked);
       }
     }
-    
+
     toast.success(newIsLiked ? "Liked! ❤️" : "Like removed");
   };
 
@@ -159,11 +159,11 @@ const EventCard = ({
     setIsDetecting(true);
     try {
       const result = await detectBeverage(selectedImage);
-      
+
       if (result.detected) {
         const newProsts = prosts + result.count;
         setProsts(newProsts);
-        
+
         if (id) {
           try {
             await supabase
@@ -174,7 +174,7 @@ const EventCard = ({
             console.error('Error updating prosts:', error);
           }
         }
-        
+
         setShowImageUpload(false);
         setShowProstAnimation(true);
         toast.success(`🍻 Prost! ${result.count} beverage(s) detected: ${result.labels.join(", ")}`);
@@ -228,7 +228,7 @@ const EventCard = ({
         if (error) throw error;
         setIsRegistered(true);
         toast.success("Registered successfully! 🎉");
-        
+
         // Auto-create reminder for registered event (1 day before)
         createEventReminder(24);
       }
@@ -271,7 +271,7 @@ const EventCard = ({
 
   return (
     <>
-      <Card 
+      <Card
         className="neo-card hover-glow overflow-hidden group cursor-pointer transition-all duration-300 hover:scale-[1.02] animate-fadeInUp border-l-2 border-l-purple-500/50"
         onClick={() => setShowDetails(true)}
       >
@@ -286,7 +286,7 @@ const EventCard = ({
           />
           {/* Dark gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/60 to-transparent" />
-          
+
           <div className="absolute top-3 right-3">
             {category && (
               <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#7B5CFA] to-[#48E0E4] text-white text-xs font-bold shadow-lg">
@@ -294,13 +294,13 @@ const EventCard = ({
               </span>
             )}
           </div>
-          
+
           {/* Title overlay on image */}
           <div className="absolute bottom-0 left-0 right-0 p-5">
             <h4 className="text-xl font-bold text-white mb-2 drop-shadow-lg">{title || 'Untitled Event'}</h4>
           </div>
         </div>
-        
+
         <div className="p-5 space-y-4">
           {(location || time || eventDate) && (
             <div className="space-y-2">
@@ -324,7 +324,7 @@ const EventCard = ({
               )}
             </div>
           )}
-          
+
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Button
@@ -343,7 +343,7 @@ const EventCard = ({
                 <Heart className={`w-4 h-4 mr-1 ${isLiked ? "fill-pink-400" : ""}`} />
                 {likes}
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -357,7 +357,7 @@ const EventCard = ({
                 {prosts}
               </Button>
             </div>
-            
+
             <Button
               variant="primary"
               size="sm"
@@ -394,7 +394,7 @@ const EventCard = ({
               onChange={handleImageSelect}
               className="w-full p-3 rounded-lg glass-card border border-primary/20 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
             />
-            
+
             {previewUrl && (
               <div className="relative rounded-lg overflow-hidden border border-primary/20">
                 <img src={previewUrl} alt="Preview" className="w-full h-48 object-cover" />
@@ -428,7 +428,7 @@ const EventCard = ({
             <div className="relative h-64 rounded-lg overflow-hidden border border-border">
               <img src={image} alt={title} className="w-full h-full object-cover" />
             </div>
-            
+
             {description && (
               <div className="space-y-2">
                 <h3 className="font-semibold text-lg flex items-center gap-2 text-foreground">
@@ -438,7 +438,7 @@ const EventCard = ({
                 <p className="text-foreground text-base leading-relaxed">{description}</p>
               </div>
             )}
-            
+
             <div className="grid grid-cols-2 gap-4">
               {eventDate && (
                 <div className="space-y-1">
@@ -449,7 +449,7 @@ const EventCard = ({
                   <p className="text-foreground">{eventDate}</p>
                 </div>
               )}
-              
+
               <div className="space-y-1">
                 <h3 className="font-semibold flex items-center gap-2 text-foreground">
                   <Clock className="w-4 h-4 text-primary" />
@@ -458,7 +458,7 @@ const EventCard = ({
                 <p className="text-foreground">{time}</p>
               </div>
             </div>
-            
+
             <div className="space-y-1">
               <h3 className="font-semibold flex items-center gap-2 text-foreground">
                 <MapPin className="w-4 h-4 text-primary" />
@@ -466,21 +466,21 @@ const EventCard = ({
               </h3>
               <p className="text-foreground">{location}</p>
             </div>
-            
+
             {language && (
               <div className="space-y-1">
                 <h3 className="font-semibold text-foreground">Language</h3>
                 <p className="text-foreground">{language}</p>
               </div>
             )}
-            
+
             {registrationInfo && (
               <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
                 <h3 className="font-semibold mb-2 text-foreground">Registration Information</h3>
                 <p className="text-foreground leading-relaxed">{registrationInfo}</p>
               </div>
             )}
-            
+
             <div className="flex gap-2 pt-4">
               <Button
                 variant="outline"
@@ -497,7 +497,7 @@ const EventCard = ({
                 <Heart className={`w-4 h-4 mr-2 ${isLiked ? "fill-primary" : ""}`} />
                 {likes} Likes
               </Button>
-              
+
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -529,9 +529,9 @@ const EventCard = ({
         </DialogContent>
       </Dialog>
 
-      <ProstAnimation 
-        show={showProstAnimation} 
-        onComplete={() => setShowProstAnimation(false)} 
+      <ProstAnimation
+        show={showProstAnimation}
+        onComplete={() => setShowProstAnimation(false)}
       />
     </>
   );

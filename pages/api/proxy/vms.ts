@@ -16,11 +16,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         },
       })
-      
+
       if (!response.ok) {
         throw new Error(`External API returned ${response.status}`)
       }
-      
+
       const html = await response.text()
       res.setHeader('Content-Type', 'text/html; charset=utf-8')
       return res.status(200).send(html)

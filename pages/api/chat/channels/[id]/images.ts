@@ -39,20 +39,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const form = new formidable.IncomingForm();
       form.uploadDir = uploadDir;
       form.keepExtensions = true;
-      
+
       const [fields, files] = await form.parse(req);
-      
+
       //@ts-ignore
       const file = files.image?.[0] || files.image;
       if (!file) {
         return res.status(400).json({ error: 'No image file provided' });
       }
-      
+
       //@ts-ignore
       const filename = path.basename(file.filepath);
       //@ts-ignore
       const fileUrl = `/uploaded/${filename}`;
-      
+
       // Save metadata in DB
       const image = await prisma.image.create({
         data: {
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           originalName: file.originalFilename || filename
         }
       });
-      
+
       return res.status(201).json(image);
     } catch (error) {
       console.error('Image upload error:', error);

@@ -210,7 +210,7 @@ const SocialAdmin = () => {
       });
 
       if (!res.ok) throw new Error('Failed');
-      
+
       toast.success('Request approved!');
       fetchChannels();
       fetchRequests();
@@ -228,7 +228,7 @@ const SocialAdmin = () => {
       });
 
       if (!res.ok) throw new Error('Failed');
-      
+
       toast.success('Request declined');
       fetchRequests();
     } catch (error) {
@@ -257,7 +257,7 @@ const SocialAdmin = () => {
       });
 
       if (!res.ok) throw new Error('Failed');
-      
+
       toast.success('Channel created!');
       setShowCreateDialog(false);
       setNewChannelName('');
@@ -285,7 +285,7 @@ const SocialAdmin = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0F172A] transition-colors duration-300">
       <AdminNavbar />
-      
+
       <main className="container mx-auto px-6 pt-24 pb-12">
         <h1 className="text-5xl font-bold gradient-text mb-8 text-center">Social Wall Admin</h1>
 
@@ -341,8 +341,8 @@ const SocialAdmin = () => {
                   value={newChannelDesc}
                   onChange={(e) => setNewChannelDesc(e.target.value)}
                 />
-                <Button 
-                  onClick={handleCreateChannel} 
+                <Button
+                  onClick={handleCreateChannel}
                   className="w-full rounded-full"
                   disabled={loading}
                 >
@@ -391,8 +391,8 @@ const SocialAdmin = () => {
                           }
                         }}
                       />
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         onClick={(e) => {
                           const input = e.currentTarget.parentElement?.querySelector('input');
                           if (input?.value.trim()) {
@@ -501,7 +501,7 @@ const SocialAdmin = () => {
                 <ImageIcon className="w-4 h-4 mr-2" />
                 Upload Image
               </Button>
-              <Button variant="destructive" className="rounded-full" 
+              <Button variant="destructive" className="rounded-full"
                 onClick={async () => {
                   if (!confirm(`Delete ${selectedChannels.length} channel(s)?`)) return;
                   for (const ch of selectedChannels) {
@@ -537,7 +537,7 @@ const SocialAdmin = () => {
                 className="w-full min-h-[120px] p-4 border-2 border-slate-300 dark:border-white/20 rounded-xl bg-white dark:bg-white/10 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors duration-300"
               />
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={async () => {
                     if (!messageText.trim() || selectedChannels.length === 0) return;
                     try {
@@ -597,15 +597,15 @@ const SocialAdmin = () => {
                 ))}
               </div>
               <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setPollOptions([...pollOptions, ''])}
                   className="rounded-full"
                 >
                   Add Option
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setPollOptions(pollOptions.slice(0, -1))}
                   disabled={pollOptions.length <= 2}
                   className="rounded-full"
@@ -614,7 +614,7 @@ const SocialAdmin = () => {
                 </Button>
               </div>
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={async () => {
                     if (!pollQuestion.trim() || selectedChannels.length !== 1) return;
                     if (pollOptions.filter(o => o.trim()).length < 2) {
@@ -665,15 +665,15 @@ const SocialAdmin = () => {
               />
               {imageFile && (
                 <div className="mt-2">
-                  <img 
-                    src={URL.createObjectURL(imageFile)} 
-                    alt="Preview" 
+                  <img
+                    src={URL.createObjectURL(imageFile)}
+                    alt="Preview"
                     className="max-h-48 rounded-xl"
                   />
                 </div>
               )}
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={async () => {
                     if (!imageFile || selectedChannels.length !== 1) return;
                     try {
@@ -713,7 +713,7 @@ const SocialAdmin = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {channels.map((channel) => (
-                <div 
+                <div
                   key={channel.id}
                   className={`p-4 border border-slate-200 dark:border-white/10 rounded-xl hover-glow cursor-pointer transition-all bg-white dark:bg-transparent ${
                     selectedChannels.some(ch => ch.id === channel.id) ? 'bg-purple-50 dark:bg-primary/10 border-purple-400 dark:border-primary' : ''
