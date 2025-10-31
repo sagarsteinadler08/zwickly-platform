@@ -11,9 +11,13 @@ import Events from "./pages/Events";
 import Chatbot from "./pages/Chatbot";
 import Social from "./pages/Social";
 import KommPakt from "./pages/KommPakt";
+import MyTickets from "./pages/MyTickets";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminEvents from "./pages/admin/Events";
+import EventsImproved from "./pages/admin/EventsImproved";
 import SocialAdmin from "./pages/admin/SocialAdmin";
+import TicketTracker from "./pages/admin/TicketTracker";
+import UserManagement from "./pages/admin/UserManagement";
 import StudentAuth from "./pages/StudentAuth";
 import AdminAuth from "./pages/AdminAuth";
 
@@ -30,6 +34,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/users" element={<Users />} />
           <Route path="/social" element={<Social />} />
+          <Route path="/my-tickets" element={<MyTickets />} />
           <Route path="/student-auth" element={<StudentAuth />} />
           <Route path="/admin-auth" element={<AdminAuth />} />
           <Route path="/events" element={<Events />} />
@@ -37,7 +42,10 @@ const App = () => (
           <Route path="/kommpakt" element={<KommPakt />} />
           <Route path="/admin/home" element={<AdminHome />} />
           <Route path="/admin/events" element={<AdminEvents />} />
+          <Route path="/admin/events-v2" element={<EventsImproved />} />
           <Route path="/admin/social" element={<SocialAdmin />} />
+          <Route path="/admin/tickets" element={<TicketTracker />} />
+          <Route path="/admin/users" element={<UserManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

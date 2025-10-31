@@ -1,4 +1,4 @@
-import { Home, Users, Calendar, MessageSquare, MessageCircle, Bell, Search } from "lucide-react";
+import { Home, Users, Calendar, MessageSquare, MessageCircle, Bell, Search, Ticket } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import NotificationCenter from "./NotificationCenter";
@@ -12,8 +12,10 @@ const AdminNavbar = () => {
   const navItems = [
     { name: "Home", path: "/admin/home", icon: Home },
     { name: "Products", path: "/users", icon: Users },
-    { name: "Events", path: "/admin/events", icon: Calendar },
+    { name: "Events", path: "/admin/events-v2", icon: Calendar },
     { name: "Social", path: "/admin/social", icon: MessageCircle },
+    { name: "Tickets", path: "/admin/tickets", icon: Ticket },
+    { name: "Users", path: "/admin/users", icon: Users },
     { name: "Chatbot", path: "/chatbot", icon: MessageSquare },
   ];
 

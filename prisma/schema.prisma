@@ -113,6 +113,46 @@ model Profile {
   @@map("profiles")
 }
 
+// User Management
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  name          String
+  email         String   @unique
+  password      String?  // Hashed password
+  role          String   @default("student") // student, moderator, admin
+  status        String   @default("active") // active, inactive, suspended
+  lastLogin     DateTime?
+  joinedDate    DateTime @default(now())
+  profileImage  String?
+  phone         String?
+  studentId     String?  @unique
+  sessions      Session[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("users")
+  @@index([email])
+  @@index([role, status])
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String   @db.Uuid
+  device       String?
+  browser      String?
+  location     String?
+  ipAddress    String?
+  loginTime    DateTime @default(now())
+  lastActivity DateTime @default(now())
+  status       String   @default("active") // active, idle, expired
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@map("sessions")
+  @@index([userId, status])
+}
+
 // Chat/Social Models
 model Channel {
   id          String    @id @default(uuid()) @db.Uuid
@@ -211,6 +251,8 @@ model Ticket {
   description String   @db.Text
   status      String   @default("open") // open, in_progress, resolved, closed
   priority    String   @default("normal") // low, normal, high, urgent
+  category    String?  @default("general") // technical, academic, facilities, billing, other, general
+  department  String?  @default("support") // it, admin, finance, facilities, academic, support
   assignedTo  String?  // admin user id
   adminReply  String?  @db.Text
   createdAt   DateTime @default(now())
@@ -218,6 +260,8 @@ model Ticket {
 
   @@map("tickets")
   @@index([userId, status])
+  @@index([status, category])
+  @@index([department])
 }
 
 model PollVote {
@@ -252,4 +296,40 @@ model Reminder {
   @@map("reminders")
   @@index([userId, reminderTime])
   @@index([userId, completed])
+}
+
+// Pixi AI Cultural Knowledge Base
+model CulturalInsight {
+  id        String   @id @default(uuid()) @db.Uuid
+  category  String   // tradition, bureaucracy, education, integration, language, events
+  title     String
+  content   String   @db.Text
+  region    String   @default("Saxony") // Saxony, Germany, etc.
+  tags      String[] // searchable keywords
+  language  String   @default("en") // en, de
+  source    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cultural_insights")
+  @@index([category])
+  @@index([region])
+  @@index([language])
+}
+
+// Pixi AI Conversation History
+model PixiConversation {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String
+  query     String   @db.Text
+  response  String   @db.Text
+  category  String?  // Detected topic category
+  insights  String[] // IDs of cultural insights used
+  rating    Int?     // 1-5 user rating
+  createdAt DateTime @default(now())
+
+  @@map("pixi_conversations")
+  @@index([userId])
+  @@index([category])
+  @@index([createdAt])
 }
