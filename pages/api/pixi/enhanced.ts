@@ -4,9 +4,15 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const prisma = new PrismaClient();
 
-// Initialize Gemini AI
-const GEMINI_API_KEY = 'AIzaSyDncNbpi4BLSaHizPKHiTeQDJvsPf5k_SA';
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+// Initialize Gemini AI - API key from environment variable
+const GEMINI_API_KEY = process.env.GOOGLE_GEMINI_API_KEY;
+
+if (!GEMINI_API_KEY) {
+  console.error('⚠️ GOOGLE_GEMINI_API_KEY not found in environment variables');
+  console.error('Please add it to your .env file');
+}
+
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || 'FALLBACK_DISABLED');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
