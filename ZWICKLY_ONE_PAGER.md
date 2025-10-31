@@ -342,11 +342,11 @@ WhatsApp-style real-time chat with:
 
 ## Contact
 
-**Project Lead:** Zwickly Team  
-**Institution:** West Saxon University of Zwickau (WHZ)  
-**Email:** admin@zwickly.de  
-**Website:** https://zwickly.whz.de  
-**GitHub:** https://github.com/sagarsteinadler08/zwickly-platform  
+**Project Lead:** Zwickly Team
+**Institution:** West Saxon University of Zwickau (WHZ)
+**Email:** admin@zwickly.de
+**Website:** https://zwickly.whz.de
+**GitHub:** https://github.com/sagarsteinadler08/zwickly-platform
 
 ---
 
@@ -380,9 +380,9 @@ open http://localhost:8080
 
 ---
 
-**Version:** 1.0.0  
-**Date:** October 2025  
-**Status:** Production-Ready MVP  
+**Version:** 1.0.0
+**Date:** October 2025
+**Status:** Production-Ready MVP
 
 **Built with ❤️ for WHZ Students**
 

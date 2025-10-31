@@ -738,9 +738,9 @@ const socket = io('ws://localhost:4001', {
 
 socket.on('connect', () => {
   console.log('[socket] connected')
-  socket.emit('auto_join_channels', { 
-    userId: 'user-123', 
-    role: 'student' 
+  socket.emit('auto_join_channels', {
+    userId: 'user-123',
+    role: 'student'
   })
 })
 
@@ -802,14 +802,14 @@ type Role = 'student' | 'admin' | 'kommpakt'
 // Middleware example
 async function requireAdmin(req, res, next) {
   const userId = req.query.userId || req.body.userId
-  const user = await prisma.profile.findUnique({ 
-    where: { userId } 
+  const user = await prisma.profile.findUnique({
+    where: { userId }
   })
-  
+
   if (user?.role !== 'admin') {
     return res.status(403).json({ error: 'Forbidden' })
   }
-  
+
   next()
 }
 ```
@@ -1020,9 +1020,9 @@ const ChannelList = lazy(() => import('./components/social/ChannelList'))
 **2. Image Optimization:**
 ```typescript
 // Use optimized images
-<img 
-  src="/events/image.jpg" 
-  loading="lazy" 
+<img
+  src="/events/image.jpg"
+  loading="lazy"
   decoding="async"
   width="400"
   height="300"
@@ -1178,7 +1178,7 @@ class SocialErrorBoundary extends React.Component {
     console.error('[SocialWall] Error:', error, errorInfo)
     // Send to error tracking service (Sentry, etc.)
   }
-  
+
   render() {
     if (this.state.hasError) {
       return <div>Something went wrong. Please refresh.</div>
@@ -1190,7 +1190,7 @@ class SocialErrorBoundary extends React.Component {
 
 ---
 
-**Document Version:** 1.0.0  
-**Last Updated:** October 2025  
+**Document Version:** 1.0.0
+**Last Updated:** October 2025
 **Maintained by:** Zwickly Development Team
 

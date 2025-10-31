@@ -407,17 +407,17 @@ io.adapter(createAdapter(pubClient, subClient))
 **Indexing Strategy:**
 ```sql
 -- Frequently queried columns
-CREATE INDEX idx_messages_channel_time 
+CREATE INDEX idx_messages_channel_time
   ON messages(channel_id, created_at DESC);
 
-CREATE INDEX idx_reminders_user_time 
+CREATE INDEX idx_reminders_user_time
   ON reminders(user_id, reminder_time);
 
-CREATE INDEX idx_notifications_user_read 
+CREATE INDEX idx_notifications_user_read
   ON notifications(user_id, read);
 
 -- Full-text search
-CREATE INDEX idx_events_fulltext 
+CREATE INDEX idx_events_fulltext
   ON events USING GIN(to_tsvector('english', title || ' ' || description));
 ```
 
@@ -469,7 +469,7 @@ const HeavyComponent = lazy(() => import('./components/HeavyComponent'))
 ```typescript
 // Expensive computation
 const sortedEvents = useMemo(() => {
-  return events.sort((a, b) => 
+  return events.sort((a, b) =>
     new Date(b.event_date) - new Date(a.event_date)
   )
 }, [events])
@@ -576,7 +576,7 @@ async function verifyToken(req, res, next) {
   if (!token) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
-  
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     req.userId = decoded.userId
@@ -594,11 +594,11 @@ async function requireAdmin(req, res, next) {
   const user = await prisma.profile.findUnique({
     where: { id: req.userId }
   })
-  
+
   if (user?.role !== 'admin') {
     return res.status(403).json({ error: 'Forbidden' })
   }
-  
+
   next()
 }
 
@@ -824,7 +824,7 @@ module.exports = {
 
 ---
 
-**Document Version:** 1.0.0  
-**Last Updated:** October 2025  
+**Document Version:** 1.0.0
+**Last Updated:** October 2025
 **Author:** Zwickly Architecture Team
 

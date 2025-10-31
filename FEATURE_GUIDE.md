@@ -941,7 +941,7 @@ Real-time feed of campus activities and updates.
 
 ---
 
-**Guide Version:** 1.0.0  
-**Last Updated:** October 2025  
+**Guide Version:** 1.0.0
+**Last Updated:** October 2025
 **For Questions:** Contact KommPakt Team
 
